@@ -1,30 +1,37 @@
 package com.ecommerce.ecommerce_backend.config;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
-    @PostConstruct
-    public void loaded() {
-        System.out.println("✅ SecurityConfig loaded");
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        http
+            // 🔥 REQUIRED for POST from Postman
+            .csrf(csrf -> csrf.disable())
+
+            // 🔥 VERY IMPORTANT
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/**").permitAll()
+                .anyRequest().authenticated()
+            )
+
+            // ❌ disable default login mechanisms
+            .formLogin(form -> form.disable())
+            .httpBasic(basic -> basic.disable());
+
+        return http.build();
     }
 
     @Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> auth
-            .anyRequest().permitAll()
-        );
-
-    return http.build();
-}
-
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
