@@ -1,8 +1,9 @@
-package com.ecommerce.controller;
+package com.ecommerce.ecommerce_backend.controller;
 
 import org.springframework.web.bind.annotation.*;
-import com.ecommerce.model.Product;
-import com.ecommerce.service.ProductService;
+
+import com.ecommerce.ecommerce_backend.model.Product;
+import com.ecommerce.ecommerce_backend.service.ProductService;
 
 import java.util.List;
 
