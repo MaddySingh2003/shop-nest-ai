@@ -7,23 +7,19 @@ import com.ecommerce.ecommerce_backend.dto.LoginRequest;
 import com.ecommerce.ecommerce_backend.model.User;
 import com.ecommerce.ecommerce_backend.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
+   
     public User register(User user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("USER");
-
         return userRepository.save(user);
     }
 
