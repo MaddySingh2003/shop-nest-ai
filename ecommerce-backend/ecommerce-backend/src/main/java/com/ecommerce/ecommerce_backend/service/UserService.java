@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.ecommerce.ecommerce_backend.dto.LoginRequest;
 import com.ecommerce.ecommerce_backend.model.User;
+import com.ecommerce.ecommerce_backend.model.User.Role;
 import com.ecommerce.ecommerce_backend.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,10 @@ public class UserService {
     public User register(User user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+         user.setRole(Role.USER);
         return userRepository.save(user);
+       
+
     }
 
     public void authenticate(String email, String rawPassword) {
