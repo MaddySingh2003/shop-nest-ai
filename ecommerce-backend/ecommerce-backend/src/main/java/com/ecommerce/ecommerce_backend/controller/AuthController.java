@@ -29,17 +29,18 @@ public class AuthController {
 
     // ---------------- REGISTER ----------------
     @PostMapping("/register")
-    public ResponseEntity<User> register(@Valid @RequestBody User user) {
-        return ResponseEntity.ok(userService.register(user));
-    }
+public ResponseEntity<User> register(@RequestBody User user) {
+    user.setRole(User.Role.USER);
+    return ResponseEntity.ok(userService.register(user));
+}
 
 
 //                test mapings    ///////
 
 
 @GetMapping("/secure")
-public String secure() {
-    return "You are authorized 🎉";
+public ResponseEntity<String> secured(){
+    return ResponseEntity.ok("You are authorized 🎉");
 }
 
 
