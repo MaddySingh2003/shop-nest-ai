@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
@@ -20,6 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
+
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -32,12 +34,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
         .requestMatchers("/auth/**").permitAll()
         .requestMatchers("/products").permitAll()
-        .requestMatchers("/products/**").hasRole("ADMIN")
-        .requestMatchers("/products/add").hasRole("ADMIN")
-.requestMatchers("/products/update/**").hasRole("ADMIN")
-.requestMatchers("/products/delete/**").hasRole("ADMIN")
-.requestMatchers("/products/**").permitAll()
-
+.requestMatchers("/products/{id}").permitAll()
+.requestMatchers("/products/**").hasRole("ADMIN")
+.requestMatchers("/products/add","/products/update/**","/products/delete/**").hasRole("ADMIN")
+ .requestMatchers("/orders/all").hasRole("ADMIN")
+        .requestMatchers("/orders/update/**").hasRole("ADMIN")
+        .requestMatchers("/orders/cancel/**").hasRole("USER")
+        .requestMatchers("/orders/**").hasRole("USER")
+        .requestMatchers("/cart/**").hasRole("USER")
         .requestMatchers("/user/**").hasRole("USER")
         .requestMatchers("/admin/**").hasRole("ADMIN")
         .anyRequest().permitAll()

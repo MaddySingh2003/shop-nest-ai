@@ -1,0 +1,42 @@
+package com.ecommerce.ecommerce_backend.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Table(name="orders")
+public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    // User who placed order
+    @ManyToOne
+    private User user;
+
+    private double totalAmount;
+
+    private LocalDateTime orderDate;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    public enum Status {
+        PENDING,
+        CONFIRMED,
+        SHIPPED,
+        DELIVERED,
+        CANCELLED
+    }
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> items;
+}

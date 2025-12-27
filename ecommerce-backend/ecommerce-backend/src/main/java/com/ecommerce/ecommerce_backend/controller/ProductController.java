@@ -1,10 +1,15 @@
 package com.ecommerce.ecommerce_backend.controller;
 
+import com.ecommerce.ecommerce_backend.dto.ProductRequest;
 import com.ecommerce.ecommerce_backend.model.Product;
 import com.ecommerce.ecommerce_backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -15,33 +20,72 @@ public class ProductController {
 
     private final ProductService productService;
 
-    // PUBLIC - anyone can see products
+   
+
     @GetMapping
-    public List<Product> getProducts() {
+public Page<Product> getAll(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "id") String sortBy,
+        @RequestParam(defaultValue = "asc") String order
+){
+    Sort sort = order.equalsIgnoreCase("asc")
+            ? Sort.by(sortBy).ascending()
+            : Sort.by(sortBy).descending();
+
+    Pageable pageable = PageRequest.of(page, size, sort);
+
+    return productService.getAllPaged(pageable);
+}
+
+@GetMapping("/search")
+public Page<Product> search(
+        @RequestParam String keyword,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size
+){
+    Pageable pageable = PageRequest.of(page, size);
+    return productService.search(keyword, pageable);
+}
+
+
+@GetMapping("/filter")
+public Page<Product> filterPrice(
+        @RequestParam double min,
+        @RequestParam double max,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size
+){
+    Pageable pageable = PageRequest.of(page, size);
+    return productService.filterByPrice(min, max, pageable);
+}
+
+  @GetMapping("/all")
+    public List<Product> getProducts(){
         return productService.getAll();
     }
 
-    // ONLY ADMIN
-    @PostMapping("/add")
-    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
-        return ResponseEntity.ok(productService.addProduct(product));
-    }
+
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable Long id){
-        return ResponseEntity.ok(productService.getProduct(id));
+    public Product getById(@PathVariable Long id){
+        return productService.getById(id);
     }
+
+     @PostMapping("/add")
+    public ResponseEntity<Product> add(@RequestBody ProductRequest request){
+        return ResponseEntity.ok(productService.addProduct(request));
+    }
+
     @PutMapping("/update/{id}")
-    public ResponseEntity<Product> updateProduct(
-        @PathVariable Long id,
-        @RequestBody Product product
-    ){
-        return ResponseEntity.ok(productService.updateProduct(id, product));
+    public ResponseEntity<Product> update(@PathVariable Long id,
+                                          @RequestBody ProductRequest request){
+        return ResponseEntity.ok(productService.updateProduct(id, request));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable Long id){
+    public ResponseEntity<?> delete(@PathVariable Long id){
         productService.deleteProduct(id);
-        return ResponseEntity.ok("Product deleted!");
+        return ResponseEntity.ok("Product Deleted");
     }
 }
