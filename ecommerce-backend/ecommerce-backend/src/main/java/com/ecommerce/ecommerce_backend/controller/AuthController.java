@@ -59,23 +59,14 @@ public Object testUsers() {
 @PostMapping("/login")
 public ResponseEntity<?> login(@RequestBody LoginRequest request){
 
-    System.out.println("Login attempt: " + request.getEmail());
-
     var userOpt = userRepository.findByEmail(request.getEmail());
 
     if(userOpt.isEmpty()){
-        System.out.println("USER NOT FOUND");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("User not found");
     }
 
     var user = userOpt.get();
-
-    System.out.println("DB Password: " + user.getPassword());
-    System.out.println("Raw Password: " + request.getPassword());
-    System.out.println("Password match: "
-            + passwordEncoder.matches(request.getPassword(), user.getPassword())
-    );
 
     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -83,7 +74,14 @@ public ResponseEntity<?> login(@RequestBody LoginRequest request){
     }
 
     String token = jwtService.generateToken(user.getEmail());
-    return ResponseEntity.ok(Map.of("token", token));
+    var expiry = jwtService.getExpiry(token);
+
+    return ResponseEntity.ok(Map.of(
+            "token", token,
+            "email", user.getEmail(),
+            "role", user.getRole().name(),
+            "expiresAt", expiry.getTime()
+    ));
 }
 
 

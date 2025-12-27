@@ -30,11 +30,18 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/user/**").hasRole("USER")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().permitAll()
-                )
+        .requestMatchers("/auth/**").permitAll()
+        .requestMatchers("/products").permitAll()
+        .requestMatchers("/products/**").hasRole("ADMIN")
+        .requestMatchers("/products/add").hasRole("ADMIN")
+.requestMatchers("/products/update/**").hasRole("ADMIN")
+.requestMatchers("/products/delete/**").hasRole("ADMIN")
+.requestMatchers("/products/**").permitAll()
+
+        .requestMatchers("/user/**").hasRole("USER")
+        .requestMatchers("/admin/**").hasRole("ADMIN")
+        .anyRequest().permitAll()
+)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

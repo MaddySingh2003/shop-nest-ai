@@ -20,33 +20,36 @@ public class JwtService {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
+    // ----------- Generate Token -----------
     public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
+    // ----------- Extract Email -----------
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
+    // ----------- Validate Token -----------
     public boolean isValid(String token, String email) {
-        String extractedEmail = extractEmail(token);
-        return extractedEmail.equals(email) && !isExpired(token);
+        return email.equals(extractEmail(token)) && !isExpired(token);
     }
 
-    private boolean isExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    private Date extractExpiration(String token) {
+    // ----------- Expiry Helpers -----------
+    public Date getExpiry(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private <T> T extractClaim(String token, Function<Claims,T> resolver) {
+    private boolean isExpired(String token) {
+        return getExpiry(token).before(new Date());
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> resolver) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
