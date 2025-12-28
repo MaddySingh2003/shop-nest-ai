@@ -36,27 +36,31 @@ public class AddressService {
         return addressRepository.findByUserEmail(email);
     }
 
-        public Address setDefaultAddress(Long id, String email){
 
-    var user = userRepository.findByEmail(email)
+
+public Address setDefault(Long id, String email){
+
+    User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("User not found"));
 
-    var address = addressRepository.findById(id)
+    Address address = addressRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Address not found"));
 
-    if (!address.getUser().getId().equals(user.getId())) {
-        throw new RuntimeException("Not your address");
+    if(!address.getUser().equals(user)){
+        throw new RuntimeException("You cannot modify this address");
     }
 
-    // remove previous default
-    List<Address> userAddresses = addressRepository.findByUser(user);
-    userAddresses.forEach(a -> a.setDefault(false));
+    // remove old default
+    addressRepository.findByUserAndIsDefaultTrue(user)
+            .ifPresent(a -> {
+                a.setDefault(false);
+                addressRepository.save(a);
+            });
 
     address.setDefault(true);
-
-    addressRepository.saveAll(userAddresses);
     return addressRepository.save(address);
 }
+
 
 public Address updateAddress(Long id, Address updated, String email){
 
@@ -79,21 +83,18 @@ public Address updateAddress(Long id, Address updated, String email){
 
     return addressRepository.save(address);
 }
-public String deleteAddress(Long id, String email){
 
-    var user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-
-    var address = addressRepository.findById(id)
+public void deleteAddress(Long id, String email) {
+    Address address = addressRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Address not found"));
 
-    if(!address.getUser().getId().equals(user.getId()))
-        throw new RuntimeException("Not your address");
+    if (!address.getUser().getEmail().equals(email)) {
+        throw new RuntimeException("You cannot delete this address");
+    }
 
     addressRepository.delete(address);
-
-    return "Address deleted successfully";
 }
+
 
 
 }

@@ -36,14 +36,17 @@ public class AddressController {
 
         return addressService.getMyAddresses(email);
     }
-@PutMapping("/default/{id}")
-public ResponseEntity<?> setDefault(
-        @PathVariable Long id,
-        Authentication auth) {
+    
+    @PutMapping("/set-default/{id}")
+public ResponseEntity<?> setDefault(@PathVariable Long id) {
+    String email = SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal().toString();
 
-    String email = auth.getName();
-    return ResponseEntity.ok(addressService.setDefaultAddress(id, email));
+    return ResponseEntity.ok(addressService.setDefault(id, email));
 }
+
+
 @PutMapping("/update/{id}")
 public ResponseEntity<?> updateAddress(
         @PathVariable Long id,
@@ -53,15 +56,17 @@ public ResponseEntity<?> updateAddress(
     String email = auth.getName();
     return ResponseEntity.ok(addressService.updateAddress(id, updated, email));
 }
+
+
 @DeleteMapping("/delete/{id}")
-public ResponseEntity<?> deleteAddress(
-        @PathVariable Long id,
-        Authentication auth){
+public ResponseEntity<?> deleteAddress(@PathVariable Long id) {
+    String email = SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal().toString();
 
-    String email = auth.getName();
-    return ResponseEntity.ok(addressService.deleteAddress(id, email));
+    addressService.deleteAddress(id, email);
+    return ResponseEntity.ok("Address deleted successfully");
 }
-
 
 
 
