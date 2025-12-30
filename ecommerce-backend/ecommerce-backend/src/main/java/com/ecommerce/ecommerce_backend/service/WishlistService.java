@@ -1,9 +1,15 @@
 package com.ecommerce.ecommerce_backend.service;
 
-import com.ecommerce.ecommerce_backend.model.*;
-import com.ecommerce.ecommerce_backend.repository.*;
+import com.ecommerce.ecommerce_backend.model.Product;
+import com.ecommerce.ecommerce_backend.model.User;
+import com.ecommerce.ecommerce_backend.model.Wishlist;
+import com.ecommerce.ecommerce_backend.repository.ProductRepository;
+import com.ecommerce.ecommerce_backend.repository.UserRepository;
+import com.ecommerce.ecommerce_backend.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -13,22 +19,25 @@ public class WishlistService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
-    private Wishlist getUserWishlist(String email){
-        var user = userRepository.findByEmail(email)
+    public Wishlist getWishlist(String email){
+
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return wishlistRepository.findByUser(user)
-                .orElseGet(() -> wishlistRepository.save(
-                        Wishlist.builder()
-                                .user(user)
-                                .products(new java.util.ArrayList<>())
-                                .build()
-                ));
+                .orElseGet(() -> {
+                    Wishlist w = new Wishlist();
+                    w.setUser(user);
+                    w.setProducts(new ArrayList<>());
+                    return wishlistRepository.save(w);
+                });
     }
 
-    public Wishlist add(String email, Long productId){
-        var wishlist = getUserWishlist(email);
-        var product = productRepository.findById(productId)
+    public Wishlist addToWishlist(String email, Long productId){
+
+        Wishlist wishlist = getWishlist(email);
+
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         if(!wishlist.getProducts().contains(product)){
@@ -38,15 +47,12 @@ public class WishlistService {
         return wishlistRepository.save(wishlist);
     }
 
-    public Wishlist remove(String email, Long productId){
-        var wishlist = getUserWishlist(email);
+    public Wishlist removeFromWishlist(String email, Long productId){
+
+        Wishlist wishlist = getWishlist(email);
 
         wishlist.getProducts().removeIf(p -> p.getId().equals(productId));
 
         return wishlistRepository.save(wishlist);
-    }
-
-    public Wishlist getMyWishlist(String email){
-        return getUserWishlist(email);
     }
 }

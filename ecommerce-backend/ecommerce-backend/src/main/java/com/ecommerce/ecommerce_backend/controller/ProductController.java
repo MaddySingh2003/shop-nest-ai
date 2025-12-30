@@ -5,6 +5,7 @@ import com.ecommerce.ecommerce_backend.model.Product;
 import com.ecommerce.ecommerce_backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -76,6 +77,16 @@ public Page<Product> filterPrice(
     public ResponseEntity<Product> add(@RequestBody ProductRequest request){
         return ResponseEntity.ok(productService.addProduct(request));
     }
+
+    @PutMapping("/stock/{productId}")
+@PreAuthorize("hasRole('ADMIN')")
+public ResponseEntity<?> updateStock(
+        @PathVariable Long productId,
+        @RequestParam int stock){
+
+    Product p = productService.updateStock(productId, stock);
+    return ResponseEntity.ok(p);
+}
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Product> update(@PathVariable Long id,

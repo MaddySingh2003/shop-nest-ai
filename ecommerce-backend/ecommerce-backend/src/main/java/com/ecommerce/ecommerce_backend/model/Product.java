@@ -30,4 +30,7 @@ public class Product {
     private String imageUrl;
 
     private LocalDateTime createdAt;
+    
+@Column(nullable = false)
+private int stock = 0;
 }

@@ -76,4 +76,12 @@ public Page<Product> filterByPrice(double min, double max, Pageable pageable){
         }
         productRepository.deleteById(id);
     }
+
+    public Product updateStock(Long id, int stock){
+    Product p = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Product not found"));
+
+    p.setStock(stock);
+    return productRepository.save(p);
+}
 }

@@ -13,11 +13,9 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int rating;          // 1 to 5
+    private int rating;          // 1–5 stars
     private String comment;
-
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     @ManyToOne
     private User user;

@@ -12,85 +12,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewService {
 
-    private final ReviewRepository reviewRepository;
-    private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+    private final ReviewRepository reviewRepo;
+    private final ProductRepository productRepo;
+    private final UserRepository userRepo;
 
-    public Review addReview(String email, Long productId, int rating, String comment){
+    public Review addReview(String email, Long productId, Review review){
 
-        if(rating < 1 || rating > 5)
-            throw new RuntimeException("Rating must be between 1–5");
-
-        var user = userRepository.findByEmail(email)
+        User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        var product = productRepository.findById(productId)
+        Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // Prevent duplicate review from same user
-        if(reviewRepository.findByProductIdAndUserEmail(productId, email).isPresent())
-            throw new RuntimeException("You already reviewed this product");
+        review.setUser(user);
+        review.setProduct(product);
+        review.setCreatedAt(LocalDateTime.now());
 
-        var review = Review.builder()
-                .rating(rating)
-                .comment(comment)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .product(product)
-                .user(user)
-                .build();
-
-        Review saved = reviewRepository.save(review);
-
-        updateProductRating(product);
-        return saved;
+        return reviewRepo.save(review);
     }
-
-
-    public Review updateReview(String email, Long productId, int rating, String comment){
-        var review = reviewRepository.findByProductIdAndUserEmail(productId, email)
-                .orElseThrow(() -> new RuntimeException("No review to update"));
-
-        review.setRating(rating);
-        review.setComment(comment);
-        review.setUpdatedAt(LocalDateTime.now());
-
-        Review saved = reviewRepository.save(review);
-        updateProductRating(review.getProduct());
-        return saved;
-    }
-
-
-    public void deleteReview(String email, Long reviewId){
-        var review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("Review not found"));
-
-        if(!review.getUser().getEmail().equals(email))
-            throw new RuntimeException("You cannot delete others review");
-
-        var product = review.getProduct();
-        reviewRepository.delete(review);
-        updateProductRating(product);
-    }
-
 
     public List<Review> getProductReviews(Long productId){
-        var product = productRepository.findById(productId)
+        Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        return reviewRepository.findByProduct(product);
-    }
-
-
-    private void updateProductRating(Product product){
-        var reviews = reviewRepository.findByProduct(product);
-
-        double avg = reviews.stream()
-                .mapToInt(Review::getRating)
-                .average()
-                .orElse(0);
-
-        product.setPrice(avg); // If you have rating field use it
-        productRepository.save(product);
+        return reviewRepo.findByProduct(product);
     }
 }

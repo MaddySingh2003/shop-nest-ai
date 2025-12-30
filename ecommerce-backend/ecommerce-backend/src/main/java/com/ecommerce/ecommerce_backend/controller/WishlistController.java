@@ -17,21 +17,26 @@ public class WishlistController {
     private String getEmail(){
         return SecurityContextHolder.getContext()
                 .getAuthentication()
-                .getPrincipal().toString();
-    }
-
-    @PostMapping("/add/{productId}")
-    public ResponseEntity<Wishlist> add(@PathVariable Long productId){
-        return ResponseEntity.ok(wishlistService.add(getEmail(), productId));
-    }
-
-    @DeleteMapping("/remove/{productId}")
-    public ResponseEntity<Wishlist> remove(@PathVariable Long productId){
-        return ResponseEntity.ok(wishlistService.remove(getEmail(), productId));
+                .getPrincipal()
+                .toString();
     }
 
     @GetMapping("/my")
-    public ResponseEntity<Wishlist> myWishlist(){
-        return ResponseEntity.ok(wishlistService.getMyWishlist(getEmail()));
+    public Wishlist myWishlist(){
+        return wishlistService.getWishlist(getEmail());
+    }
+
+    @PostMapping("/add/{productId}")
+    public ResponseEntity<?> add(@PathVariable Long productId){
+        return ResponseEntity.ok(
+                wishlistService.addToWishlist(getEmail(), productId)
+        );
+    }
+
+    @DeleteMapping("/remove/{productId}")
+    public ResponseEntity<?> remove(@PathVariable Long productId){
+        return ResponseEntity.ok(
+                wishlistService.removeFromWishlist(getEmail(), productId)
+        );
     }
 }
