@@ -32,23 +32,30 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-        .requestMatchers("/auth/**").permitAll()
-        .requestMatchers("/products").permitAll()
-.requestMatchers("/products/{id}").permitAll()
-.requestMatchers("/products/**").hasRole("ADMIN")
-.requestMatchers("/products/add","/products/update/**","/products/delete/**").hasRole("ADMIN")
- .requestMatchers("/orders/all").hasRole("ADMIN")
-.requestMatchers("/orders/update/**").hasRole("ADMIN")
-.requestMatchers("/orders/*/admin").hasRole("ADMIN")
-.requestMatchers("/orders/place/**").hasRole("USER")
-.requestMatchers("/orders/cancel/**").hasRole("USER")
-.requestMatchers("/orders/my").hasRole("USER")
-.requestMatchers("/orders/**").hasRole("USER")       .requestMatchers("/cart/**").hasRole("USER")
-        .requestMatchers("/user/**").hasRole("USER")
-        .requestMatchers("/address/**").hasRole("USER")
-.requestMatchers("/payment/**").hasRole("USER")
-.requestMatchers("/wishlist/**").hasRole("USER")
-.requestMatchers("/reviews/**").hasRole("USER")
+
+    .requestMatchers("/auth/**").permitAll()
+
+    // PRODUCTS
+    .requestMatchers("/products", "/products/{id}").permitAll()
+    .requestMatchers("/products/**").hasRole("ADMIN")
+
+    // ORDERS
+    .requestMatchers("/orders/place/**").hasRole("USER")
+    .requestMatchers("/orders/cancel/**").hasRole("USER")
+    .requestMatchers("/orders/my").hasRole("USER")
+
+    .requestMatchers("/orders/update/**").hasRole("ADMIN")
+    .requestMatchers("/orders/all").hasRole("ADMIN")
+    .requestMatchers("/orders/{orderId}/admin").hasRole("ADMIN")
+
+    // USER FEATURES
+    .requestMatchers("/cart/**").hasRole("USER")
+    .requestMatchers("/address/**").hasRole("USER")
+    .requestMatchers("/wishlist/**").hasRole("USER")
+    .requestMatchers("/reviews/**").hasAnyRole("USER","ADMIN")
+
+  .requestMatchers("/orders/invoice/**").hasRole("USER")
+
         .requestMatchers("/admin/**").hasRole("ADMIN")
         .requestMatchers("/coupon/**").hasRole("USER")
         .anyRequest().permitAll()

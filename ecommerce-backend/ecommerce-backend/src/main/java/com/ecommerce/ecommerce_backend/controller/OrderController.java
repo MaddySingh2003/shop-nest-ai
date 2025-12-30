@@ -1,8 +1,10 @@
 package com.ecommerce.ecommerce_backend.controller;
 
+import com.ecommerce.ecommerce_backend.dto.OrderItemResponse;
+import com.ecommerce.ecommerce_backend.dto.OrderResponse;
 import com.ecommerce.ecommerce_backend.model.Order;
 import com.ecommerce.ecommerce_backend.model.Order.Status;
-import com.ecommerce.ecommerce_backend.service.OrderService;
+import com.ecommerce.ecommerce_backend.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,19 +20,62 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final InvoiceService invoiceService;
 
-    
- @PostMapping("/place/{addressId}")
-public ResponseEntity<Order> placeOrder(
+  @PostMapping("/place/{addressId}")
+public ResponseEntity<OrderResponse> placeOrder(
         @PathVariable Long addressId,
-        @RequestParam(required = false) String coupon){
+        @RequestParam(required = false) String coupon
+) {
 
     String email = SecurityContextHolder.getContext()
             .getAuthentication()
-            .getPrincipal().toString();
+            .getPrincipal()
+            .toString();
 
-    return ResponseEntity.ok(orderService.placeOrder(email, addressId, coupon));
+    Order order = orderService.placeOrder(email, addressId, coupon);
+
+    OrderResponse response = OrderResponse.builder()
+            .id(order.getId())
+            .status(order.getStatus().name())
+            .totalAmount(order.getTotalAmount())
+            .orderDate(order.getOrderDate())
+            .shippingName(order.getShippingName())
+            .shippingCity(order.getShippingCity())
+            .shippingState(order.getShippingState())
+            .shippingCountry(order.getShippingCountry())
+            .items(
+                    order.getItems().stream().map(item ->
+                            OrderItemResponse.builder()
+                                    .productId(item.getProductId())
+                                    .productName(item.getProductName())
+                                    .price(item.getPrice())
+                                    .quantity(item.getQuantity())
+                                    .build()
+                    ).toList()
+            )
+            .build();
+
+    return ResponseEntity.ok(response);
 }
+
+
+@GetMapping("/invoice/{orderId}")
+public ResponseEntity<byte[]> downloadInvoice(@PathVariable Long orderId) {
+
+    String email = SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal()
+            .toString();
+
+    byte[] pdf = invoiceService.generateInvoice(orderId, email);
+
+    return ResponseEntity.ok()
+            .header("Content-Type", "application/pdf")
+            .header("Content-Disposition", "attachment; filename=invoice-" + orderId + ".pdf")
+            .body(pdf);
+}
+
 
 
 

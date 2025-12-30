@@ -24,70 +24,91 @@ public class OrderService {
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final CouponService couponService;
+    private final ProductRepository productRepository;
 
-    
-public Order placeOrder(String email, Long addressId,String couponCode){
+@Transactional
+public Order placeOrder(String email, Long addressId, String couponCode) {
 
+    // 1️⃣ USER
     User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("User not found"));
 
+    // 2️⃣ CART
     Cart cart = cartRepository.findByUser(user)
             .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-    if(cart.getItems().isEmpty()){
+    if (cart.getItems().isEmpty()) {
         throw new RuntimeException("Cart is empty");
     }
 
+    // 3️⃣ ADDRESS
     Address address = addressRepository.findById(addressId)
             .orElseThrow(() -> new RuntimeException("Address not found"));
 
-    if(!address.getUser().equals(user)){
+    if (!address.getUser().getId().equals(user.getId())) {
         throw new RuntimeException("You cannot use this address");
     }
 
+    // 4️⃣ STOCK CHECK (BEFORE ORDER)
+    for (CartItem ci : cart.getItems()) {
+        if (ci.getProduct().getStock() < ci.getQuantity()) {
+            throw new RuntimeException(
+                    "Out of stock: " + ci.getProduct().getName()
+            );
+        }
+    }
+
+    // 5️⃣ CREATE ORDER
     Order order = new Order();
     order.setUser(user);
     order.setStatus(Order.Status.PENDING);
     order.setOrderDate(LocalDateTime.now());
 
     double total = 0;
+    List<OrderItem> orderItems = new ArrayList<>();
 
-    List<OrderItem> items = new ArrayList<>();
+    // 6️⃣ CREATE ORDER ITEMS + REDUCE STOCK
+    for (CartItem ci : cart.getItems()) {
 
-    for(CartItem ci : cart.getItems()){
+        Product product = ci.getProduct();
+
         OrderItem oi = new OrderItem();
         oi.setOrder(order);
-        oi.setProductId(ci.getProduct().getId());
-        oi.setProductName(ci.getProduct().getName());
-        oi.setPrice(ci.getProduct().getPrice());
+        oi.setProductId(product.getId());
+        oi.setProductName(product.getName());
+        oi.setPrice(product.getPrice());
         oi.setQuantity(ci.getQuantity());
 
-        total += ci.getProduct().getPrice() * ci.getQuantity();
-        items.add(oi);
-    }
-// Apply coupon if present
-if(couponCode != null && !couponCode.isBlank()) {
+        total += product.getPrice() * ci.getQuantity();
+        orderItems.add(oi);
 
-    Coupon coupon = couponService.validateCoupon(couponCode);
-
-    double discount = total * (coupon.getDiscountPercent() / 100.0);
-
-    if(discount > coupon.getMaxDiscount()){
-        discount = coupon.getMaxDiscount();
+        // 🔥 reduce stock
+        product.setStock(product.getStock() - ci.getQuantity());
+        productRepository.save(product);
     }
 
-    total -= discount;
+    // 7️⃣ APPLY COUPON (SAFE)
+    Coupon appliedCoupon = null;
 
-    couponService.markUsed(coupon);
+    if (couponCode != null && !couponCode.isBlank()) {
 
-    System.out.println("Coupon applied: " + couponCode + " Discount: " + discount);
-}
+        Coupon coupon = couponService.validateCoupon(couponCode);
 
-order.setTotalAmount(total);
-order.setItems(items);
+        double discount = total * (coupon.getDiscountPercent() / 100.0);
 
+        if (discount > coupon.getMaxDiscount()) {
+            discount = coupon.getMaxDiscount();
+        }
 
-    // copy address snapshot
+        total -= discount;
+        appliedCoupon = coupon;
+    }
+
+    // 8️⃣ SET TOTAL & ITEMS
+    order.setTotalAmount(total);
+    order.setItems(orderItems);
+
+    // 9️⃣ COPY ADDRESS SNAPSHOT
     order.setShippingName(address.getFullName());
     order.setShippingPhone(address.getPhone());
     order.setShippingStreet(address.getStreet());
@@ -96,14 +117,20 @@ order.setItems(items);
     order.setShippingZip(address.getZipCode());
     order.setShippingCountry(address.getCountry());
 
-    Order saved = orderRepository.save(order);
+    // 🔟 SAVE ORDER
+    Order savedOrder = orderRepository.save(order);
 
+    // 1️⃣1️⃣ MARK COUPON USED (AFTER SUCCESS)
+    if (appliedCoupon != null) {
+        couponService.markUsed(appliedCoupon);
+    }
+
+    // 1️⃣2️⃣ CLEAR CART
     cart.getItems().clear();
     cartRepository.save(cart);
 
-    return saved;
+    return savedOrder;
 }
-
 
     public java.util.List<Order> getUserOrders(String email){
         User user = userRepository.findByEmail(email)
@@ -156,6 +183,14 @@ public Order cancelOrder(Long orderId, String email) {
     }
 
     order.setStatus(Status.CANCELLED);
+    for(OrderItem item : order.getItems()){
+    var product = productRepository.findById(item.getProductId())
+            .orElseThrow();
+
+    product.setStock(product.getStock() + item.getQuantity());
+    productRepository.save(product);
+}
+
     return orderRepository.save(order);
 }
 
