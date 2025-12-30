@@ -1,5 +1,7 @@
 package com.ecommerce.ecommerce_backend.controller;
 
+import com.ecommerce.ecommerce_backend.dto.CartItemResponse;
+import com.ecommerce.ecommerce_backend.dto.CartResponse;
 import com.ecommerce.ecommerce_backend.model.Cart;
 import com.ecommerce.ecommerce_backend.service.CartService;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +23,27 @@ public class CartController {
     }
 
     @GetMapping
-    public ResponseEntity<Cart> getCart(){
-        return ResponseEntity.ok(cartService.getUserCart(getLoggedUser()));
-    }
+public ResponseEntity<CartResponse> getCart() {
+
+    Cart cart = cartService.getUserCart(getLoggedUser());
+
+    CartResponse response = CartResponse.builder()
+            .id(cart.getId())
+            .items(
+                cart.getItems().stream().map(i ->
+                    CartItemResponse.builder()
+                        .itemId(i.getId())
+                        .productId(i.getProduct().getId())
+                        .productName(i.getProduct().getName())
+                        .price(i.getProduct().getPrice())
+                        .quantity(i.getQuantity())
+                        .build()
+                ).toList()
+            )
+            .build();
+
+    return ResponseEntity.ok(response);
+}
 
     @PostMapping("/add/{productId}")
     public ResponseEntity<Cart> addToCart(

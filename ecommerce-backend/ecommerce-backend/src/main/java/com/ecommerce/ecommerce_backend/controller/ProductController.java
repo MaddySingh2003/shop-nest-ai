@@ -2,6 +2,7 @@ package com.ecommerce.ecommerce_backend.controller;
 
 import com.ecommerce.ecommerce_backend.dto.ProductRequest;
 import com.ecommerce.ecommerce_backend.model.Product;
+import com.ecommerce.ecommerce_backend.repository.ProductRepository;
 import com.ecommerce.ecommerce_backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,24 +21,25 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductRepository productRepository;
 
    
 
-    @GetMapping
-public Page<Product> getAll(
+   @GetMapping
+public Page<Product> getAllProducts(
         @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "10") int size,
         @RequestParam(defaultValue = "id") String sortBy,
-        @RequestParam(defaultValue = "asc") String order
-){
-    Sort sort = order.equalsIgnoreCase("asc")
-            ? Sort.by(sortBy).ascending()
-            : Sort.by(sortBy).descending();
+        @RequestParam(defaultValue = "asc") String direction
+) {
+    Sort sort = direction.equalsIgnoreCase("desc")
+            ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
 
     Pageable pageable = PageRequest.of(page, size, sort);
-
-    return productService.getAllPaged(pageable);
+    return productRepository.findAll(pageable);
 }
+
 
 @GetMapping("/search")
 public Page<Product> search(

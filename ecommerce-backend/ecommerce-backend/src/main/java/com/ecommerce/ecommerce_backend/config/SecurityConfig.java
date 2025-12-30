@@ -31,35 +31,28 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
+               .authorizeHttpRequests(auth -> auth
 
     .requestMatchers("/auth/**").permitAll()
 
     // PRODUCTS
-    .requestMatchers("/products", "/products/{id}").permitAll()
+    .requestMatchers("/products", "/products/{id}", "/products/search", "/products/filter").permitAll()
     .requestMatchers("/products/**").hasRole("ADMIN")
 
-    // ORDERS
-    .requestMatchers("/orders/place/**").hasRole("USER")
-    .requestMatchers("/orders/cancel/**").hasRole("USER")
-    .requestMatchers("/orders/my").hasRole("USER")
-
-    .requestMatchers("/orders/update/**").hasRole("ADMIN")
-    .requestMatchers("/orders/all").hasRole("ADMIN")
-    .requestMatchers("/orders/{orderId}/admin").hasRole("ADMIN")
-
-    // USER FEATURES
+    // USER
     .requestMatchers("/cart/**").hasRole("USER")
-    .requestMatchers("/address/**").hasRole("USER")
     .requestMatchers("/wishlist/**").hasRole("USER")
-    .requestMatchers("/reviews/**").hasAnyRole("USER","ADMIN")
+    .requestMatchers("/address/**").hasRole("USER")
+    .requestMatchers("/orders/place/**", "/orders/my", "/orders/{orderId}", "/orders/invoice/**").hasRole("USER")
 
-  .requestMatchers("/orders/invoice/**").hasRole("USER")
+    // ADMIN
+    .requestMatchers("/admin/**").hasRole("ADMIN")
+    .requestMatchers("/orders/admin/**", "/orders/update/**").hasRole("ADMIN")
+    .requestMatchers("/admin/coupon/**").hasRole("ADMIN")
 
-        .requestMatchers("/admin/**").hasRole("ADMIN")
-        .requestMatchers("/coupon/**").hasRole("USER")
-        .anyRequest().permitAll()
+    .anyRequest().authenticated()
 )
+
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
