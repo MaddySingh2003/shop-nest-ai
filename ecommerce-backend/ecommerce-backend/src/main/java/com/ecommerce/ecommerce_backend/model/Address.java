@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
 @Entity
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
@@ -22,8 +21,9 @@ public class Address {
     private String state;
     private String country;
     private String zipCode;
-@JsonProperty("default")
-private boolean isDefault;
+
+    @JsonProperty("defaultAddress")
+    private boolean isDefault;
 
     @ManyToOne
     private User user;

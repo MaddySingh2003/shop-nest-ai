@@ -19,16 +19,19 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    // USER — PLACE ORDER
-    @PostMapping("/place")
-    public ResponseEntity<Order> placeOrder(){
+    
+ @PostMapping("/place/{addressId}")
+public ResponseEntity<Order> placeOrder(
+        @PathVariable Long addressId,
+        @RequestParam(required = false) String coupon){
 
-        String email = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal().toString();
+    String email = SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal().toString();
 
-        return ResponseEntity.ok(orderService.placeOrder(email));
-    }
+    return ResponseEntity.ok(orderService.placeOrder(email, addressId, coupon));
+}
+
 
 
 @PutMapping("/update/{orderId}")

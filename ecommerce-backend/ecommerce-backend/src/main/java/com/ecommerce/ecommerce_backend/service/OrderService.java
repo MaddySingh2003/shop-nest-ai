@@ -6,9 +6,13 @@ import com.ecommerce.ecommerce_backend.repository.*;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,48 +22,88 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
+    private final AddressRepository addressRepository;
+    private final CouponService couponService;
 
-    public Order placeOrder(String email){
+    
+public Order placeOrder(String email, Long addressId,String couponCode){
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Cart is empty"));
+    Cart cart = cartRepository.findByUser(user)
+            .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-        if(cart.getItems().isEmpty()){
-            throw new RuntimeException("No items in cart");
-        }
-
-        Order order = new Order();
-        order.setUser(user);
-        order.setOrderDate(LocalDateTime.now());
-        order.setStatus(Order.Status.PENDING);
-
-        var items = cart.getItems().stream().map(c ->
-                OrderItem.builder()
-                        .order(order)
-                        .productId(c.getProduct().getId())
-                        .productName(c.getProduct().getName())
-                        .price(c.getProduct().getPrice())
-                        .quantity(c.getQuantity())
-                        .build()
-        ).collect(Collectors.toList());
-
-        order.setItems(items);
-
-        double total = items.stream()
-                .mapToDouble(i -> i.getPrice() * i.getQuantity())
-                .sum();
-
-        order.setTotalAmount(total);
-
-        Order saved = orderRepository.save(order);
-
-        cartRepository.delete(cart);   // clear cart after order
-
-        return saved;
+    if(cart.getItems().isEmpty()){
+        throw new RuntimeException("Cart is empty");
     }
+
+    Address address = addressRepository.findById(addressId)
+            .orElseThrow(() -> new RuntimeException("Address not found"));
+
+    if(!address.getUser().equals(user)){
+        throw new RuntimeException("You cannot use this address");
+    }
+
+    Order order = new Order();
+    order.setUser(user);
+    order.setStatus(Order.Status.PENDING);
+    order.setOrderDate(LocalDateTime.now());
+
+    double total = 0;
+
+    List<OrderItem> items = new ArrayList<>();
+
+    for(CartItem ci : cart.getItems()){
+        OrderItem oi = new OrderItem();
+        oi.setOrder(order);
+        oi.setProductId(ci.getProduct().getId());
+        oi.setProductName(ci.getProduct().getName());
+        oi.setPrice(ci.getProduct().getPrice());
+        oi.setQuantity(ci.getQuantity());
+
+        total += ci.getProduct().getPrice() * ci.getQuantity();
+        items.add(oi);
+    }
+// Apply coupon if present
+if(couponCode != null && !couponCode.isBlank()) {
+
+    Coupon coupon = couponService.validateCoupon(couponCode);
+
+    double discount = total * (coupon.getDiscountPercent() / 100.0);
+
+    if(discount > coupon.getMaxDiscount()){
+        discount = coupon.getMaxDiscount();
+    }
+
+    total -= discount;
+
+    couponService.markUsed(coupon);
+
+    System.out.println("Coupon applied: " + couponCode + " Discount: " + discount);
+}
+
+order.setTotalAmount(total);
+order.setItems(items);
+
+
+    // copy address snapshot
+    order.setShippingName(address.getFullName());
+    order.setShippingPhone(address.getPhone());
+    order.setShippingStreet(address.getStreet());
+    order.setShippingCity(address.getCity());
+    order.setShippingState(address.getState());
+    order.setShippingZip(address.getZipCode());
+    order.setShippingCountry(address.getCountry());
+
+    Order saved = orderRepository.save(order);
+
+    cart.getItems().clear();
+    cartRepository.save(cart);
+
+    return saved;
+}
+
 
     public java.util.List<Order> getUserOrders(String email){
         User user = userRepository.findByEmail(email)
@@ -114,6 +158,7 @@ public Order cancelOrder(Long orderId, String email) {
     order.setStatus(Status.CANCELLED);
     return orderRepository.save(order);
 }
+
 
 
 }

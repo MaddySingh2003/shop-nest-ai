@@ -28,12 +28,10 @@ public class AuthController {
    
 
     // ---------------- REGISTER ----------------
-    @PostMapping("/register")
+   @PostMapping("/register")
 public ResponseEntity<User> register(@RequestBody User user) {
-    user.setRole(User.Role.USER);
     return ResponseEntity.ok(userService.register(user));
 }
-
 
 //                test mapings    ///////
 

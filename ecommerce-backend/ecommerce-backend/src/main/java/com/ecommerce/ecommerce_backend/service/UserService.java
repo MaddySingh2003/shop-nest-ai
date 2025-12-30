@@ -21,9 +21,9 @@ public class UserService {
     public User register(User user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (user.getRole()==null){
-            user.setRole(Role.USER);
-        }
+       if (userRepository.count() == 0) {
+    user.setRole(Role.ADMIN);
+}
         return userRepository.save(user);
        
 

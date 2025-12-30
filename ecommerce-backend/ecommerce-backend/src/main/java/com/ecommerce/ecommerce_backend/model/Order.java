@@ -36,6 +36,28 @@ public class Order {
         DELIVERED,
         CANCELLED
     }
+    
+    @Column(nullable = false)
+private String shippingName;
+
+@Column(nullable = false)
+private String shippingPhone;
+
+@Column(nullable = false)
+private String shippingStreet;
+
+@Column(nullable = false)
+private String shippingCity;
+
+@Column(nullable = false)
+private String shippingState;
+
+@Column(nullable = false)
+private String shippingZip;
+
+@Column(nullable = false)
+private String shippingCountry;
+
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;
