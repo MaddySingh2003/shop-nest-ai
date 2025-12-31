@@ -7,7 +7,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
-@Table(name = "users")
+@Table(
+    name = "users",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email")
+    }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,22 +23,24 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-@NotBlank
-private String name;
 
-@NotBlank
-@Email
-private String email;
+    @NotBlank
+    private String name;
 
-@NotBlank
-private String password;
+    @NotBlank
+    @Email
+    @Column(nullable = false, unique = true)
+    private String email;
 
-@NotNull
-@Enumerated(EnumType.STRING)
-private Role role;
-   
-   public enum Role{
-    USER,
-    ADMIN
-}
+    @NotBlank
+    private String password;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    public enum Role {
+        USER,
+        ADMIN
+    }
 }

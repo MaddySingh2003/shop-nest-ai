@@ -5,7 +5,7 @@ import com.ecommerce.ecommerce_backend.model.User;
 import com.ecommerce.ecommerce_backend.repository.UserRepository;
 import com.ecommerce.ecommerce_backend.service.JwtService;
 import com.ecommerce.ecommerce_backend.service.UserService;
-import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -29,9 +29,14 @@ public class AuthController {
 
     // ---------------- REGISTER ----------------
    @PostMapping("/register")
-public ResponseEntity<User> register(@RequestBody User user) {
-    return ResponseEntity.ok(userService.register(user));
+public ResponseEntity<?> register(@RequestBody User user) {
+    try {
+        return ResponseEntity.ok(userService.register(user));
+    } catch (RuntimeException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 }
+
 
 //                test mapings    ///////
 

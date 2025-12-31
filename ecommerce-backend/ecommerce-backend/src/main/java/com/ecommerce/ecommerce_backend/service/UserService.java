@@ -20,14 +20,22 @@ public class UserService {
    
     public User register(User user) {
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-       if (userRepository.count() == 0) {
-    user.setRole(Role.ADMIN);
-}
-        return userRepository.save(user);
-       
-
+    if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+        throw new RuntimeException("Email already registered");
     }
+
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+    // First user = ADMIN (your logic is fine)
+    if (userRepository.count() == 0) {
+        user.setRole(Role.ADMIN);
+    } else {
+        user.setRole(Role.USER);
+    }
+
+    return userRepository.save(user);
+}
+
 
     public void authenticate(String email, String rawPassword) {
 
