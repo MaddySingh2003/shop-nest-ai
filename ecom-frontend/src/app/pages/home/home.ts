@@ -1,36 +1,31 @@
-import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { ProductService } from '../../services/product.service';
-import { Product } from '../../core/guards/models/product.model';
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home.html',
-  imports:[CommonModule],
-  standalone:true
- })
-export class HomeComponent {
-products:Product[]=[];
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './home.html'
+})
+export class HomeComponent implements OnInit {
 
-  constructor (private router:Router,
-    private productService: ProductService
+  products: any[] = [];
 
-  ){}
+  constructor(private http: HttpClient) {}
 
-
-  ngOnInit(){
-    this.productService.getProduct().subscribe({
-      next: (data)=> this.products=data,
-      error:()=>alert('Failed to load Products')
-    })
-  }
-
-
-
-  logout(){
-  localStorage.removeItem('token');
-  this.router.navigate(['./login']);
+  ngOnInit() {
+    this.http
+      .get<any[]>('http://localhost:8080/products/all')
+      .subscribe({
+        next: (res) => {
+          console.log('PRODUCTS:', res); // DEBUG
+          this.products = res;           // ✅ ARRAY ASSIGNMENT
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Failed to load products');
+        }
+      });
   }
 }

@@ -7,11 +7,11 @@ import { Product } from "../core/guards/models/product.model";
 @Injectable({providedIn:'root'})
 export class ProductService{
 
-    private API='http://localhost:8080/ptoducts';
+    private API='http://localhost:8080/products';
 
     constructor(private http:HttpClient){}
 
-    getProduct(): Observable<Product[]>{
-        return this.http.get<Product[]>(this.API);
+    getProduct(){
+        return this.http.get<any>(this.API);
     }
 }

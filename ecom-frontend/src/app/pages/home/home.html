@@ -1,23 +1,13 @@
-<div style="padding: 30px">
+<h2>Products</h2>
 
-  <div style="display:flex; justify-content:space-between;">
-    <h2>Products</h2>
-    <button (click)="logout()">Logout</button>
-  </div>
+<p *ngIf="products.length === 0">
+  No products available
+</p>
 
+<div *ngFor="let p of products">
+  <h3>{{ p.name }}</h3>
+  <p>{{ p.description }}</p>
+  <p>₹ {{ p.price }}</p>
+  <p>Brand: {{ p.brand }}</p>
   <hr />
-
-  <div *ngIf="products.length === 0">
-    No products available
-  </div>
-
-  <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:20px;">
-    <div *ngFor="let p of products" style="border:1px solid #ccc; padding:15px;">
-      <h3>{{ p.name }}</h3>
-      <p>{{ p.description }}</p>
-      <strong>₹{{ p.price }}</strong>
-      <p>{{ p.brand }}</p>
-    </div>
-  </div>
-
 </div>
