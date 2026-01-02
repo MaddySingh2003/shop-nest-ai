@@ -1,32 +1,42 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
 
   private API = 'http://localhost:8080/auth';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
-  login(data: { email: string; password: string }) {
-    return this.http.post<any>(`${this.API}/login`, data).pipe(
-      tap(res => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('role', res.role);
-      })
-    );
+  // ✅ LOGIN API (email + password)
+  login(email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.API}/login`, {
+      email,
+      password
+    });
   }
 
-   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
-  }
-
-  saveToken(token: string) {
+  // ✅ SAVE TOKEN & REDIRECT
+  loginSuccess(token: string) {
     localStorage.setItem('token', token);
+    this.router.navigate(['/home']);
   }
 
+  // ✅ LOGOUT
   logout() {
-    localStorage.clear();
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
+  }
+
+  // ✅ AUTH CHECK
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
   }
 }

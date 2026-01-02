@@ -1,41 +1,39 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { CommonModule } from '@angular/common';
 
 @Component({
-  standalone: true,
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './login.html'
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './login.html',
+  styleUrls: ['./login.css']
 })
 export class LoginComponent {
 
-  form!: FormGroup;
-  error = '';
+  email: string = '';
+  password: string = '';
+  error: string = '';
+  loading = false;
 
   constructor(
-    private fb: FormBuilder,
     private auth: AuthService,
     private router: Router
-  ) {
-    // ✅ FIX IS HERE
-    this.form = this.fb.group({
-      email: [''],
-      password: ['']
-    });
-  }
+  ) {}
 
   submit() {
+    this.loading = true;
     this.error = '';
 
-    this.auth.login(this.form.value as any).subscribe({
-      next: () => {
-        this.router.navigateByUrl('/home');
+    this.auth.login(this.email, this.password).subscribe({
+      next: (res: any) => {
+        this.auth.loginSuccess(res.token);
       },
       error: () => {
         this.error = 'Invalid email or password';
+        this.loading = false;
       }
     });
   }

@@ -1,8 +1,23 @@
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <input type="email" formControlName="email" placeholder="Email">
-  <input type="password" formControlName="password" placeholder="Password">
+<h2>Login</h2>
 
-  <button type="submit">Login</button>
+<input
+  type="email"
+  [(ngModel)]="email"
+  placeholder="Email"
+/>
 
-  <p style="color:red" *ngIf="error">{{ error }}</p>
-</form>
+<br /><br />
+
+<input
+  type="password"
+  [(ngModel)]="password"
+  placeholder="Password"
+/>
+
+<br /><br />
+
+<button (click)="submit()" [disabled]="loading">
+  {{ loading ? 'Logging in...' : 'Login' }}
+</button>
+
+<p style="color:red" *ngIf="error">{{ error }}</p>
