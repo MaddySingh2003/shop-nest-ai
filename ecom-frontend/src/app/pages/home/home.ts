@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './home.html',
-  styleUrls:['./home.css']
+  styleUrls:['../../../../src/styles.css']
 })
 export class HomeComponent  {
 
