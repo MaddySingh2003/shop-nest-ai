@@ -1,6 +1,6 @@
-<h2>Products</h2>
+<app-navbar></app-navbar>
 
-<div *ngIf="(products$ | async) as products; else loading">
+<!-- <div *ngIf="(products$ | async) as products; else loading">
 
   <div *ngIf="products.length > 0; else noProducts">
     <div *ngFor="let p of products" class="card">
@@ -10,17 +10,33 @@
     </div>
   </div>
 
-</div>
-
-<ng-template #loading>
-  <p>Loading products...</p>
-</ng-template>
-
-<ng-template #noProducts>
-  <p>No products available</p>
-</ng-template>
+</div>-->
 
 
-<div class="bg-blue-600 text-white p-6 text-2xl rounded shadow-lg">
-  Tailwind v4 is working 🚀
+
+
+<div class="p-6">
+  <h2 class="text-2xl font-bold mb-4">Products</h2>
+
+  <div *ngIf="(products$ | async) as products; else loading"
+       class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+    <div *ngFor="let p of products" class="card"
+         class="border rounded p-4 shadow hover:shadow-lg">
+      <h3 class="font-semibold text-lg">{{ p.name }}</h3>
+      <p class="text-gray-600">{{ p.description }}</p>
+      <p class="font-bold mt-2">₹ {{ p.price }}</p>
+    </div>
+
+
+
+  </div>
+  <ng-template #loading>
+<p>Loading products...</p>
+</ng-template> 
+
+
+  <ng-template #noProducts>
+    <p>No products available</p>
+  </ng-template>
 </div>
