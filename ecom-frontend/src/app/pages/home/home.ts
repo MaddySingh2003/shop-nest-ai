@@ -1,31 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit , PLATFORM_ID} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { CommonModule,isPlatformBrowser } from '@angular/common';
+import { ProductService } from '../../services/product.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './home.html'
+  templateUrl: './home.html',
+  styleUrls:['./home.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent  {
 
-  products: any[] = [];
+  
+  products$!: Observable<any[]>;
 
-  constructor(private http: HttpClient) {}
-
-  ngOnInit() {
-    this.http
-      .get<any[]>('http://localhost:8080/products/all')
-      .subscribe({
-        next: (res) => {
-          console.log('PRODUCTS:', res); // DEBUG
-          this.products = res;           // ✅ ARRAY ASSIGNMENT
-        },
-        error: (err) => {
-          console.error(err);
-          alert('Failed to load products');
-        }
-      });
+  constructor(private productService: ProductService) {
+    this.products$ = this.productService.getProduct();
   }
+
+
+
+ngOnDestroy() {
+  console.log('HOME DESTROYED');
+}
+
 }

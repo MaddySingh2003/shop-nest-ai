@@ -35,8 +35,11 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  // ✅ AUTH CHECK
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+  if (typeof window === 'undefined') {
+    return false;
   }
+  return !!localStorage.getItem('token');
+}
+
 }

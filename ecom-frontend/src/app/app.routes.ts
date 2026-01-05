@@ -4,15 +4,29 @@ import { authGuard } from './core/guards/auth.guards';
 import { HomeComponent } from './pages/home/home';
 
 export const routes: Routes = [
-   { path: 'login', component: LoginComponent },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./pages/login/login')
+        .then(m => m.LoginComponent)
+  },
 
   {
     path: 'home',
-    component: HomeComponent,
-    canActivate: [authGuard]
+    // canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/home/home')
+        .then(m => m.HomeComponent)
   },
 
-  
-  { path: '**', redirectTo: 'login' },
-  {path:"",redirectTo:'login',pathMatch:'full'}
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full' as const
+  },
+
+  {
+    path: '**',
+    redirectTo: 'home'
+  }
 ];

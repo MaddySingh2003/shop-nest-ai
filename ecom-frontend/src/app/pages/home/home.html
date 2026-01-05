@@ -1,13 +1,21 @@
 <h2>Products</h2>
 
-<p *ngIf="products.length === 0">
-  No products available
-</p>
+<div *ngIf="(products$ | async) as products; else loading">
 
-<div *ngFor="let p of products">
-  <h3>{{ p.name }}</h3>
-  <p>{{ p.description }}</p>
-  <p>₹ {{ p.price }}</p>
-  <p>Brand: {{ p.brand }}</p>
-  <hr />
+  <div *ngIf="products.length > 0; else noProducts">
+    <div *ngFor="let p of products" class="card">
+      <h3>{{ p.name }}</h3>
+      <p>{{ p.description }}</p>
+      <p>₹ {{ p.price }}</p>
+    </div>
+  </div>
+
 </div>
+
+<ng-template #loading>
+  <p>Loading products...</p>
+</ng-template>
+
+<ng-template #noProducts>
+  <p>No products available</p>
+</ng-template>
