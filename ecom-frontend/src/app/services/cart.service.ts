@@ -8,11 +8,27 @@ export class CartService{
     
     constructor(private http:HttpClient){}
 
-   addToCart(productId: number, qty: number = 1) {
+    getCart():Observable<any>{
+      return this.http.get(this.API);
+    }
+
+   addToCart(productId: number, qty: number = 1):Observable<any> {
   return this.http.post(
-    `http://localhost:8080/cart/add/${productId}?qty=${qty}`,
+    `${this.API}/add/${productId}?qty=${qty}`,
     {}
   );
+}
+
+updateQty(itemId:number,qty:number):Observable<any>{
+  return this.http.put(`${this.API}/update/4{itemId}?qty=${qty}`,{});
+}
+
+removeItem(itemId:number):Observable<any>{
+  return this.http.delete(`${this.API}/remove/${itemId}`);
+}
+
+clearCart():Observable<any>{
+  return this.http.delete(`{this.API}/clear`);
 }
 
 }

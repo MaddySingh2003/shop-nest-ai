@@ -14,7 +14,7 @@ public class JwtService {
     private static final String SECRET_KEY =
             "ThisIsA_VeryStrongSecretKey_ForJWT_Encryption_ChangeItLater123";
 
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60*24*7; // 1 hour
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());

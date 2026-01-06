@@ -6,13 +6,13 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app/app';
 import { routes } from './app/app.routes';
-import { jwtinterceptor } from './app/core/interceptore/jwt.interceptor';
+import { jwtInterceptor } from './app/core/interceptore/jwt.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideHttpClient(
-      withInterceptors([jwtinterceptor])
+      withInterceptors([jwtInterceptor])
     ),
    
   ]
