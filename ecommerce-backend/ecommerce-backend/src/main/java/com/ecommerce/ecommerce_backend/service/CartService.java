@@ -2,6 +2,8 @@ package com.ecommerce.ecommerce_backend.service;
 
 import com.ecommerce.ecommerce_backend.model.*;
 import com.ecommerce.ecommerce_backend.repository.*;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +17,17 @@ public class CartService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
-    public Cart getUserCart(String email){
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    @Transactional
+public Cart getUserCart(String email) {
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return cartRepository.findByUser(user)
-                .orElseGet(() -> {
-                    Cart c = new Cart();
-                    c.setUser(user);
-                    c.setItems(new ArrayList<>());
-                    return cartRepository.save(c);
-                });
-    }
+    return cartRepository.findByUser(user)
+            .orElseGet(() -> cartRepository.save(
+                    Cart.builder().user(user).items(new ArrayList<>()).build()
+            ));
+}
+
 
     public Cart addToCart(String email, Long productId, int qty){
         Cart cart = getUserCart(email);
@@ -78,4 +79,5 @@ public class CartService {
         cart.getItems().clear();
         return cartRepository.save(cart);
     }
+    
 }

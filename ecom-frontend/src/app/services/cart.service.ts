@@ -8,9 +8,9 @@ export class CartService{
     
     constructor(private http:HttpClient){}
 
-    getCart():Observable<any>{
-      return this.http.get(this.API);
-    }
+     getCart(): Observable<any> {
+    return this.http.get(`${this.API}/my`);
+  }
 
    addToCart(productId: number, qty: number = 1):Observable<any> {
   return this.http.post(
@@ -19,8 +19,8 @@ export class CartService{
   );
 }
 
-updateQty(itemId:number,qty:number):Observable<any>{
-  return this.http.put(`${this.API}/update/4{itemId}?qty=${qty}`,{});
+updateQty(itemId:number,qty:number){
+  return this.http.put(`${this.API}/update/${itemId}?qty=${qty}`,{});
 }
 
 removeItem(itemId:number):Observable<any>{
@@ -28,7 +28,7 @@ removeItem(itemId:number):Observable<any>{
 }
 
 clearCart():Observable<any>{
-  return this.http.delete(`{this.API}/clear`);
+  return this.http.delete(`${this.API}/clear`);
 }
 
 }

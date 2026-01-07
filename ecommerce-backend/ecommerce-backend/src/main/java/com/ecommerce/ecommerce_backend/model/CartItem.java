@@ -22,7 +22,7 @@ public class CartItem {
     private Long id;
 
     @ManyToOne
-    @JsonIgnore
+   
     private Cart cart;
     
     @ManyToOne

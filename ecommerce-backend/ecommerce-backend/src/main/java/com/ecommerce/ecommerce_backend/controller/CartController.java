@@ -16,56 +16,70 @@ public class CartController {
 
     private final CartService cartService;
 
-    private String getLoggedUser(){
-        return (String) SecurityContextHolder.getContext()
+    private String getEmail() {
+        return SecurityContextHolder.getContext()
                 .getAuthentication()
-                .getPrincipal();
+                .getPrincipal()
+                .toString();
     }
 
-    @GetMapping
-public ResponseEntity<CartResponse> getCart() {
+    private CartResponse toResponse(Cart cart) {
+        return CartResponse.builder()
+                .id(cart.getId())
+                .items(
+                        cart.getItems().stream()
+                                .map(i -> CartItemResponse.builder()
+                                        .itemId(i.getId())
+                                        .productId(i.getProduct().getId())
+                                        .productName(i.getProduct().getName())
+                                        .price(i.getProduct().getPrice())
+                                        .quantity(i.getQuantity())
+                                        .build()
+                                ).toList()
+                )
+                .build();
+    }
 
-    Cart cart = cartService.getUserCart(getLoggedUser());
-
-    CartResponse response = CartResponse.builder()
-            .id(cart.getId())
-            .items(
-                cart.getItems().stream().map(i ->
-                    CartItemResponse.builder()
-                        .itemId(i.getId())
-                        .productId(i.getProduct().getId())
-                        .productName(i.getProduct().getName())
-                        .price(i.getProduct().getPrice())
-                        .quantity(i.getQuantity())
-                        .build()
-                ).toList()
-            )
-            .build();
-
-    return ResponseEntity.ok(response);
-}
+    @GetMapping("/my")
+    public ResponseEntity<CartResponse> getCart() {
+        return ResponseEntity.ok(
+                toResponse(cartService.getUserCart(getEmail()))
+        );
+    }
 
     @PostMapping("/add/{productId}")
-    public ResponseEntity<Cart> addToCart(
+    public ResponseEntity<CartResponse> addToCart(
             @PathVariable Long productId,
-            @RequestParam int qty){
-        return ResponseEntity.ok(cartService.addToCart(getLoggedUser(), productId, qty));
+            @RequestParam int qty
+    ) {
+        return ResponseEntity.ok(
+                toResponse(cartService.addToCart(getEmail(), productId, qty))
+        );
     }
 
     @PutMapping("/update/{itemId}")
-    public ResponseEntity<Cart> updateQty(
+    public ResponseEntity<CartResponse> updateQty(
             @PathVariable Long itemId,
-            @RequestParam int qty){
-        return ResponseEntity.ok(cartService.updateQuantity(getLoggedUser(), itemId, qty));
+            @RequestParam int qty
+    ) {
+        return ResponseEntity.ok(
+                toResponse(cartService.updateQuantity(getEmail(), itemId, qty))
+        );
     }
 
     @DeleteMapping("/remove/{itemId}")
-    public ResponseEntity<Cart> removeItem(@PathVariable Long itemId){
-        return ResponseEntity.ok(cartService.removeItem(getLoggedUser(), itemId));
+    public ResponseEntity<CartResponse> removeItem(
+            @PathVariable Long itemId
+    ) {
+        return ResponseEntity.ok(
+                toResponse(cartService.removeItem(getEmail(), itemId))
+        );
     }
 
     @DeleteMapping("/clear")
-    public ResponseEntity<Cart> clear(){
-        return ResponseEntity.ok(cartService.clearCart(getLoggedUser()));
+    public ResponseEntity<CartResponse> clearCart() {
+        return ResponseEntity.ok(
+                toResponse(cartService.clearCart(getEmail()))
+        );
     }
 }

@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Observable, of } from 'rxjs';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { Navbar } from '../../components/navbar/navbar';
@@ -11,16 +11,22 @@ import { Navbar } from '../../components/navbar/navbar';
   imports: [CommonModule, Navbar],
   templateUrl: './home.html',
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
   products$!: Observable<any[]>;
   message = '';
 
-  constructor(
-    private productService: ProductService,
-    private cartService: CartService
-  ) {
-    this.products$ = this.productService.getProduct();
+ constructor(
+  private productService:ProductService,
+  private cartService:CartService,
+  @Inject(PLATFORM_ID) private platformId:object
+ ){
+ 
+ }
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.products$ = this.productService.getProduct();
+    }
   }
 
   addToCart(productId: number) {

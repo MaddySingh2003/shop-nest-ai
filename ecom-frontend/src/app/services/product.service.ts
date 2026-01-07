@@ -9,7 +9,7 @@ export class ProductService {
   private API = 'http://localhost:8080/products/all';
 
   constructor(private http: HttpClient) {}
- getProduct(): Observable<any[]> {
+ getProduct() {
     return this.http.get<any>(this.API).pipe(
       map(res => res.content ?? res)
     );}
