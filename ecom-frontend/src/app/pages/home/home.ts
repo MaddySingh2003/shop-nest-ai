@@ -4,6 +4,9 @@ import { Observable, of } from 'rxjs';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { Navbar } from '../../components/navbar/navbar';
+import { Router } from '@angular/router';
+
+
 
 @Component({
   selector: 'app-home',
@@ -19,26 +22,25 @@ export class HomeComponent implements OnInit {
  constructor(
   private productService:ProductService,
   private cartService:CartService,
-  @Inject(PLATFORM_ID) private platformId:object
+   private router:Router
+ 
  ){
  
  }
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+   
       this.products$ = this.productService.getProduct();
-    }
+    
   }
 
-  addToCart(productId: number) {
-  this.cartService.addToCart(productId, 1).subscribe({
-    next: (res) => {
-      console.log('Added to cart', res);
-      alert('Product added to cart');
-    },
-    error: (err) => {
-      console.error(err);
-      alert('Failed to add');
-    }
-  });
-}
+   addToCart(productId: number) {
+    this.cartService.addToCart(productId, 1).subscribe({
+      next: () => alert('Product added to cart'),
+      error: () => alert('Failed to add')
+    });
+  }
+
+  goToCart(){
+   this.router.navigate(['./cart'])
+  }
 }

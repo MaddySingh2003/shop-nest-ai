@@ -1,5 +1,5 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CartService } from '../../services/cart.service';
 
 @Component({
@@ -7,32 +7,35 @@ import { CartService } from '../../services/cart.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './cart.html',
-  styleUrls: ['./cart.css'],
+  styleUrls: ['./cart.css']
 })
 export class Cart implements OnInit {
 
-  cart: any=null;
+  cart:any = null;
   total = 0;
 
-   constructor(
+  constructor(
     private cartService: CartService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-     if (isPlatformBrowser(this.platformId)) {
-      this.loadCart();
-    }
+    this.loadCart();
   }
 
-    loadCart() {
+  loadCart() {
     this.cartService.getCart().subscribe(res => {
+      console.log('CART RESPONSE', res);
+
       this.cart = res;
       this.calculateTotal();
+
+      // 🔥 FORCE UI UPDATE
+      this.cdr.detectChanges();
     });
   }
 
- calculateTotal() {
+  calculateTotal() {
     if (!this.cart?.items) return;
 
     this.total = this.cart.items.reduce(
@@ -41,20 +44,19 @@ export class Cart implements OnInit {
     );
   }
 
-  increase(item: any): void {
-    this.cartService.updateQty(item.itemId, item.quantity + 1)
-      .subscribe(() => this.loadCart());
+  increase(item:any) {
+    this.cartService.updateQty(item.itemId, item.quantity+1)
+      .subscribe(()=> this.loadCart());
   }
 
-  decrease(item: any): void {
-    if (item.quantity === 1) return;
-
-    this.cartService.updateQty(item.itemId, item.quantity - 1)
-      .subscribe(() => this.loadCart());
+  decrease(item:any) {
+    if(item.quantity===1) return;
+    this.cartService.updateQty(item.itemId, item.quantity-1)
+      .subscribe(()=> this.loadCart());
   }
 
-  remove(itemId: number): void {
+  remove(itemId:number){
     this.cartService.removeItem(itemId)
-      .subscribe(() => this.loadCart());
+      .subscribe(()=> this.loadCart());
   }
 }
