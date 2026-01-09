@@ -35,5 +35,9 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: 'home'
+  },
+  {
+    path:'checkout',
+    loadComponent:()=>import('./pages/checkout/checkout').then(m=>m.CheckoutComponent)
   }
 ];
