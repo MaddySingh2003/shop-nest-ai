@@ -4,6 +4,7 @@ import { authGuard } from './core/guards/auth.guards';
 import { HomeComponent } from './pages/home/home';
 
 export const routes: Routes = [
+
   {
     path: 'login',
     loadComponent: () =>
@@ -23,21 +24,23 @@ export const routes: Routes = [
     path:'cart',
     loadComponent:()=>
       import('./pages/cart/cart').then(m=>m.Cart)
-  }
-  ,
+  },
+
+  {
+    path: 'checkout',
+    loadComponent: () =>
+      import('./pages/checkout/checkout')
+        .then(m => m.CheckoutComponent)
+  },
 
   {
     path: '',
     redirectTo: 'home',
-    pathMatch: 'full' as const
+    pathMatch: 'full'
   },
 
   {
     path: '**',
     redirectTo: 'home'
-  },
-  {
-    path:'checkout',
-    loadComponent:()=>import('./pages/checkout/checkout').then(m=>m.CheckoutComponent)
   }
 ];

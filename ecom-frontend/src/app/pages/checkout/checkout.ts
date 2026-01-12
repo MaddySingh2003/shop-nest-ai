@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './checkout.html'
 })
 export class CheckoutComponent implements OnInit {
 
   cart:any;
-  addressId:number = 1; // temp default
+  addressId:number = 1;
   placing = false;
 
   constructor(
