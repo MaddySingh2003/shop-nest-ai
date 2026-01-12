@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
+import { AddressService } from '../../services/adress.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-checkout',
@@ -12,33 +13,54 @@ import { OrderService } from '../../services/order.service';
 })
 export class CheckoutComponent implements OnInit {
 
-  cart:any;
-  addressId:number = 1;
-  placing = false;
+  addresses:any[]=[];
+  addressId:number|null=null;
+  loading=true;
+  error='';
 
   constructor(
-    private cartService:CartService,
-    private orderService:OrderService
+    private orderService:OrderService,
+    private addressService:AddressService,
+    private router:Router,
+    private cdr: ChangeDetectorRef
   ){}
 
   ngOnInit(){
-    this.cartService.getCart().subscribe(res=>{
-      this.cart = res;
+    console.log("Checkout init");
+
+    this.addressService.getMyAddresses().subscribe({
+      next:res=>{
+        console.log("ADDRESS API RESPONSE:", res);
+
+        this.addresses = res || [];
+        this.loading = false;
+
+        // 🔥 FORCE UI UPDATE
+        this.cdr.detectChanges();
+      },
+      error:(err)=>{
+        console.error(err);
+        this.loading=false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
   placeOrder(){
-    this.placing = true;
+    if(!this.addressId){
+      alert("Select address");
+      return;
+    }
 
     this.orderService.placeOrder(this.addressId).subscribe({
       next:()=>{
-        alert('Order placed successfully');
-        this.placing = false;
+        alert("Order placed successfully");
+        this.router.navigate(['/home']);
       },
-      error:()=>{
-        alert('Order failed');
-        this.placing = false;
+      error:(err)=>{
+        this.error=err.error?.error || 'Order failed';
+        alert(this.error);
       }
-    });
+    })
   }
 }
