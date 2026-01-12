@@ -1,5 +1,7 @@
 package com.ecommerce.ecommerce_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +20,7 @@ public class OrderItem {
 
     // Order reference
     @ManyToOne
+    @JsonBackReference
     private Order order;
 
     // Product Snapshot

@@ -1,0 +1,38 @@
+<div class="max-w-5xl mx-auto p-6">
+
+  <h2 class="text-2xl font-bold mb-6">📦 My Orders</h2>
+
+  <div *ngIf="loading" class="text-center text-gray-500">
+    Loading orders...
+  </div>
+
+  <div *ngIf="error" class="text-red-500 text-center">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && orders.length===0" class="text-center text-gray-500">
+    No orders yet
+  </div>
+
+  <div *ngFor="let o of orders" class="border rounded-lg p-4 mb-4 shadow">
+
+    <div class="flex justify-between">
+      <div>
+        <p><b>Order ID:</b> {{ o.id }}</p>
+        <p><b>Status:</b> {{ o.status }}</p>
+        <p><b>Total:</b> ₹ {{ o.totalAmount }}</p>
+        <p class="text-sm text-gray-500">
+          {{ o.orderDate | date:'medium' }}
+        </p>
+      </div>
+    </div>
+
+    <hr class="my-3"/>
+
+    <div *ngFor="let i of o.items" class="ml-4 text-sm">
+      • {{ i.productName }} × {{ i.quantity }}
+    </div>
+
+  </div>
+
+</div>
