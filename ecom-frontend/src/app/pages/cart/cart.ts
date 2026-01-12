@@ -60,4 +60,10 @@ export class Cart implements OnInit {
     this.cartService.removeItem(itemId)
       .subscribe(()=> this.loadCart());
   }
+  clearCart(){
+  this.cartService.clearCart()
+    .subscribe(()=>{
+      this.loadCart();
+    });
+}
 }
