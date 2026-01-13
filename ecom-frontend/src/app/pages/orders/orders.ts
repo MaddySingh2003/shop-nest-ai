@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order.service';
+import { Observable, map } from 'rxjs';
 
 @Component({
   selector: 'app-orders',
@@ -8,30 +9,12 @@ import { OrderService } from '../../services/order.service';
   imports: [CommonModule],
   templateUrl: './orders.html'
 })
-export class OrdersComponent implements OnInit {
+export class OrdersComponent {
 
-  orders:any[] = [];
-  loading = true;
-  error = '';
+  orders$!: Observable<any[]>;
 
-  constructor(private orderService:OrderService){}
-
-  ngOnInit(){
-    this.loadOrders();
-  }
-
-  loadOrders(){
-    this.orderService.getMyOrders().subscribe({
-      next:(res)=>{
-        console.log("ORDERS",res);
-        this.orders = res;
-        this.loading = false;
-      },
-      error:(err)=>{
-        console.error(err);
-        this.error = "Failed to load orders";
-        this.loading = false;
-      }
-    })
+  constructor(private orderService: OrderService) {
+    this.orders$ = this.orderService.getMyOrders()
+      .pipe(map((res: any) => res.content));   // 🔥 FIX
   }
 }
