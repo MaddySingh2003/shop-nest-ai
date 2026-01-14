@@ -23,6 +23,12 @@
         Status: {{ o.status }}
       </p>
 
+      <button
+  [routerLink]="['/orders', o.id]"
+  class="text-blue-600 hover:underline">
+  View Details
+</button>
+
     </div>
 
   </ng-container>
