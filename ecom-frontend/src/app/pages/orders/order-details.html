@@ -2,6 +2,7 @@
   Loading order details...
 </div>
 
+
 <div *ngIf="!loading && order">
 
   <h2 class="text-xl font-bold">Order #{{ order.id }}</h2>
@@ -13,5 +14,68 @@
   <div *ngFor="let i of order.items">
     {{ i.productName }} × {{ i.quantity }} = ₹ {{ i.price * i.quantity }}
   </div>
+  <div *ngIf="!loading && order" class="mt-6">
+
+  <div class="flex items-center justify-between">
+
+    <!-- PENDING -->
+    <div class="flex flex-col items-center">
+      <div
+        class="w-8 h-8 rounded-full flex items-center justify-center text-white"
+        [class.bg-green-600]="isCompleted('PENDING')"
+        [class.bg-gray-300]="!isCompleted('PENDING')">
+        1
+      </div>
+      <span class="text-sm mt-1">Pending</span>
+    </div>
+
+    <div class="flex-1 h-1 mx-2"
+         [class.bg-green-600]="isCompleted('CONFIRMED')"
+         [class.bg-gray-300]="!isCompleted('CONFIRMED')"></div>
+
+    <!-- CONFIRMED -->
+    <div class="flex flex-col items-center">
+      <div
+        class="w-8 h-8 rounded-full flex items-center justify-center text-white"
+        [class.bg-green-600]="isCompleted('CONFIRMED')"
+        [class.bg-gray-300]="!isCompleted('CONFIRMED')">
+        2
+      </div>
+      <span class="text-sm mt-1">Confirmed</span>
+    </div>
+
+    <div class="flex-1 h-1 mx-2"
+         [class.bg-green-600]="isCompleted('SHIPPED')"
+         [class.bg-gray-300]="!isCompleted('SHIPPED')"></div>
+
+    <!-- SHIPPED -->
+    <div class="flex flex-col items-center">
+      <div
+        class="w-8 h-8 rounded-full flex items-center justify-center text-white"
+        [class.bg-green-600]="isCompleted('SHIPPED')"
+        [class.bg-gray-300]="!isCompleted('SHIPPED')">
+        3
+      </div>
+      <span class="text-sm mt-1">Shipped</span>
+    </div>
+
+    <div class="flex-1 h-1 mx-2"
+         [class.bg-green-600]="isCompleted('DELIVERED')"
+         [class.bg-gray-300]="!isCompleted('DELIVERED')"></div>
+
+    <!-- DELIVERED -->
+    <div class="flex flex-col items-center">
+      <div
+        class="w-8 h-8 rounded-full flex items-center justify-center text-white"
+        [class.bg-green-600]="isCompleted('DELIVERED')"
+        [class.bg-gray-300]="!isCompleted('DELIVERED')">
+        4
+      </div>
+      <span class="text-sm mt-1">Delivered</span>
+    </div>
+
+  </div>
+</div>
+
 
 </div>

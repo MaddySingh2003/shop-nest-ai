@@ -40,11 +40,10 @@ export class OrderDetailsComponent implements OnInit {
       }
     });
   }
+steps = ['PENDING','CONFIRMED','SHIPPED','DELIVERED'];
 
-  isCompleted(step:string): boolean {
-    if(!this.order) return false;
+isCompleted(step:string): boolean {
+  return this.steps.indexOf(this.order.status) >= this.steps.indexOf(step);
+}
 
-    const flow = ['PENDING','CONFIRMED','SHIPPED','DELIVERED'];
-    return flow.indexOf(this.order.status) >= flow.indexOf(step);
-  }
 }
