@@ -18,4 +18,7 @@ export class OrderService {
   getOrderById(id:number){
     return this.http.get(`${this.API}/${id}`)
   }
+  cancelOrder(id:number){
+    return this.http.put(`${this.API}/cancel/${id}`,null)
+  }
 }

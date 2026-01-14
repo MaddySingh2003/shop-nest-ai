@@ -46,4 +46,19 @@ isCompleted(step:string): boolean {
   return this.steps.indexOf(this.order.status) >= this.steps.indexOf(step);
 }
 
+cancelOrder() {
+  if (!confirm('Are you sure you want to cancel this order?')) return;
+
+  this.orderService.cancelOrder(this.order.id).subscribe({
+    next: () => {
+      alert('Order cancelled successfully');
+      this.order.status = 'CANCELLED';
+    },
+    error: err => {
+      alert(err.error?.error || 'Cancel failed');
+    }
+  });
+}
+
+
 }

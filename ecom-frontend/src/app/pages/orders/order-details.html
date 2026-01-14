@@ -120,6 +120,17 @@
     </p>
 
   </div>
+  <button
+  *ngIf="order.status === 'PENDING' || order.status === 'CONFIRMED'"
+  (click)="cancelOrder()"
+  class="bg-red-600 text-white px-4 py-2 rounded mt-4 hover:bg-red-700">
+  Cancel Order
+</button>
+
+<span *ngIf="order.status === 'CANCELLED'" class="text-red-600 font-semibold mt-4 block">
+  ❌ Order Cancelled
+</span>
+
 
 </div>
 
