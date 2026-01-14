@@ -3,18 +3,7 @@
 </div>
 
 
-<div *ngIf="!loading && order">
-
-  <h2 class="text-xl font-bold">Order #{{ order.id }}</h2>
-  <p>Status: {{ order.status }}</p>
-  <p>Total: ₹ {{ order.totalAmount }}</p>
-
-  <hr class="my-3">
-
-  <div *ngFor="let i of order.items">
-    {{ i.productName }} × {{ i.quantity }} = ₹ {{ i.price * i.quantity }}
-  </div>
-  <div *ngIf="!loading && order" class="mt-6">
+<div *ngIf="!loading && order" class="mt-6">
 
   <div class="flex items-center justify-between">
 
@@ -76,6 +65,61 @@
 
   </div>
 </div>
+<div *ngIf="!loading && order" class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
 
+  <!-- LEFT : ITEMS -->
+  <div class="md:col-span-2 bg-white shadow rounded p-4">
+
+    <h3 class="text-lg font-bold mb-4">Ordered Items</h3>
+
+    <div *ngFor="let item of order.items" class="flex justify-between border-b py-3">
+
+      <div>
+        <p class="font-semibold">{{ item.productName }}</p>
+        <p class="text-sm text-gray-500">Qty: {{ item.quantity }}</p>
+      </div>
+
+      <div class="font-bold">
+        ₹ {{ item.price * item.quantity }}
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- RIGHT : SUMMARY -->
+  <div class="bg-white shadow rounded p-4">
+
+    <h3 class="text-lg font-bold mb-4">Order Summary</h3>
+
+    <p class="flex justify-between">
+      <span>Order ID</span>
+      <span>#{{ order.id }}</span>
+    </p>
+
+    <p class="flex justify-between">
+      <span>Status</span>
+      <span class="font-semibold">{{ order.status }}</span>
+    </p>
+
+    <p class="flex justify-between">
+      <span>Total</span>
+      <span class="font-bold text-green-600">₹ {{ order.totalAmount }}</span>
+    </p>
+
+    <hr class="my-3"/>
+
+    <h4 class="font-semibold mb-2">Shipping Address</h4>
+
+    <p class="text-sm">
+      {{ order.shippingName }}<br>
+      {{ order.shippingStreet }}<br>
+      {{ order.shippingCity }}, {{ order.shippingState }}<br>
+      {{ order.shippingZip }}, {{ order.shippingCountry }}<br>
+      📞 {{ order.shippingPhone }}
+    </p>
+
+  </div>
 
 </div>
+
