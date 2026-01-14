@@ -16,6 +16,6 @@ export class OrderService {
     return this.http.post(`${this.API}/place/${addressId}`, {});
   }
   getOrderById(id:number){
-    return this.http.get(`http://localhost:8080/orders/${id}`);
+    return this.http.get(`${this.API}/${id}`)
   }
 }

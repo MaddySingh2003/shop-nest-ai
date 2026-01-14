@@ -18,28 +18,33 @@ export class OrderDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private orderService: OrderService,
     private cdr: ChangeDetectorRef
-  ){}
+  ) {}
 
-  ngOnInit(){
+  ngOnInit(): void {
+    const id =Number( this.route.snapshot.paramMap.get('id'));
 
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    console.log("ORDER ID:", id);
-
-    this.orderService.getOrderById(id).subscribe({
-      next:(res:any)=>{
-        console.log("ORDER DETAILS RESPONSE:", res);
+    this.orderService.getOrderById(id!).subscribe({
+      next: (res:any) => {
+        console.log('ORDER RESPONSE RAW', res);
 
         this.order = res;
         this.loading = false;
 
-        // 🔥 FORCE UI REFRESH
+        // 🔥 force UI update
         this.cdr.detectChanges();
       },
-      error:(err)=>{
+      error: err => {
         console.error(err);
         this.loading = false;
         this.cdr.detectChanges();
       }
-    })
+    });
+  }
+
+  isCompleted(step:string): boolean {
+    if(!this.order) return false;
+
+    const flow = ['PENDING','CONFIRMED','SHIPPED','DELIVERED'];
+    return flow.indexOf(this.order.status) >= flow.indexOf(step);
   }
 }

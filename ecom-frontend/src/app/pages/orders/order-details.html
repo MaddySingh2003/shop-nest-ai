@@ -1,31 +1,17 @@
-<div *ngIf="loading" class="text-center mt-10">
+<div *ngIf="loading" class="text-center">
   Loading order details...
 </div>
 
-<div *ngIf="!loading && order" class="max-w-4xl mx-auto p-6 border rounded">
+<div *ngIf="!loading && order">
 
-  <h2 class="text-2xl font-bold mb-4">
-    Order #{{order.id}}
-  </h2>
+  <h2 class="text-xl font-bold">Order #{{ order.id }}</h2>
+  <p>Status: {{ order.status }}</p>
+  <p>Total: ₹ {{ order.totalAmount }}</p>
 
-  <p><b>Status:</b> {{order.status}}</p>
-  <p><b>Total:</b> ₹ {{order.totalAmount}}</p>
+  <hr class="my-3">
 
-  <h3 class="mt-5 font-semibold">Shipping</h3>
-  <p>{{order.shippingName}}</p>
-  <p>{{order.shippingStreet}}, {{order.shippingCity}}</p>
-  <p>{{order.shippingState}} - {{order.shippingZip}}</p>
-
-  <h3 class="mt-5 font-semibold">Items</h3>
-
-  <div *ngFor="let i of order.items" class="border p-3 rounded mb-3">
-    <p class="font-semibold">{{i.productName}}</p>
-    <p>Qty: {{i.quantity}}</p>
-    <p>₹ {{i.price}}</p>
+  <div *ngFor="let i of order.items">
+    {{ i.productName }} × {{ i.quantity }} = ₹ {{ i.price * i.quantity }}
   </div>
 
-</div>
-
-<div *ngIf="!loading && !order" class="text-center text-red-500">
-  Order not found
 </div>
