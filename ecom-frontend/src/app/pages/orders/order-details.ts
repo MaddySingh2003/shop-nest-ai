@@ -60,5 +60,16 @@ cancelOrder() {
   });
 }
 
+downloadInvoice(){
+  this.orderService.downloadInvoice(this.order.id).subscribe(blob=>{
+    const url=window.URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`Invoice_Order_${this.order.id}.pdf`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  });
+}
+
 
 }

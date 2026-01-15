@@ -21,4 +21,8 @@ export class OrderService {
   cancelOrder(id:number){
     return this.http.put(`${this.API}/cancel/${id}`,null)
   }
+
+  downloadInvoice(orderId:number){
+    return this.http.get(`${this.API}/invoice/${orderId}`,{responseType:'blob'});
+  }
 }

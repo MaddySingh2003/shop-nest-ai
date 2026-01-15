@@ -130,7 +130,9 @@
 <span *ngIf="order.status === 'CANCELLED'" class="text-red-600 font-semibold mt-4 block">
   ❌ Order Cancelled
 </span>
-
+<button (click)="downloadInvoice()"
+class="bg-blue-600 text-white px-4 py-2 rounded mt-4 hover:bg-blue-700">
+Download Invoice</button>
 
 </div>
 
