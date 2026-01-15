@@ -40,6 +40,10 @@ export const routes: Routes = [
     path:'orders/:id',
     loadComponent:()=>import('./pages/orders/order-details').then(m=>m.OrderDetailsComponent)
   },
+  {
+    path:'wishlist',
+    loadComponent:()=>import('./pages/wishlist/wishlist').then(m=>m.WishlistComponent)
+  },
 
   {
     path: '',

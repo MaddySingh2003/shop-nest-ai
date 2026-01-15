@@ -5,6 +5,7 @@ import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { Navbar } from '../../components/navbar/navbar';
 import { Router } from '@angular/router';
+import { WishlistService } from '../../services/wishlist.service';
 
 
 
@@ -22,7 +23,8 @@ export class HomeComponent implements OnInit {
  constructor(
   private productService:ProductService,
   private cartService:CartService,
-   private router:Router
+   private router:Router,
+   private wishlistService:WishlistService
  
  ){
  
@@ -43,4 +45,10 @@ export class HomeComponent implements OnInit {
   goToCart(){
    this.router.navigate(['./cart'])
   }
+addWishlist(id:number){
+  this.wishlistService.add(id).subscribe(()=>{
+    alert('added to wishlist');
+  });
+}
+
 }
