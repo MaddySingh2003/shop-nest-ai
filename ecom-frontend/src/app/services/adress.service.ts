@@ -10,4 +10,11 @@ export class AddressService{
     getMyAddresses(){
         return this.http.get<any[]>(`${this.API}/my`)
     }
+    addAddress(address:any){
+  return this.http.post(`${this.API}/add`,address);
+}
+deleteAddress(id:number){
+  return this.http.delete(`${this.API}/delete/${id}`);
+}
+
 }

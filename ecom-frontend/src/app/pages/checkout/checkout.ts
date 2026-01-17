@@ -25,6 +25,45 @@ export class CheckoutComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ){}
 
+  showForm = false;
+
+newAddress:any = {
+  fullName:'',
+  phone:'',
+  street:'',
+  city:'',
+  state:'',
+  zipCode:'',
+  country:'India',
+  defaultAddress:false   // VERY IMPORTANT
+};
+
+saveAddress(){
+  this.newAddress.defaultAddress=false;
+
+  this.addressService.addAddress(this.newAddress).subscribe(()=>{
+    this.showForm=false;
+    this.newAddress={};
+    this.loadAddresses();
+  });
+}
+
+editAddress(a:any){
+  this.newAddress={...a};
+  this.showForm=true;
+}
+
+deleteAddress(id:number){
+  this.addressService.deleteAddress(id).subscribe(()=>{
+    this.loadAddresses();
+  });
+}
+
+loadAddresses(){
+  this.cdr.detectChanges();
+}
+
+
   ngOnInit(){
     console.log("Checkout init");
 
