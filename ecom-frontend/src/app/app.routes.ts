@@ -44,6 +44,11 @@ export const routes: Routes = [
     path:'wishlist',
     loadComponent:()=>import('./pages/wishlist/wishlist').then(m=>m.WishlistComponent)
   },
+  {
+  path:'order-success/:id',
+  loadComponent:()=>import('./pages/orders/order-success').then(m=>m.OrderSuccessComponenet)
+}
+,
 {
   path:'profile',
   loadComponent:()=>import('./pages/profile/profile').then(m=>m.ProfileComponent)

@@ -1,50 +1,82 @@
-<h2 class="text-xl font-bold mb-4">Checkout</h2>
+<div class="max-w-xl mx-auto p-6">
 
-<div *ngIf="loading">Loading addresses...</div>
+<h2 class="text-2xl font-bold mb-4">Checkout</h2>
 
-<!-- Address List -->
+<!-- LOADING -->
+<div *ngIf="loading" class="text-center text-gray-500">
+  Loading addresses...
+</div>
+
+<!-- ADDRESS LIST -->
 <div *ngIf="!loading && addresses.length > 0">
 
-  <div *ngFor="let a of addresses" class="border p-3 rounded mb-2 flex justify-between">
+  <select [(ngModel)]="addressId" class="border p-2 w-full rounded mb-4">
+    <option [ngValue]="null" disabled>Select address</option>
+    <option *ngFor="let a of addresses" [ngValue]="a.id">
+      {{ a.fullName }} - {{ a.city }}
+    </option>
+  </select>
 
-    <div>
-      <p class="font-semibold">{{a.fullName}}</p>
-      <p>{{a.street}}, {{a.city}}</p>
-      <p>{{a.phone}}</p>
-    </div>
+  <div *ngFor="let a of addresses" class="border p-3 mb-3 rounded bg-gray-50">
 
-    <div class="flex gap-2">
+    <p class="font-semibold">{{a.fullName}}</p>
+    <p>{{a.street}}, {{a.city}}</p>
+    <p>{{a.state}} - {{a.zipCode}}</p>
+    <p>{{a.phone}}</p>
+
+    <div class="mt-2 flex gap-2">
       <button class="text-blue-600" (click)="editAddress(a)">Edit</button>
       <button class="text-red-600" (click)="deleteAddress(a.id)">Delete</button>
     </div>
-
   </div>
 
-  <button class="bg-green-600 text-white w-full py-2 rounded"
-          [disabled]="!addressId"
-          (click)="placeOrder()">Place Order</button>
+  <button
+    type="button"
+    class="bg-green-600 text-white px-4 py-2 mt-4 rounded"
+    [disabled]="!addressId"
+    (click)="placeOrder()">
+    Place Order
+  </button>
 
 </div>
 
-<!-- No Address -->
-<div *ngIf="!loading && addresses.length === 0">
-  <p>No address found</p>
+<!-- NO ADDRESS -->
+<div *ngIf="!loading && addresses.length === 0" class="text-center">
+
+  <p class="text-gray-500 mb-3">No addresses found</p>
+
+  <button class="bg-blue-600 text-white px-4 py-2 rounded"
+          (click)="showForm=true">
+    Add Address
+  </button>
 </div>
 
-<button class="bg-blue-600 text-white px-4 py-2 rounded mt-3"
-        (click)="showForm=true">Add Address</button>
+<!-- ADD / EDIT FORM -->
+<div *ngIf="showForm" class="mt-6 border p-4 rounded bg-gray-50">
 
-<!-- Address Form -->
-<div *ngIf="showForm" class="border p-4 mt-4 rounded space-y-2">
+  <h3 class="font-bold mb-3">Address</h3>
 
-  <input [(ngModel)]="newAddress.fullName" placeholder="Full Name" class="input"/>
-  <input [(ngModel)]="newAddress.phone" placeholder="Phone" class="input"/>
-  <input [(ngModel)]="newAddress.street" placeholder="Street" class="input"/>
-  <input [(ngModel)]="newAddress.city" placeholder="City" class="input"/>
-  <input [(ngModel)]="newAddress.state" placeholder="State" class="input"/>
-  <input [(ngModel)]="newAddress.zipCode" placeholder="Zip" class="input"/>
+  <input [(ngModel)]="newAddress.fullName" placeholder="Full Name" class="input" />
+  <input [(ngModel)]="newAddress.phone" placeholder="Phone" class="input" />
+  <input [(ngModel)]="newAddress.street" placeholder="Street" class="input" />
+  <input [(ngModel)]="newAddress.city" placeholder="City" class="input" />
+  <input [(ngModel)]="newAddress.state" placeholder="State" class="input" />
+  <input [(ngModel)]="newAddress.zipCode" placeholder="Zip Code" class="input" />
 
-  <button class="bg-green-600 text-white w-full py-2 rounded"
-          (click)="saveAddress()">Save</button>
+  <div class="flex gap-3 mt-3">
+    <button class="bg-green-600 text-white px-4 py-1 rounded"
+            type="button"
+            (click)="saveAddress()">
+      Save
+    </button>
+
+    <button class="bg-gray-400 text-white px-4 py-1 rounded"
+            type="button"
+            (click)="showForm=false">
+      Cancel
+    </button>
+  </div>
+
+</div>
 
 </div>

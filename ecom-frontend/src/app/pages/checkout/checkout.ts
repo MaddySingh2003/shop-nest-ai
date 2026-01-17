@@ -13,10 +13,23 @@ import { Router } from '@angular/router';
 })
 export class CheckoutComponent implements OnInit {
 
-  addresses:any[]=[];
-  addressId:number|null=null;
-  loading=true;
-  error='';
+  addresses:any[] = [];
+  addressId:number | null = null;
+  loading = true;
+  error = '';
+
+  showForm = false;
+
+  newAddress:any = {
+    fullName:'',
+    phone:'',
+    street:'',
+    city:'',
+    state:'',
+    zipCode:'',
+    country:'India',
+    defaultAddress:false
+  };
 
   constructor(
     private orderService:OrderService,
@@ -25,81 +38,85 @@ export class CheckoutComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ){}
 
-  showForm = false;
-
-newAddress:any = {
-  fullName:'',
-  phone:'',
-  street:'',
-  city:'',
-  state:'',
-  zipCode:'',
-  country:'India',
-  defaultAddress:false   // VERY IMPORTANT
-};
-
-saveAddress(){
-  this.newAddress.defaultAddress=false;
-
-  this.addressService.addAddress(this.newAddress).subscribe(()=>{
-    this.showForm=false;
-    this.newAddress={};
-    this.loadAddresses();
-  });
-}
-
-editAddress(a:any){
-  this.newAddress={...a};
-  this.showForm=true;
-}
-
-deleteAddress(id:number){
-  this.addressService.deleteAddress(id).subscribe(()=>{
-    this.loadAddresses();
-  });
-}
-
-loadAddresses(){
-  this.cdr.detectChanges();
-}
-
-
   ngOnInit(){
     console.log("Checkout init");
+    this.loadAddresses();
+  }
+
+  // ------------------------
+  loadAddresses(){
+    this.loading = true;
 
     this.addressService.getMyAddresses().subscribe({
-      next:res=>{
+      next:(res:any)=>{
         console.log("ADDRESS API RESPONSE:", res);
-
         this.addresses = res || [];
         this.loading = false;
-
-        // 🔥 FORCE UI UPDATE
         this.cdr.detectChanges();
       },
       error:(err)=>{
         console.error(err);
-        this.loading=false;
+        this.loading = false;
         this.cdr.detectChanges();
       }
     });
   }
 
+  // ------------------------
+  saveAddress(){
+    this.addressService.addAddress(this.newAddress).subscribe(()=>{
+      alert("Address saved");
+      this.showForm = false;
+      this.resetForm();
+      this.loadAddresses();
+    });
+  }
+
+  editAddress(a:any){
+    this.newAddress = {...a};
+    this.showForm = true;
+  }
+
+  deleteAddress(id:number){
+    if(!confirm("Delete this address?")) return;
+
+    this.addressService.deleteAddress(id).subscribe(()=>{
+      this.loadAddresses();
+    });
+  }
+
+  resetForm(){
+    this.newAddress = {
+      fullName:'',
+      phone:'',
+      street:'',
+      city:'',
+      state:'',
+      zipCode:'',
+      country:'India',
+      defaultAddress:false
+    };
+  }
+
+  // ------------------------
   placeOrder(){
+    console.log("PLACE ORDER CLICKED");
+
     if(!this.addressId){
       alert("Select address");
       return;
     }
 
     this.orderService.placeOrder(this.addressId).subscribe({
-      next:()=>{
+      next:(res:any)=>{
+        console.log("ORDER RESPONSE",res);
         alert("Order placed successfully");
-        this.router.navigate(['/home']);
+        this.router.navigate(['/orders-success',res.id]);
       },
       error:(err)=>{
-        this.error=err.error?.error || 'Order failed';
-        alert(this.error);
+        console.log("ORDER ERROR",err);
+        alert(err.error?.error || "Order failed");
       }
-    })
+    });
   }
 }
