@@ -1,138 +1,46 @@
-<div *ngIf="loading" class="text-center">
+<div *ngIf="loading" class="text-center p-10">
   Loading order details...
 </div>
 
+<div *ngIf="!loading && order" class="max-w-3xl mx-auto p-6">
 
-<div *ngIf="!loading && order" class="mt-6">
+<h2 class="text-xl font-bold mb-4">Order #{{order.id}}</h2>
 
-  <div class="flex items-center justify-between">
+<!-- STATUS STEPPER -->
+<div class="flex items-center justify-between mb-8">
 
-    <!-- PENDING -->
+  <ng-container *ngFor="let step of steps; let i=index">
+
     <div class="flex flex-col items-center">
+
       <div
-        class="w-8 h-8 rounded-full flex items-center justify-center text-white"
-        [class.bg-green-600]="isCompleted('PENDING')"
-        [class.bg-gray-300]="!isCompleted('PENDING')">
-        1
+        class="w-8 h-8 rounded-full text-white flex items-center justify-center"
+        [class.bg-green-600]="isCompleted(step)"
+        [class.bg-gray-400]="!isCompleted(step)">
+        {{i+1}}
       </div>
-      <span class="text-sm mt-1">Pending</span>
+
+      <p class="text-sm mt-1">{{step}}</p>
     </div>
 
-    <div class="flex-1 h-1 mx-2"
-         [class.bg-green-600]="isCompleted('CONFIRMED')"
-         [class.bg-gray-300]="!isCompleted('CONFIRMED')"></div>
-
-    <!-- CONFIRMED -->
-    <div class="flex flex-col items-center">
-      <div
-        class="w-8 h-8 rounded-full flex items-center justify-center text-white"
-        [class.bg-green-600]="isCompleted('CONFIRMED')"
-        [class.bg-gray-300]="!isCompleted('CONFIRMED')">
-        2
-      </div>
-      <span class="text-sm mt-1">Confirmed</span>
+    <div *ngIf="i<steps.length-1"
+         class="flex-1 h-1 mx-2"
+         [class.bg-green-600]="isCompleted(steps[i+1])"
+         [class.bg-gray-300]="!isCompleted(steps[i+1])">
     </div>
 
-    <div class="flex-1 h-1 mx-2"
-         [class.bg-green-600]="isCompleted('SHIPPED')"
-         [class.bg-gray-300]="!isCompleted('SHIPPED')"></div>
-
-    <!-- SHIPPED -->
-    <div class="flex flex-col items-center">
-      <div
-        class="w-8 h-8 rounded-full flex items-center justify-center text-white"
-        [class.bg-green-600]="isCompleted('SHIPPED')"
-        [class.bg-gray-300]="!isCompleted('SHIPPED')">
-        3
-      </div>
-      <span class="text-sm mt-1">Shipped</span>
-    </div>
-
-    <div class="flex-1 h-1 mx-2"
-         [class.bg-green-600]="isCompleted('DELIVERED')"
-         [class.bg-gray-300]="!isCompleted('DELIVERED')"></div>
-
-    <!-- DELIVERED -->
-    <div class="flex flex-col items-center">
-      <div
-        class="w-8 h-8 rounded-full flex items-center justify-center text-white"
-        [class.bg-green-600]="isCompleted('DELIVERED')"
-        [class.bg-gray-300]="!isCompleted('DELIVERED')">
-        4
-      </div>
-      <span class="text-sm mt-1">Delivered</span>
-    </div>
-
-  </div>
-</div>
-<div *ngIf="!loading && order" class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-
-  <!-- LEFT : ITEMS -->
-  <div class="md:col-span-2 bg-white shadow rounded p-4">
-
-    <h3 class="text-lg font-bold mb-4">Ordered Items</h3>
-
-    <div *ngFor="let item of order.items" class="flex justify-between border-b py-3">
-
-      <div>
-        <p class="font-semibold">{{ item.productName }}</p>
-        <p class="text-sm text-gray-500">Qty: {{ item.quantity }}</p>
-      </div>
-
-      <div class="font-bold">
-        ₹ {{ item.price * item.quantity }}
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- RIGHT : SUMMARY -->
-  <div class="bg-white shadow rounded p-4">
-
-    <h3 class="text-lg font-bold mb-4">Order Summary</h3>
-
-    <p class="flex justify-between">
-      <span>Order ID</span>
-      <span>#{{ order.id }}</span>
-    </p>
-
-    <p class="flex justify-between">
-      <span>Status</span>
-      <span class="font-semibold">{{ order.status }}</span>
-    </p>
-
-    <p class="flex justify-between">
-      <span>Total</span>
-      <span class="font-bold text-green-600">₹ {{ order.totalAmount }}</span>
-    </p>
-
-    <hr class="my-3"/>
-
-    <h4 class="font-semibold mb-2">Shipping Address</h4>
-
-    <p class="text-sm">
-      {{ order.shippingName }}<br>
-      {{ order.shippingStreet }}<br>
-      {{ order.shippingCity }}, {{ order.shippingState }}<br>
-      {{ order.shippingZip }}, {{ order.shippingCountry }}<br>
-      📞 {{ order.shippingPhone }}
-    </p>
-
-  </div>
-  <button
-  *ngIf="order.status === 'PENDING' || order.status === 'CONFIRMED'"
-  (click)="cancelOrder()"
-  class="bg-red-600 text-white px-4 py-2 rounded mt-4 hover:bg-red-700">
-  Cancel Order
-</button>
-
-<span *ngIf="order.status === 'CANCELLED'" class="text-red-600 font-semibold mt-4 block">
-  ❌ Order Cancelled
-</span>
-<button (click)="downloadInvoice()"
-class="bg-blue-600 text-white px-4 py-2 rounded mt-4 hover:bg-blue-700">
-Download Invoice</button>
+  </ng-container>
 
 </div>
 
+<!-- ORDER INFO -->
+<p><b>Status:</b> {{order.status}}</p>
+<p><b>Total:</b> ₹{{order.totalAmount}}</p>
+
+<h3 class="font-semibold mt-4">Items</h3>
+
+<div *ngFor="let item of order.items" class="border p-3 rounded mb-2">
+  {{item.productName}} × {{item.quantity}} = ₹{{item.price * item.quantity}}
+</div>
+
+</div>

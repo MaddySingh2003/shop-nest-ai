@@ -17,4 +17,12 @@ export class WishlistService{
     remove(productId:number){
         return this.http.delete(`${this.API}/remove/${productId}`);
     }
+    getWishlist(){
+  return this.http.get<any>(`${this.API}/my`);
+}
+
+removeFromWishlist(id:number){
+  return this.http.delete(`${this.API}/remove/${id}`);
+}
+
 }
