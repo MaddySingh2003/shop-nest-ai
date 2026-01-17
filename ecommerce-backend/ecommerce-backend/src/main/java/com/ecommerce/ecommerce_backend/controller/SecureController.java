@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecommerce.ecommerce_backend.model.User;
 import com.ecommerce.ecommerce_backend.repository.UserRepository;
 @RestController
 @RequestMapping("/user")
@@ -29,6 +32,19 @@ public ResponseEntity<?>getProfile(){
             .orElseThrow()
         );
       
+}
+
+@PutMapping("/update")
+public ResponseEntity<?> updateProfile(@RequestBody User updatedUser){
+
+    String email = SecurityContextHolder.getContext().getAuthentication().getName();
+    User user = userRepository.findByEmail(email).orElseThrow();
+
+    user.setName(updatedUser.getName());
+
+    userRepository.save(user);
+
+    return ResponseEntity.ok(user);
 }
 
 

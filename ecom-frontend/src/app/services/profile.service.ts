@@ -11,4 +11,8 @@ export class ProfileService{
     getProfile(){
         return this.http.get(`${this.API}/me`);
     }
+    updateProfile(data:any){
+  return this.http.put('http://localhost:8080/user/update',data);
+}
+
 }
