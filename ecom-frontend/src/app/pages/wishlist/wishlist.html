@@ -1,16 +1,11 @@
-<h2 class="text-xl font-bold mb-4">❤️ My Wishlist</h2>
+<div *ngIf="loading" class="text-center">Loading wishlist...</div>
 
-<div *ngFor="let p of list"
- class="border p-3 rounded mb-3 flex justify-between">
+<div *ngIf="!loading && wishlist.length === 0">
+  Wishlist empty
+</div>
 
- <div>
-   <h4>{{p.productName}}</h4>
-   <p>₹ {{p.price}}</p>
- </div>
-
- <button
-   (click)="remove(p.productId)"
-   class="text-red-600 font-bold">
-   Remove
- </button>
+<div *ngIf="!loading && wishlist.length > 0">
+  <div *ngFor="let p of wishlist">
+    {{p.name}} - ₹{{p.price}}
+  </div>
 </div>
