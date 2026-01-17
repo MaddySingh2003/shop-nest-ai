@@ -44,7 +44,11 @@ export const routes: Routes = [
     path:'wishlist',
     loadComponent:()=>import('./pages/wishlist/wishlist').then(m=>m.WishlistComponent)
   },
-
+{
+  path:'profile',
+  loadComponent:()=>import('./pages/profile/profile').then(m=>m.ProfileComponent)
+}
+  ,
   {
     path: '',
     redirectTo: 'home',
