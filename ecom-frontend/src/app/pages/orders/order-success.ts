@@ -1,20 +1,31 @@
-import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, RouterModule } from "@angular/router";
-
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-    standalone:true,
-    imports:[CommonModule,RouterModule],
-    templateUrl:'./order-success.html'
+  selector: 'app-order-success',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './order-success.html'
 })
-export class OrderSuccessComponenet implements OnInit{
+export class OrderSuccessComponent implements OnInit {
 
-    orderId:any;
+  orderId:number = 0;
 
-    constructor(private router:ActivatedRoute){}
+  constructor(
+    private route: ActivatedRoute,
+    private router:Router
+  ){}
 
-    ngOnInit(){
-        this.orderId=this.router.snapshot.paramMap.get('id');
-    }
+  ngOnInit(){
+    this.orderId = Number(this.route.snapshot.paramMap.get('id'));
+  }
+
+  goOrders(){
+    this.router.navigate(['/orders']);
+  }
+
+  goHome(){
+    this.router.navigate(['/home']);
+  }
 }

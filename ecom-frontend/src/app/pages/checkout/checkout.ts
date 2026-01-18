@@ -111,7 +111,8 @@ export class CheckoutComponent implements OnInit {
       next:(res:any)=>{
         console.log("ORDER RESPONSE",res);
         alert("Order placed successfully");
-        this.router.navigate(['/orders-success',res.id]);
+        this.router.navigate(['/order-success', res.id]);
+
       },
       error:(err)=>{
         console.log("ORDER ERROR",err);
