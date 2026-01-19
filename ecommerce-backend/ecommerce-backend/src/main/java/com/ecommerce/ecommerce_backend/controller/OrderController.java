@@ -12,9 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+
 
 @RestController
 @RequestMapping("/orders")
@@ -33,7 +34,6 @@ public class OrderController {
             @PathVariable Long addressId,
             @RequestParam(required = false) String coupon
     ) {
-
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal()
@@ -81,10 +81,8 @@ public class OrderController {
 
         return ResponseEntity.ok()
                 .header("Content-Type", "application/pdf")
-                .header(
-                        "Content-Disposition",
-                        "attachment; filename=invoice-" + orderId + ".pdf"
-                )
+                .header("Content-Disposition",
+                        "attachment; filename=invoice-" + orderId + ".pdf")
                 .body(pdf);
     }
 
@@ -107,12 +105,14 @@ public class OrderController {
     // ===============================
     @PutMapping("/cancel/{orderId}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Order> cancelOrder(
-            @PathVariable Long orderId,
-            Authentication authentication
-    ) {
+    public ResponseEntity<Order> cancelOrder(@PathVariable Long orderId) {
+
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
         return ResponseEntity.ok(
-                orderService.cancelOrder(orderId, authentication.getName())
+                orderService.cancelOrder(orderId, email)
         );
     }
 
@@ -134,7 +134,7 @@ public class OrderController {
     }
 
     // ===============================
-    // GET USER ORDERS (PAGINATED)
+    // GET USER ORDERS
     // ===============================
     @GetMapping("/my")
     @PreAuthorize("hasRole('USER')")
@@ -142,7 +142,6 @@ public class OrderController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
-
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal()
@@ -152,7 +151,7 @@ public class OrderController {
     }
 
     // ===============================
-    // ADMIN — ALL ORDERS (PAGINATED)
+    // ADMIN — ALL ORDERS
     // ===============================
     @GetMapping("/admin/all")
     @PreAuthorize("hasRole('ADMIN')")

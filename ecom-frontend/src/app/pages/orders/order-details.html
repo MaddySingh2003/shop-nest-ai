@@ -1,46 +1,55 @@
-<div *ngIf="loading" class="text-center p-10">
-  Loading order details...
+<div *ngIf="loading" class="text-center p-6">
+  Loading order...
 </div>
 
-<div *ngIf="!loading && order" class="max-w-3xl mx-auto p-6">
+<div *ngIf="!loading && order" class="max-w-3xl mx-auto p-6 border rounded shadow">
 
-<h2 class="text-xl font-bold mb-4">Order #{{order.id}}</h2>
+  <h2 class="text-2xl font-bold mb-4">Order #{{order.id}}</h2>
 
-<!-- STATUS STEPPER -->
-<div class="flex items-center justify-between mb-8">
+  <!-- STATUS TRACKER -->
+  <div class="flex items-center mb-6">
 
-  <ng-container *ngFor="let step of steps; let i=index">
+    <div class="status-step" [class.active]="isCompleted('CONFIRMED')">Confirmed</div>
+    <div class="status-line" [class.active]="isCompleted('SHIPPED')"></div>
 
-    <div class="flex flex-col items-center">
+    <div class="status-step" [class.active]="isCompleted('SHIPPED')">Shipped</div>
+    <div class="status-line" [class.active]="isCompleted('DELIVERED')"></div>
 
-      <div
-        class="w-8 h-8 rounded-full text-white flex items-center justify-center"
-        [class.bg-green-600]="isCompleted(step)"
-        [class.bg-gray-400]="!isCompleted(step)">
-        {{i+1}}
-      </div>
+    <div class="status-step" [class.active]="isCompleted('DELIVERED')">Delivered</div>
 
-      <p class="text-sm mt-1">{{step}}</p>
-    </div>
+  </div>
 
-    <div *ngIf="i<steps.length-1"
-         class="flex-1 h-1 mx-2"
-         [class.bg-green-600]="isCompleted(steps[i+1])"
-         [class.bg-gray-300]="!isCompleted(steps[i+1])">
-    </div>
+  <p><b>Status:</b> {{order.status}}</p>
+  <p><b>Total:</b> ₹{{order.totalAmount}}</p>
 
-  </ng-container>
+  <!-- ACTIONS -->
+  <div class="flex gap-3 mt-4">
 
-</div>
+    <button *ngIf="order.status==='CONFIRMED'"
+      class="btn-blue"
+      (click)="payNow()">
+      Pay Now
+    </button>
 
-<!-- ORDER INFO -->
-<p><b>Status:</b> {{order.status}}</p>
-<p><b>Total:</b> ₹{{order.totalAmount}}</p>
+    <button *ngIf="order.status==='CONFIRMED'"
+      class="btn-red"
+      (click)="cancelOrder()">
+      Cancel Order
+    </button>
 
-<h3 class="font-semibold mt-4">Items</h3>
+    <button *ngIf="order.status==='DELIVERED'"
+      class="btn-gray"
+      (click)="downloadInvoice()">
+      Download Invoice
+    </button>
 
-<div *ngFor="let item of order.items" class="border p-3 rounded mb-2">
-  {{item.productName}} × {{item.quantity}} = ₹{{item.price * item.quantity}}
-</div>
+  </div>
+
+  <hr class="my-5">
+
+  <div *ngFor="let i of order.items" class="flex justify-between border-b py-2">
+    <div>{{i.productName}}</div>
+    <div>₹{{i.price}} x {{i.quantity}}</div>
+  </div>
 
 </div>

@@ -1,28 +1,38 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
-@Injectable({providedIn:'root'})
+@Injectable({ providedIn: 'root' })
 export class OrderService {
 
   private API = 'http://localhost:8080/orders';
 
-  constructor(private http:HttpClient){}
+  constructor(private http: HttpClient) {}
 
   getMyOrders(){
     return this.http.get(`${this.API}/my`);
   }
 
+  getOrderById(id:number){
+    return this.http.get(`${this.API}/${id}`);
+  }
+
   placeOrder(addressId:number){
     return this.http.post(`${this.API}/place/${addressId}`, {});
   }
-  getOrderById(id:number){
-    return this.http.get(`${this.API}/${id}`)
-  }
+
   cancelOrder(id:number){
-    return this.http.put(`${this.API}/cancel/${id}`,null)
+    return this.http.put(`${this.API}/cancel/${id}`, null);
   }
 
-  downloadInvoice(orderId:number){
-    return this.http.get(`${this.API}/invoice/${orderId}`,{responseType:'blob'});
+  downloadInvoice(id:number){
+    return this.http.get(`${this.API}/invoice/${id}`, { responseType:'blob' });
+  }
+
+  // ADMIN ONLY
+  updateStatus(orderId:number, status:string){
+    return this.http.put(
+      `${this.API}/update/${orderId}?status=${status}`,
+      null
+    );
   }
 }

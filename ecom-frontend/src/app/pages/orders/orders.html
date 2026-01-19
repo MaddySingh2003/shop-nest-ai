@@ -1,40 +1,40 @@
 <div class="max-w-5xl mx-auto p-6">
 
-  <h2 class="text-2xl font-bold mb-6">My Orders</h2>
+  <h2 class="text-2xl font-bold mb-6">📦 My Orders</h2>
 
-  <ng-container *ngIf="orders$ | async as orders; else loading">
+  <div *ngIf="orders$ | async as orders">
 
-    <div *ngIf="orders.length === 0" class="text-center text-gray-500">
+    <div *ngIf="orders.length===0" class="text-center text-gray-500">
       No orders found
     </div>
 
     <div *ngFor="let o of orders"
-         class="border rounded p-4 mb-4 shadow">
+         class="border rounded p-4 mb-4 shadow flex justify-between items-center">
 
-      <h3 class="font-semibold text-lg">
-        Order #{{ o.id }}
-      </h3>
+      <div>
+        <p class="font-semibold">Order</p>
+        <p>Status: <b>{{o.status}}</b></p>
+        <p>Total: ₹{{o.totalAmount}}</p>
+      </div>
 
-      <p class="text-gray-600">
-        Items: {{ o.items?.length || 0 }}
-      </p>
+      <div class="flex gap-3">
 
-      <p class="text-sm text-gray-500">
-        Status: {{ o.status }}
-      </p>
+        <a
+          [routerLink]="['/order-details', o.id]"
+          class="bg-blue-600 text-white px-3 py-1 rounded">
+          View
+        </a>
 
-      <button
-  [routerLink]="['/orders', o.id]"
-  class="text-blue-600 hover:underline">
-  View Details
-</button>
+        <button
+          class="bg-red-600 text-white px-3 py-1 rounded"
+          (click)="cancelOrder(o.id)">
+          Cancel
+        </button>
+
+      </div>
 
     </div>
 
-  </ng-container>
-
-  <ng-template #loading>
-    <p class="text-center text-gray-500">Loading orders...</p>
-  </ng-template>
+  </div>
 
 </div>
