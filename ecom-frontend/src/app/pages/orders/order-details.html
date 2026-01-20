@@ -26,10 +26,11 @@
   <div class="flex gap-3 mt-4">
 
     <button *ngIf="order.status==='CONFIRMED'"
-      class="btn-blue"
-      (click)="payNow()">
-      Pay Now
-    </button>
+  class="btn-blue"
+  [routerLink]="['/payment', order.id]">
+  Pay Now
+</button>
+
 
     <button *ngIf="order.status==='CONFIRMED'"
       class="btn-red"

@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login';
 import { authGuard } from './core/guards/auth.guards';
 import { HomeComponent } from './pages/home/home';
+import { PaymentComponenet } from './pages/payment/payment';
+import { InvoiceComponenets } from './pages/Invoice/invoice';
 
 export const routes: Routes = [
 
@@ -42,6 +44,10 @@ export const routes: Routes = [
     import('./pages/orders/order-details').then(m => m.OrderDetailsComponent)
 }
 ,
+{path: 'payment/:id', component:PaymentComponenet  
+},{
+  path: 'invoice/:id', component:InvoiceComponenets
+},
   {
     path:'wishlist',
     loadComponent:()=>import('./pages/wishlist/wishlist').then(m=>m.WishlistComponent)

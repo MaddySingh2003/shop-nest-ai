@@ -1,0 +1,30 @@
+<div class="max-w-xl mx-auto p-8 border rounded shadow">
+
+  <div *ngIf="loading" class="text-center text-gray-500">
+    Loading invoice...
+  </div>
+
+  <div *ngIf="!loading && order">
+
+    <h2 class="text-2xl font-bold mb-4 text-center">🧾 Invoice</h2>
+
+    <p><b>Order ID:</b> {{order.id}}</p>
+    <p><b>Status:</b> {{order.status}}</p>
+    <p><b>Total:</b> ₹{{order.totalAmount}}</p>
+
+    <hr class="my-4">
+
+    <div *ngFor="let i of order.items" class="flex justify-between">
+      <span>{{i.productName}}</span>
+      <span>₹{{i.price}} x {{i.quantity}}</span>
+    </div>
+
+    <button
+      class="bg-blue-600 text-white px-4 py-2 rounded mt-6 w-full"
+      (click)="download()">
+      Download Invoice PDF
+    </button>
+
+  </div>
+
+</div>

@@ -1,0 +1,55 @@
+<div class="max-w-lg mx-auto p-8 border rounded shadow">
+
+  <h2 class="text-2xl font-bold mb-4 text-center">💳 Payment</h2>
+
+  <p class="text-center text-gray-600 mb-6">
+    Order ID: {{orderId}}
+  </p>
+
+  <div class="border p-4 rounded bg-gray-50 mb-6">
+
+    <p class="font-semibold mb-3">Select Payment Method:</p>
+
+    <label class="block mb-2">
+      <input
+        type="radio"
+        name="payment"
+        value="UPI"
+        [(ngModel)]="paymentMethod">
+      UPI
+    </label>
+
+    <label class="block mb-2">
+      <input
+        type="radio"
+        name="payment"
+        value="CARD"
+        [(ngModel)]="paymentMethod">
+      Credit / Debit Card
+    </label>
+
+    <label class="block mb-2">
+      <input
+        type="radio"
+        name="payment"
+        value="COD"
+        [(ngModel)]="paymentMethod">
+      Cash on Delivery
+    </label>
+
+  </div>
+
+  <p class="text-center text-sm text-gray-500 mb-4">
+    Selected: <b>{{paymentMethod}}</b>
+  </p>
+
+  <button
+    class="bg-green-600 text-white px-6 py-2 rounded w-full"
+    (click)="pay()"
+    [disabled]="loading">
+
+    {{ loading ? 'Processing...' : 'Pay Now' }}
+
+  </button>
+
+</div>
