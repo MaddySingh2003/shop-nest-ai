@@ -12,34 +12,33 @@ import { RouterModule } from '@angular/router';
 })
 export class OrdersComponent {
 
-  private ordersSubject = new BehaviorSubject<any[]>([]);
-  orders$ = this.ordersSubject.asObservable();
+  orders$!: Observable<any[]>;
 
   constructor(private orderService: OrderService) {
-    this.loadOrders();
-  }
+    this.orders$ = this.orderService.getMyOrders()
+  .pipe(
+    map((res:any)=>
+      res.content
+        .filter((o:any)=>o.status!=='CANCELLED')
+        .map((o:any)=>({
+          ...o,
+          displayStatus: o.status === 'PENDING' ? 'CONFIRMED' : o.status
+        }))
+    )
+  );
 
-  loadOrders(){
-    this.orderService.getMyOrders().subscribe((res:any)=>{
-      const list = res.content.map((o:any)=>{
-        if(o.status==='PENDING'){
-          o.status='CONFIRMED';
-        }
-        return o;
-      });
-      this.ordersSubject.next(list);
-    });
+
   }
 
   cancelOrder(id:number){
     if(!confirm("Cancel this order?")) return;
 
     this.orderService.cancelOrder(id).subscribe(()=>{
-      alert("Order cancelled");
-
-      // 🔥 REMOVE FROM UI
-      const updated = this.ordersSubject.value.filter(o=>o.id!==id);
-      this.ordersSubject.next(updated);
+      // reload list automatically
+      this.orders$ = this.orderService.getMyOrders()
+        .pipe(
+          map((res:any)=>res.content.filter((o:any)=>o.status!=='CANCELLED'))
+        );
     });
   }
 }
