@@ -1,30 +1,47 @@
-<div class="max-w-xl mx-auto p-8 border rounded shadow">
+<div *ngIf="loading" class="text-center p-6">Loading invoice...</div>
 
-  <div *ngIf="loading" class="text-center text-gray-500">
-    Loading invoice...
+<div *ngIf="!loading && order" class="max-w-3xl mx-auto p-6 border rounded shadow bg-white">
+
+  <h2 class="text-2xl font-bold mb-4 text-center">🧾 Invoice</h2>
+
+  <div class="flex justify-between mb-4">
+    <div>
+      <p><b>Order ID:</b> {{order.id}}</p>
+      <p><b>Date:</b> {{order.orderDate | date:'medium'}}</p>
+    </div>
+    <div>
+      <p><b>Status:</b> {{order.status}}</p>
+      <p><b>Total:</b> ₹{{order.totalAmount}}</p>
+    </div>
   </div>
 
-  <div *ngIf="!loading && order">
+  <hr class="my-4">
 
-    <h2 class="text-2xl font-bold mb-4 text-center">🧾 Invoice</h2>
+  <h3 class="font-bold mb-2">Shipping Address</h3>
+  <p>{{order.shippingName}}</p>
+  <p>{{order.shippingCity}}, {{order.shippingState}}</p>
+  <p>{{order.shippingCountry}}</p>
 
-    <p><b>Order ID:</b> {{order.id}}</p>
-    <p><b>Status:</b> {{order.status}}</p>
-    <p><b>Total:</b> ₹{{order.totalAmount}}</p>
+  <hr class="my-4">
 
-    <hr class="my-4">
+  <h3 class="font-bold mb-2">Items</h3>
 
-    <div *ngFor="let i of order.items" class="flex justify-between">
-      <span>{{i.productName}}</span>
-      <span>₹{{i.price}} x {{i.quantity}}</span>
-    </div>
+  <div *ngFor="let i of order.items" class="flex justify-between border-b py-2">
+    <div>{{i.productName}}</div>
+    <div>₹{{i.price}} × {{i.quantity}}</div>
+  </div>
 
+  <div class="text-right font-bold mt-4">
+    Grand Total: ₹{{order.totalAmount}}
+  </div>
+
+  <div class="text-center mt-6">
     <button
-      class="bg-blue-600 text-white px-4 py-2 rounded mt-6 w-full"
-      (click)="download()">
+      class="bg-green-600 text-white px-4 py-2 rounded"
+      (click)="downloadInvoice()">
       Download Invoice PDF
     </button>
-
   </div>
+  <a routerLink="/orders">My Orders</a>
 
 </div>

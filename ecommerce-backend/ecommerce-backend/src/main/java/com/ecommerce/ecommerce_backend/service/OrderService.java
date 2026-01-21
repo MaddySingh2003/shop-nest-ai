@@ -147,6 +147,18 @@ public class OrderService {
 
         return orderRepository.findByUser(user, pageable);
     }
+public Order confirmOrderAfterPayment(Long orderId, String email) {
+
+    Order order = orderRepository.findById(orderId)
+        .orElseThrow();
+
+    if(!order.getUser().getEmail().equals(email)){
+        throw new RuntimeException("Unauthorized");
+    }
+
+    order.setStatus(Status.CONFIRMED);
+    return orderRepository.save(order);
+}
 
     // =========================
     // ADMIN — ALL ORDERS

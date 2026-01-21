@@ -9,32 +9,23 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './orders.html'
-})
-export class OrdersComponent {
+})export class OrdersComponent {
 
   orders$!: Observable<any[]>;
 
   constructor(private orderService: OrderService) {
     this.orders$ = this.orderService.getMyOrders()
-  .pipe(
-    map((res:any)=>
-      res.content
-        .filter((o:any)=>o.status!=='CANCELLED')
-        .map((o:any)=>({
-          ...o,
-          displayStatus: o.status === 'PENDING' ? 'CONFIRMED' : o.status
-        }))
-    )
-  );
-
-
+      .pipe(
+        map((res:any)=>
+          res.content.filter((o:any)=>o.status!=='CANCELLED')
+        )
+      );
   }
 
   cancelOrder(id:number){
     if(!confirm("Cancel this order?")) return;
 
     this.orderService.cancelOrder(id).subscribe(()=>{
-      // reload list automatically
       this.orders$ = this.orderService.getMyOrders()
         .pipe(
           map((res:any)=>res.content.filter((o:any)=>o.status!=='CANCELLED'))
@@ -42,3 +33,4 @@ export class OrdersComponent {
     });
   }
 }
+

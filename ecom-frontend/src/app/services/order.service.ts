@@ -35,4 +35,8 @@ export class OrderService {
       null
     );
   }
+  confirmAfterPayment(id:number){
+  return this.http.put(`${this.API}/confirm/${id}`, null);
+}
+
 }

@@ -7,17 +7,20 @@
   <h2 class="text-2xl font-bold mb-4">Order #{{order.id}}</h2>
 
   <!-- STATUS TRACKER -->
-  <div class="flex items-center mb-6">
+  <div class="tracking">
 
-    <div class="status-step" [class.active]="isCompleted('CONFIRMED')">Confirmed</div>
-    <div class="status-line" [class.active]="isCompleted('SHIPPED')"></div>
+  <div class="step" [class.active]="isCompleted('PENDING')">Pending</div>
+  <div class="line" [class.active]="isCompleted('CONFIRMED')"></div>
 
-    <div class="status-step" [class.active]="isCompleted('SHIPPED')">Shipped</div>
-    <div class="status-line" [class.active]="isCompleted('DELIVERED')"></div>
+  <div class="step" [class.active]="isCompleted('CONFIRMED')">Confirmed</div>
+  <div class="line" [class.active]="isCompleted('SHIPPED')"></div>
 
-    <div class="status-step" [class.active]="isCompleted('DELIVERED')">Delivered</div>
+  <div class="step" [class.active]="isCompleted('SHIPPED')">Shipped</div>
+  <div class="line" [class.active]="isCompleted('DELIVERED')"></div>
 
-  </div>
+  <div class="step" [class.active]="isCompleted('DELIVERED')">Delivered</div>
+
+</div>
 
   <p><b>Status:</b> {{order.status}}</p>
   <p><b>Total:</b> ₹{{order.totalAmount}}</p>
@@ -25,14 +28,14 @@
   <!-- ACTIONS -->
   <div class="flex gap-3 mt-4">
 
-    <button *ngIf="order.status==='CONFIRMED'"
+    <button *ngIf="order.status==='PENDING'"
   class="btn-blue"
   [routerLink]="['/payment', order.id]">
   Pay Now
 </button>
 
 
-    <button *ngIf="order.status==='CONFIRMED'"
+    <button 
       class="btn-red"
       (click)="cancelOrder()">
       Cancel Order

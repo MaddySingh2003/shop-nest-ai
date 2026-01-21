@@ -14,7 +14,7 @@ export class OrderDetailsComponent implements OnInit {
   order:any = null;
   loading = true;
 
-  statuses = ['CONFIRMED','SHIPPED','DELIVERED'];
+  
 
   constructor(
     private route:ActivatedRoute,
@@ -32,19 +32,21 @@ export class OrderDetailsComponent implements OnInit {
       this.order = res;
 
       // 🔥 YOUR RULE: Order page never shows PENDING
-      if(this.order.status === 'PENDING'){
-        this.order.status = 'CONFIRMED';
-      }
-
+      
       this.loading = false;
       this.cdr.detectChanges();
     });
   }
 
-  isCompleted(step:string){
-    return this.statuses.indexOf(this.order.status)
-        >= this.statuses.indexOf(step);
-  }
+  statuses = ['PENDING','CONFIRMED','SHIPPED','DELIVERED'];
+
+isCompleted(step:string){
+  if(!this.order) return false;
+  return this.statuses.indexOf(this.order.status)
+       >= this.statuses.indexOf(step);
+       
+}
+
 
   cancelOrder(){
     if(!confirm("Cancel this order?")) return;

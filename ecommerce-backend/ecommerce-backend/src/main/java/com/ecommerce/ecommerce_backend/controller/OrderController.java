@@ -15,8 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-
-
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
@@ -26,7 +24,7 @@ public class OrderController {
     private final InvoiceService invoiceService;
 
     // ===============================
-    // PLACE ORDER (USER)
+    // PLACE ORDER
     // ===============================
     @PostMapping("/place/{addressId}")
     @PreAuthorize("hasRole('USER')")
@@ -34,39 +32,34 @@ public class OrderController {
             @PathVariable Long addressId,
             @RequestParam(required = false) String coupon
     ) {
+
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
-                .getPrincipal()
-                .toString();
+                .getName();
 
         Order order = orderService.placeOrder(email, addressId, coupon);
 
-        OrderResponse response = OrderResponse.builder()
-                .id(order.getId())
-                .status(order.getStatus().name())
-                .totalAmount(order.getTotalAmount())
-                .orderDate(order.getOrderDate())
-                .shippingName(order.getShippingName())
-                .shippingCity(order.getShippingCity())
-                .shippingState(order.getShippingState())
-                .shippingCountry(order.getShippingCountry())
-                .items(
-                        order.getItems().stream()
-                                .map(item -> OrderItemResponse.builder()
-                                        .productId(item.getProductId())
-                                        .productName(item.getProductName())
-                                        .price(item.getPrice())
-                                        .quantity(item.getQuantity())
-                                        .build()
-                                ).toList()
-                )
-                .build();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(mapToResponse(order));
     }
 
     // ===============================
-    // DOWNLOAD INVOICE (USER)
+    // CONFIRM AFTER PAYMENT
+    // ===============================
+    @PutMapping("/confirm/{orderId}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Order> confirmAfterPayment(@PathVariable Long orderId) {
+
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        return ResponseEntity.ok(
+                orderService.confirmOrderAfterPayment(orderId, email)
+        );
+    }
+
+    // ===============================
+    // DOWNLOAD INVOICE
     // ===============================
     @GetMapping("/invoice/{orderId}")
     @PreAuthorize("hasRole('USER')")
@@ -74,8 +67,7 @@ public class OrderController {
 
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
-                .getPrincipal()
-                .toString();
+                .getName();
 
         byte[] pdf = invoiceService.generateInvoice(orderId, email);
 
@@ -101,7 +93,7 @@ public class OrderController {
     }
 
     // ===============================
-    // CANCEL ORDER (USER)
+    // CANCEL ORDER
     // ===============================
     @PutMapping("/cancel/{orderId}")
     @PreAuthorize("hasRole('USER')")
@@ -117,7 +109,7 @@ public class OrderController {
     }
 
     // ===============================
-    // GET SINGLE ORDER (USER)
+    // GET SINGLE ORDER
     // ===============================
     @GetMapping("/{orderId}")
     @PreAuthorize("hasRole('USER')")
@@ -125,8 +117,7 @@ public class OrderController {
 
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
-                .getPrincipal()
-                .toString();
+                .getName();
 
         return ResponseEntity.ok(
                 orderService.getOrderByIdForUser(orderId, email)
@@ -142,10 +133,10 @@ public class OrderController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
+
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
-                .getPrincipal()
-                .toString();
+                .getName();
 
         return orderService.getUserOrders(email, page, size);
     }
@@ -169,5 +160,31 @@ public class OrderController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Order> getOrderForAdmin(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.getOrder(orderId));
+    }
+
+    // ===============================
+    // MAPPER
+    // ===============================
+    private OrderResponse mapToResponse(Order order) {
+        return OrderResponse.builder()
+                .id(order.getId())
+                .status(order.getStatus().name())
+                .totalAmount(order.getTotalAmount())
+                .orderDate(order.getOrderDate())
+                .shippingName(order.getShippingName())
+                .shippingCity(order.getShippingCity())
+                .shippingState(order.getShippingState())
+                .shippingCountry(order.getShippingCountry())
+                .items(
+                        order.getItems().stream()
+                                .map(i -> OrderItemResponse.builder()
+                                        .productId(i.getProductId())
+                                        .productName(i.getProductName())
+                                        .price(i.getPrice())
+                                        .quantity(i.getQuantity())
+                                        .build()
+                                ).toList()
+                )
+                .build();
     }
 }

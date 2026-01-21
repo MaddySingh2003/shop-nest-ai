@@ -3,7 +3,7 @@ import { LoginComponent } from './pages/login/login';
 import { authGuard } from './core/guards/auth.guards';
 import { HomeComponent } from './pages/home/home';
 import { PaymentComponenet } from './pages/payment/payment';
-import { InvoiceComponenets } from './pages/Invoice/invoice';
+import { InvoiceComponent } from './pages/Invoice/invoice';
 
 export const routes: Routes = [
 
@@ -46,7 +46,7 @@ export const routes: Routes = [
 ,
 {path: 'payment/:id', component:PaymentComponenet  
 },{
-  path: 'invoice/:id', component:InvoiceComponenets
+  path: 'invoice/:id', component:InvoiceComponent
 },
   {
     path:'wishlist',
