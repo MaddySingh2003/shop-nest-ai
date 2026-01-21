@@ -4,6 +4,7 @@ import { authGuard } from './core/guards/auth.guards';
 import { HomeComponent } from './pages/home/home';
 import { PaymentComponenet } from './pages/payment/payment';
 import { InvoiceComponent } from './pages/Invoice/invoice';
+import { AdminOrdersComponent } from './pages/admin/admin-orders';
 
 export const routes: Routes = [
 
@@ -55,6 +56,8 @@ export const routes: Routes = [
   {
   path:'order-success/:id',
   loadComponent:()=>import('./pages/orders/order-success').then(m=>m.OrderSuccessComponent)
+},{
+  path:'admin-orders',component:AdminOrdersComponent
 }
 ,
 {

@@ -1,0 +1,37 @@
+<div class="max-w-6xl mx-auto p-6">
+
+  <h2 class="text-2xl font-bold mb-4">Admin Orders</h2>
+
+  <table class="w-full border">
+
+    <tr class="bg-gray-200">
+      <th>ID</th>
+      <th>User</th>
+      <th>Total</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+
+    <tr *ngFor="let o of orders" class="border-t">
+      <td>{{o.id}}</td>
+      <td>{{o.user?.email}}</td>
+      <td>₹{{o.totalAmount}}</td>
+      <td>{{o.status}}</td>
+      <td class="flex gap-2">
+
+        <button class="bg-blue-500 text-white px-2 py-1"
+                (click)="updateStatus(o.id,'SHIPPED')">
+          Ship
+        </button>
+
+        <button class="bg-green-500 text-white px-2 py-1"
+                (click)="updateStatus(o.id,'DELIVERED')">
+          Deliver
+        </button>
+
+      </td>
+    </tr>
+
+  </table>
+
+</div>

@@ -4,10 +4,10 @@
 
 <div *ngIf="!loading && order" class="max-w-3xl mx-auto p-6 border rounded shadow">
 
-  <h2 class="text-2xl font-bold mb-4">Order #{{order.id}}</h2>
+<h2 class="text-2xl font-bold mb-4">Order #{{order.id}}</h2>
 
-  <!-- STATUS TRACKER -->
-  <div class="tracking">
+<!-- STATUS TRACKER -->
+<div class="tracking mb-6">
 
   <div class="step" [class.active]="isCompleted('PENDING')">Pending</div>
   <div class="line" [class.active]="isCompleted('CONFIRMED')"></div>
@@ -22,38 +22,44 @@
 
 </div>
 
-  <p><b>Status:</b> {{order.status}}</p>
-  <p><b>Total:</b> ₹{{order.totalAmount}}</p>
+<p><b>Status:</b> {{order.status}}</p>
+<p><b>Total:</b> ₹{{order.totalAmount}}</p>
 
-  <!-- ACTIONS -->
-  <div class="flex gap-3 mt-4">
+<!-- ACTION BUTTONS -->
+<div class="flex gap-3 mt-4">
 
-    <button *ngIf="order.status==='PENDING'"
-  class="btn-blue"
-  [routerLink]="['/payment', order.id]">
-  Pay Now
-</button>
+  <button *ngIf="order.status==='PENDING'"
+    class="btn-blue"
+    [routerLink]="['/payment', order.id]">
+    Pay Now
+  </button>
 
+  <button *ngIf="order.status==='PENDING' || order.status==='CONFIRMED'"
+    class="btn-red"
+    (click)="cancelOrder()">
+    Cancel Order
+  </button>
 
-    <button 
-      class="btn-red"
-      (click)="cancelOrder()">
-      Cancel Order
-    </button>
+  <button *ngIf="order.status==='DELIVERED'"
+    class="btn-gray"
+    (click)="downloadInvoice()">
+    Download Invoice
+  </button>
 
-    <button *ngIf="order.status==='DELIVERED'"
-      class="btn-gray"
-      (click)="downloadInvoice()">
-      Download Invoice
-    </button>
+</div>
 
-  </div>
+<hr class="my-5">
 
-  <hr class="my-5">
+<div *ngFor="let i of order.items" class="flex justify-between border-b py-2">
+  <div>{{i.productName}}</div>
+  <div>₹{{i.price}} x {{i.quantity}}</div>
+</div>
 
-  <div *ngFor="let i of order.items" class="flex justify-between border-b py-2">
-    <div>{{i.productName}}</div>
-    <div>₹{{i.price}} x {{i.quantity}}</div>
-  </div>
+        <a
+          [routerLink]="['/admin-orders']"
+          class="bg-blue-600 text-white px-3 py-1 rounded">
+          View
+        </a>
+
 
 </div>

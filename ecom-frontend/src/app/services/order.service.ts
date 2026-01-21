@@ -39,4 +39,9 @@ export class OrderService {
   return this.http.put(`${this.API}/confirm/${id}`, null);
 }
 
+getAllOrdersAdmin(){
+  return this.http.get('http://localhost:8080/orders/admin/all');
+}
+
+
 }

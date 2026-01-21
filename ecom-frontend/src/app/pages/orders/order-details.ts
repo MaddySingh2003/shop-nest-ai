@@ -6,7 +6,7 @@ import { OrderService } from '../../services/order.service';
 @Component({
   selector: 'app-order-details',
   standalone: true,
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './order-details.html'
 })
 export class OrderDetailsComponent implements OnInit {
@@ -14,7 +14,7 @@ export class OrderDetailsComponent implements OnInit {
   order:any = null;
   loading = true;
 
-  
+  statuses = ['PENDING','CONFIRMED','SHIPPED','DELIVERED'];
 
   constructor(
     private route:ActivatedRoute,
@@ -30,23 +30,16 @@ export class OrderDetailsComponent implements OnInit {
   loadOrder(id:number){
     this.orderService.getOrderById(id).subscribe(res=>{
       this.order = res;
-
-      // 🔥 YOUR RULE: Order page never shows PENDING
-      
       this.loading = false;
       this.cdr.detectChanges();
     });
   }
 
-  statuses = ['PENDING','CONFIRMED','SHIPPED','DELIVERED'];
-
-isCompleted(step:string){
-  if(!this.order) return false;
-  return this.statuses.indexOf(this.order.status)
-       >= this.statuses.indexOf(step);
-       
-}
-
+  isCompleted(step:string){
+    if(!this.order) return false;
+    return this.statuses.indexOf(this.order.status) 
+        >= this.statuses.indexOf(step);
+  }
 
   cancelOrder(){
     if(!confirm("Cancel this order?")) return;
@@ -55,10 +48,6 @@ isCompleted(step:string){
       alert("Order cancelled");
       this.loadOrder(this.order.id);
     });
-  }
-
-  payNow(){
-    alert("Redirecting to payment gateway...");
   }
 
   downloadInvoice(){
