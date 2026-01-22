@@ -1,37 +1,45 @@
-<div class="max-w-6xl mx-auto p-6">
+<table class="w-full border">
 
-  <h2 class="text-2xl font-bold mb-4">Admin Orders</h2>
+<tr class="bg-gray-200">
+  <th>ID</th>
+  <th>User</th>
+  <th>Total</th>
+  <th>Status</th>
+  <th>Action</th>
+</tr>
 
-  <table class="w-full border">
+<tr *ngFor="let o of orders" class="border-t">
 
-    <tr class="bg-gray-200">
-      <th>ID</th>
-      <th>User</th>
-      <th>Total</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
+  <td>{{o.id}}</td>
+  <td>{{o.userEmail}}</td>
+  <td>₹{{o.totalAmount}}</td>
+  <td>{{o.status}}</td>
 
-    <tr *ngFor="let o of orders" class="border-t">
-      <td>{{o.id}}</td>
-      <td>{{o.user?.email}}</td>
-      <td>₹{{o.totalAmount}}</td>
-      <td>{{o.status}}</td>
-      <td class="flex gap-2">
+  <td class="flex gap-2">
 
-        <button class="bg-blue-500 text-white px-2 py-1"
-                (click)="updateStatus(o.id,'SHIPPED')">
-          Ship
-        </button>
+    <!-- PENDING / CONFIRMED -->
+    <button *ngIf="o.status==='PENDING' || o.status==='CONFIRMED'"
+      class="bg-blue-600 text-white px-2"
+      (click)="updateStatus(o.id,'SHIPPED')">
+      Ship
+    </button>
 
-        <button class="bg-green-500 text-white px-2 py-1"
-                (click)="updateStatus(o.id,'DELIVERED')">
-          Deliver
-        </button>
+    <!-- SHIPPED -->
+    <button *ngIf="o.status==='SHIPPED'"
+      class="bg-green-600 text-white px-2"
+      (click)="updateStatus(o.id,'DELIVERED')">
+      Deliver
+    </button>
 
-      </td>
-    </tr>
+    <!-- DELIVERED or CANCELLED -->
+   <button *ngIf="o.status==='DELIVERED' || o.status==='CANCELLED'"
+  class="bg-red-600 text-white px-2"
+  (click)="deleteOrder(o.id)">
+  Delete
+</button>
 
-  </table>
+  </td>
 
-</div>
+</tr>
+
+</table>

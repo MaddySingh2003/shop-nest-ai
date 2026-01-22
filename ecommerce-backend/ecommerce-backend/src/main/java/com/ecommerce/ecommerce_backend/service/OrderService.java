@@ -239,4 +239,10 @@ public Order confirmOrderAfterPayment(Long orderId, String email) {
 
         return orderRepository.save(order);
     }
+    @Transactional
+public void deleteOrder(Long id){
+    orderRepository.deleteById(id);
+}
+
+    
 }

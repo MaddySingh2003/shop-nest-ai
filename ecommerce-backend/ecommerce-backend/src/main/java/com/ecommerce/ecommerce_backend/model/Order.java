@@ -3,6 +3,7 @@ package com.ecommerce.ecommerce_backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -61,7 +62,9 @@ private String shippingZip;
 private String shippingCountry;
 
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<OrderItem> items;
+   @OneToMany(mappedBy = "order",
+           cascade = CascadeType.ALL,
+           orphanRemoval = true)
+private List<OrderItem> items = new ArrayList<>();
+
 }

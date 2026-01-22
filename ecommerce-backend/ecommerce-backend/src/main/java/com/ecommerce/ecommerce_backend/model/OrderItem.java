@@ -21,6 +21,7 @@ public class OrderItem {
     // Order reference
     @ManyToOne
     @JsonBackReference
+    @JoinColumn(name = "order_id")
     private Order order;
 
     // Product Snapshot
