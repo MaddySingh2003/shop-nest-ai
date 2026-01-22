@@ -38,6 +38,7 @@ public class OrderController {
                 .getName();
 
         Order order = orderService.placeOrder(email, addressId, coupon);
+  
 
         return ResponseEntity.ok(mapToResponse(order));
     }
@@ -45,18 +46,19 @@ public class OrderController {
     // ===============================
     // CONFIRM AFTER PAYMENT
     // ===============================
-    @PutMapping("/confirm/{orderId}")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Order> confirmAfterPayment(@PathVariable Long orderId) {
+   @PutMapping("/confirm/{orderId}")
+@PreAuthorize("hasRole('USER')")
+public ResponseEntity<Order> confirmAfterPayment(
+        @PathVariable Long orderId,
+        @RequestParam String method){
 
-        String email = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
+    String email = SecurityContextHolder.getContext()
+            .getAuthentication().getName();
 
-        return ResponseEntity.ok(
-                orderService.confirmOrderAfterPayment(orderId, email)
-        );
-    }
+    return ResponseEntity.ok(
+        orderService.confirmOrderAfterPayment(orderId,email,method)
+    );
+}
 
     // ===============================
     // DOWNLOAD INVOICE

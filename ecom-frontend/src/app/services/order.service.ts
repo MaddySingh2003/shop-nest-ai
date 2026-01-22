@@ -35,9 +35,13 @@ export class OrderService {
       null
     );
   }
-  confirmAfterPayment(id:number){
-  return this.http.put(`${this.API}/confirm/${id}`, null);
+ confirmAfterPayment(id:number, method:string){
+  return this.http.put(
+    `${this.API}/confirm/${id}?method=${method}`,
+    null
+  );
 }
+
 
 getAllOrders(){
   return this.http.get(`${this.API}/admin/all`);

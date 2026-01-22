@@ -14,31 +14,42 @@
   <td>{{o.userEmail}}</td>
   <td>₹{{o.totalAmount}}</td>
   <td>{{o.status}}</td>
+  <td>{{o.paymentStatus}}</td>
+<td>{{o.paymentMethod}}</td>
 
-  <td class="flex gap-2">
+<td class="flex gap-2">
 
-    <!-- PENDING / CONFIRMED -->
-    <button *ngIf="o.status==='PENDING' || o.status==='CONFIRMED'"
-      class="bg-blue-600 text-white px-2"
-      (click)="updateStatus(o.id,'SHIPPED')">
-      Ship
-    </button>
+  <!-- PENDING / CONFIRMED -->
+  <button
+    *ngIf="o.status?.toUpperCase()==='CONFIRMED'"
+    class="bg-blue-600 text-white px-2"
+    (click)="updateStatus(o.id,'SHIPPED')">
+    Ship
+  </button>
 
-    <!-- SHIPPED -->
-    <button *ngIf="o.status==='SHIPPED'"
-      class="bg-green-600 text-white px-2"
-      (click)="updateStatus(o.id,'DELIVERED')">
-      Deliver
-    </button>
+  <!-- SHIPPED -->
+  <button
+    *ngIf="o.status?.toUpperCase()==='SHIPPED'"
+    class="bg-green-600 text-white px-2"
+    (click)="updateStatus(o.id,'DELIVERED')">
+    Deliver
+  </button>
 
-    <!-- DELIVERED or CANCELLED -->
-   <button *ngIf="o.status==='DELIVERED' || o.status==='CANCELLED'"
-  class="bg-red-600 text-white px-2"
-  (click)="deleteOrder(o.id)">
-  Delete
-</button>
+  <!-- DELIVERED / CANCELLED -->
+  <button
+    *ngIf="o.status?.toUpperCase()==='DELIVERED' || o.status?.toUpperCase()==='CANCELLED'"
+    class="bg-red-600 text-white px-2"
+    (click)="deleteOrder(o.id)">
+    Delete
+  </button><button
+    *ngIf="o.status?.toUpperCase()==='PENDING'"
+    class="bg-red-600 text-white px-2"
+    (click)="deleteOrder(o.id)">
+    Force Delete
+  </button>
 
-  </td>
+</td>
+
 
 </tr>
 

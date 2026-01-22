@@ -34,15 +34,14 @@ export class AdminOrdersComponent implements OnInit {
   }
 
  deleteOrder(id:number){
-  if(!confirm("Delete this order permanently?")) return;
-
   this.orderService.deleteAdminOrder(id).subscribe({
     next:()=>{
-      this.orders = this.orders.filter(o=>o.id!==id);
+      // 🔥 remove from UI immediately
+      this.orders = this.orders.filter(o => o.id !== id);
     },
     error:(err)=>{
-      alert("Delete failed");
       console.error(err);
+      alert("Delete failed");
     }
     
   });

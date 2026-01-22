@@ -21,6 +21,7 @@
   <div class="step" [class.active]="isCompleted('DELIVERED')">Delivered</div>
 
 </div>
+<p><b>Payment:</b> {{order.paymentStatus}} ({{order.paymentMethod}})</p>
 
 <p><b>Status:</b> {{order.status}}</p>
 <p><b>Total:</b> ₹{{order.totalAmount}}</p>
@@ -29,10 +30,10 @@
 <div class="flex gap-3 mt-4">
 
   <button *ngIf="order.status==='PENDING'"
-    class="btn-blue"
-    [routerLink]="['/payment', order.id]">
-    Pay Now
-  </button>
+  routerLink="/payment/{{order.id}}">
+Pay Now
+</button>
+
 
   <button *ngIf="order.status==='PENDING' || order.status==='CONFIRMED'"
     class="btn-red"

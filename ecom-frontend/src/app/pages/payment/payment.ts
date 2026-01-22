@@ -28,23 +28,21 @@ export class PaymentComponenet implements OnInit {
 
   pay(){
 
-    console.log("Payment Method:", this.paymentMethod);
-    this.loading=true;
+  this.loading=true;
 
-    // 🔥 UPDATE STATUS IN BACKEND
-    this.orderService.confirmAfterPayment(this.orderId)
-      .subscribe({
-        next:()=>{
-          setTimeout(()=>{
-            alert(`Payment successful via ${this.paymentMethod}`);
-            this.router.navigate(['/invoice', this.orderId]);
-          },1000);
-        },
-        error:(err)=>{
-          console.error(err);
-          alert("Payment failed");
-          this.loading=false;
-        }
-      });
-  }
+  this.orderService.confirmAfterPayment(
+      this.orderId,
+      this.paymentMethod
+  ).subscribe({
+    next:()=>{
+      alert("Payment successful");
+      this.router.navigate(['/invoice',this.orderId]);
+    },
+    error:()=>{
+      alert("Payment failed");
+      this.loading=false;
+    }
+  });
+}
+
 }

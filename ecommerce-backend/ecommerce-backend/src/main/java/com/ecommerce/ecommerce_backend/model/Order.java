@@ -67,4 +67,8 @@ private String shippingCountry;
            orphanRemoval = true)
 private List<OrderItem> items = new ArrayList<>();
 
+private String paymentStatus;   
+private String paymentMethod;   
+
+
 }

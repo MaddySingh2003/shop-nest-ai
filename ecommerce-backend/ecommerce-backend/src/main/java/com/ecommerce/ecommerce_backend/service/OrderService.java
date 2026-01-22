@@ -64,6 +64,9 @@ public class OrderService {
         order.setUser(user);
         order.setStatus(Status.PENDING);
         order.setOrderDate(LocalDateTime.now());
+              order.setPaymentStatus("UNPAID");
+order.setPaymentMethod("NOT_SELECTED");
+
 
         double total = 0;
         List<OrderItem> orderItems = new ArrayList<>();
@@ -147,7 +150,8 @@ public class OrderService {
 
         return orderRepository.findByUser(user, pageable);
     }
-public Order confirmOrderAfterPayment(Long orderId, String email) {
+    @Transactional
+public Order confirmOrderAfterPayment(Long orderId, String email, String method){
 
     Order order = orderRepository.findById(orderId)
         .orElseThrow();
@@ -157,8 +161,12 @@ public Order confirmOrderAfterPayment(Long orderId, String email) {
     }
 
     order.setStatus(Status.CONFIRMED);
+    order.setPaymentStatus("PAID");
+    order.setPaymentMethod(method);
+
     return orderRepository.save(order);
 }
+
 
     // =========================
     // ADMIN — ALL ORDERS
