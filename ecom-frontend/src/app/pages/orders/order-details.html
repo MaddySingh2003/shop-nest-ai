@@ -40,6 +40,12 @@ Pay Now
     (click)="cancelOrder()">
     Cancel Order
   </button>
+  <button
+  *ngIf="order.status==='CONFIRMED'"
+      class="bg-green-600 text-white px-4 py-2 rounded"
+      (click)="downloadInvoice()">
+      Download Invoice PDF
+    </button>
 
   <button *ngIf="order.status==='DELIVERED'"
     class="btn-gray"

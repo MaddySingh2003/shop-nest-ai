@@ -40,8 +40,10 @@ public class InvoiceService {
 
         document.add(new Paragraph("Order ID: " + order.getId()));
         document.add(new Paragraph("Order Date: " + order.getOrderDate()));
-        document.add(new Paragraph("Status: " + order.getStatus()));
-        document.add(new Paragraph(" "));
+        document.add(new Paragraph("Order Status: " + order.getStatus()));
+document.add(new Paragraph("Payment Status: " + order.getPaymentStatus()));
+document.add(new Paragraph("Payment Method: " + order.getPaymentMethod()));
+document.add(new Paragraph(" "));
 
         document.add(new Paragraph("Shipping Address")
                 .setBold());
@@ -71,8 +73,10 @@ public class InvoiceService {
         document.add(new Paragraph(" "));
         document.add(new Paragraph("Total Amount: ₹" + order.getTotalAmount())
                 .setBold());
+        
 
         document.close();
+        
 
         return out.toByteArray();
     }
