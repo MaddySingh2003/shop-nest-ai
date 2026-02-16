@@ -252,5 +252,13 @@ public void deleteOrder(Long id){
     orderRepository.deleteById(id);
 }
 
-    
+  @Transactional
+public void softDeleteOrder(Long id) {
+    Order order = orderRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Order not found"));
+
+    order.setDeleted(true);
+    orderRepository.save(order);
+}
+  
 }

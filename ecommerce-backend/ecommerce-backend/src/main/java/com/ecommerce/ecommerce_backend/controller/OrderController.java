@@ -189,10 +189,11 @@ public ResponseEntity<Order> confirmAfterPayment(
                 )
                 .build();
     }
+
     @DeleteMapping("/admin/delete/{id}")
 @PreAuthorize("hasRole('ADMIN')")
-public ResponseEntity<Void> delete(@PathVariable Long id){
-    orderService.deleteOrder(id);
+public ResponseEntity<Void> delete(@PathVariable Long id) {
+    orderService.softDeleteOrder(id);
     return ResponseEntity.ok().build();
 }
 

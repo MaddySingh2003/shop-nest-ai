@@ -45,7 +45,7 @@ export class AdminOrdersComponent implements OnInit {
     }
     
   });
-  this.loadOrders();
+  
 }
 
 

@@ -69,6 +69,8 @@ private List<OrderItem> items = new ArrayList<>();
 
 private String paymentStatus;   
 private String paymentMethod;   
+@Column(nullable = false)
+private boolean deleted=false;
 
 
 }
