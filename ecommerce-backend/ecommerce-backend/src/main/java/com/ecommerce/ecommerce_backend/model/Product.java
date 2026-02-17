@@ -33,4 +33,9 @@ public class Product {
     
 @Column(nullable = false)
 private int stock = 0;
+
+@Column(name="predicted-price")
+private Double predictedPrice;
+
+private String category;
 }

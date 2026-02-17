@@ -1,5 +1,6 @@
 package com.ecommerce.ecommerce_backend.service;
 
+import com.ecommerce.ecommerce_backend.dto.PricePredictionRequest;
 import com.ecommerce.ecommerce_backend.dto.ProductRequest;
 import com.ecommerce.ecommerce_backend.model.Product;
 import com.ecommerce.ecommerce_backend.repository.ProductRepository;
@@ -17,19 +18,39 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final MlService mlService;
 
 
       public Product addProduct(ProductRequest request){
-        Product product = Product.builder()
-                .name(request.getName())
-                .description(request.getDescription())
-                .brand(request.getBrand())
-                .price(request.getPrice())
-                .imageUrl(request.getImageUrl())
-                .build();
 
-        return productRepository.save(product);
+    Product product = Product.builder()
+            .name(request.getName())
+            .description(request.getDescription())
+            .brand(request.getBrand())
+            .category(request.getCategory())   // ⚠ make sure category exists
+            .price(request.getPrice())
+            .imageUrl(request.getImageUrl())
+            .build();
+
+    // 🔥 CALL ML SERVICE
+    PricePredictionRequest mlRequest = new PricePredictionRequest();
+    mlRequest.setCategory(product.getCategory());
+    mlRequest.setBrand(product.getBrand());
+    mlRequest.setBase_price(product.getPrice());
+    mlRequest.setDemand_score(0.7);   // temporary static value
+    mlRequest.setRating(4.0);         // temporary static value
+
+    try {
+        Double predicted = mlService.getPredictedPrice(mlRequest);
+        product.setPredictedPrice(predicted);
+    } catch (Exception e) {
+        System.out.println("ML Service Failed: " + e.getMessage());
+        product.setPredictedPrice(product.getPrice()); // fallback
     }
+
+    return productRepository.save(product);
+}
+
 
     public List<Product> getAll() {
         return productRepository.findAll();

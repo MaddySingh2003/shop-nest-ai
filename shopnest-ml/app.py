@@ -23,8 +23,8 @@ def predict_price(data:dict):
         prediction=model.predict(features)[0]
 
         return{
-            "predictes-price":round(float(prediction),2)
-        }
+         "predicted_price": round(float(prediction), 2)
+}
     
     except Exception as e:
         return{"error":str(e)}

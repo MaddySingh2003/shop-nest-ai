@@ -9,4 +9,5 @@ public class ProductRequest {
     private String brand;
     private double price;
     private String imageUrl;
+ private String category;
 }
