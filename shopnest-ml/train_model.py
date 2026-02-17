@@ -56,3 +56,24 @@ joblib.dump(le_category, "model/le_category.pkl")
 joblib.dump(le_brand, "model/le_brand.pkl")
 
 print("Model trained and saved successfully!")
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+df_original=pd.read_csv("data/products.csv")
+
+df_original["description"]=(
+    df_original["category"]+" "+
+    df_original["brand"]
+)
+
+vectorizer=TfidfVectorizer()
+tfidf_matrix=vectorizer.fit_transform(df_original["description"])
+
+os.makedirs("model",exist_ok=True)
+
+joblib.dump(tfidf_matrix, "model/tfidf_matrix.pkl")
+joblib.dump(vectorizer, "model/vectorizer.pkl")
+joblib.dump(df_original, "model/products_df.pkl")
+
+print("Recomendation model saved.")
