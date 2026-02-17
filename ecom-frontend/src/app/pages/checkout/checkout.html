@@ -1,82 +1,189 @@
-<div class="max-w-xl mx-auto p-6">
+<app-navbar></app-navbar>
 
-<h2 class="text-2xl font-bold mb-4">Checkout</h2>
+<div class="bg-gray-100 min-h-screen py-10 px-4">
 
-<!-- LOADING -->
-<div *ngIf="loading" class="text-center text-gray-500">
-  Loading addresses...
-</div>
+  <div class="max-w-6xl mx-auto">
 
-<!-- ADDRESS LIST -->
-<div *ngIf="!loading && addresses.length > 0">
+    <h2 class="text-3xl font-bold text-gray-800 mb-8">
+      Checkout
+    </h2>
 
-  <select [(ngModel)]="addressId" class="border p-2 w-full rounded mb-4">
-    <option [ngValue]="null" disabled>Select address</option>
-    <option *ngFor="let a of addresses" [ngValue]="a.id">
-      {{ a.fullName }} - {{ a.city }}
-    </option>
-  </select>
-
-  <div *ngFor="let a of addresses" class="border p-3 mb-3 rounded bg-gray-50">
-
-    <p class="font-semibold">{{a.fullName}}</p>
-    <p>{{a.street}}, {{a.city}}</p>
-    <p>{{a.state}} - {{a.zipCode}}</p>
-    <p>{{a.phone}}</p>
-
-    <div class="mt-2 flex gap-2">
-      <button class="text-blue-600" (click)="editAddress(a)">Edit</button>
-      <button class="text-red-600" (click)="deleteAddress(a.id)">Delete</button>
+    <!-- LOADING -->
+    <div *ngIf="loading" class="text-center text-gray-500 py-10">
+      Loading addresses...
     </div>
+
+    <div *ngIf="!loading" class="grid md:grid-cols-3 gap-8">
+
+      <!-- LEFT SIDE - ADDRESSES -->
+      <div class="md:col-span-2 space-y-6">
+
+        <!-- Address List -->
+        <div *ngIf="addresses.length > 0">
+
+          <h3 class="text-lg font-semibold mb-4">
+            Select Delivery Address
+          </h3>
+
+          <div *ngFor="let a of addresses"
+               class="bg-white rounded-2xl shadow-sm p-5 border-2 cursor-pointer transition"
+               [ngClass]="addressId === a.id ? 
+               'border-black shadow-md' : 'border-transparent'">
+
+            <div class="flex justify-between">
+
+              <div (click)="addressId = a.id">
+
+                <p class="font-semibold text-gray-800">
+                  {{a.fullName}}
+                </p>
+
+                <p class="text-gray-600 text-sm mt-1">
+                  {{a.street}}, {{a.city}}
+                </p>
+
+                <p class="text-gray-600 text-sm">
+                  {{a.state}} - {{a.zipCode}}
+                </p>
+
+                <p class="text-gray-600 text-sm">
+                  {{a.phone}}
+                </p>
+
+              </div>
+
+              <div class="text-right space-y-2">
+
+                <button class="text-blue-600 text-sm hover:underline"
+                        (click)="editAddress(a)">
+                  Edit
+                </button>
+
+                <button class="text-red-500 text-sm hover:underline"
+                        (click)="deleteAddress(a.id)">
+                  Delete
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <button
+            class="mt-4 text-black font-medium hover:underline"
+            (click)="showForm = true">
+            + Add New Address
+          </button>
+
+        </div>
+
+        <!-- NO ADDRESS -->
+        <div *ngIf="addresses.length === 0"
+             class="bg-white rounded-2xl shadow-md p-10 text-center">
+
+          <p class="text-gray-500 mb-4">
+            No saved addresses found.
+          </p>
+
+          <button
+            class="bg-black text-white px-6 py-2 rounded-xl"
+            (click)="showForm = true">
+            Add Address
+          </button>
+
+        </div>
+
+        <!-- ADD / EDIT FORM -->
+        <div *ngIf="showForm"
+             class="bg-white rounded-2xl shadow-md p-6 mt-6">
+
+          <h3 class="text-lg font-semibold mb-5">
+            Add / Edit Address
+          </h3>
+
+          <div class="grid md:grid-cols-2 gap-4">
+
+            <input [(ngModel)]="newAddress.fullName"
+                   placeholder="Full Name"
+                   class="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none"/>
+
+            <input [(ngModel)]="newAddress.phone"
+                   placeholder="Phone"
+                   class="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none"/>
+
+            <input [(ngModel)]="newAddress.street"
+                   placeholder="Street"
+                   class="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none md:col-span-2"/>
+
+            <input [(ngModel)]="newAddress.city"
+                   placeholder="City"
+                   class="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none"/>
+
+            <input [(ngModel)]="newAddress.state"
+                   placeholder="State"
+                   class="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none"/>
+
+            <input [(ngModel)]="newAddress.zipCode"
+                   placeholder="Zip Code"
+                   class="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none"/>
+          </div>
+
+          <div class="flex gap-4 mt-6">
+
+            <button
+              class="bg-black text-white px-6 py-2 rounded-xl"
+              (click)="saveAddress()">
+              Save Address
+            </button>
+
+            <button
+              class="border px-6 py-2 rounded-xl"
+              (click)="showForm = false">
+              Cancel
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- RIGHT SIDE - ORDER SUMMARY -->
+      <div class="bg-white rounded-2xl shadow-md p-6 h-fit">
+
+        <h3 class="text-lg font-semibold mb-5">
+          Order Summary
+        </h3>
+
+        <div class="flex justify-between text-gray-600 mb-3">
+          <span>Subtotal</span>
+          <span>₹ {{ total }}</span>
+        </div>
+
+        <div class="flex justify-between text-gray-600 mb-3">
+          <span>Shipping</span>
+          <span class="text-green-600">Free</span>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="flex justify-between font-bold text-lg">
+          <span>Total</span>
+          <span>₹ {{ total }}</span>
+        </div>
+
+        <button
+          class="w-full bg-black text-white py-3 rounded-xl mt-6 disabled:opacity-50"
+          [disabled]="!addressId"
+          (click)="placeOrder()">
+          Place Order
+        </button>
+
+      </div>
+
+    </div>
+
   </div>
-
-  <button
-    type="button"
-    class="bg-green-600 text-white px-4 py-2 mt-4 rounded"
-    [disabled]="!addressId"
-    (click)="placeOrder()">
-    Place Order
-  </button>
-
-</div>
-
-<!-- NO ADDRESS -->
-<div *ngIf="!loading && addresses.length === 0" class="text-center">
-
-  <p class="text-gray-500 mb-3">No addresses found</p>
-
-  <button class="bg-blue-600 text-white px-4 py-2 rounded"
-          (click)="showForm=true">
-    Add Address
-  </button>
-</div>
-
-<!-- ADD / EDIT FORM -->
-<div *ngIf="showForm" class="mt-6 border p-4 rounded bg-gray-50">
-
-  <h3 class="font-bold mb-3">Address</h3>
-
-  <input [(ngModel)]="newAddress.fullName" placeholder="Full Name" class="input" />
-  <input [(ngModel)]="newAddress.phone" placeholder="Phone" class="input" />
-  <input [(ngModel)]="newAddress.street" placeholder="Street" class="input" />
-  <input [(ngModel)]="newAddress.city" placeholder="City" class="input" />
-  <input [(ngModel)]="newAddress.state" placeholder="State" class="input" />
-  <input [(ngModel)]="newAddress.zipCode" placeholder="Zip Code" class="input" />
-
-  <div class="flex gap-3 mt-3">
-    <button class="bg-green-600 text-white px-4 py-1 rounded"
-            type="button"
-            (click)="saveAddress()">
-      Save
-    </button>
-
-    <button class="bg-gray-400 text-white px-4 py-1 rounded"
-            type="button"
-            (click)="showForm=false">
-      Cancel
-    </button>
-  </div>
-
-</div>
 
 </div>

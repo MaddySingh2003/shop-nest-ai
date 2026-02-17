@@ -1,34 +1,61 @@
-<div class="max-w-4xl mx-auto p-6">
+<app-navbar></app-navbar>
 
-<h2 class="text-2xl font-bold mb-6">❤️ My Wishlist</h2>
+<div class="bg-gray-100 min-h-screen py-10 px-4">
 
-<div *ngIf="loading" class="text-center">Loading wishlist...</div>
+  <div class="max-w-5xl mx-auto">
 
-<div *ngIf="!loading && wishlist.length===0" class="text-center text-gray-500">
-Wishlist is empty
-</div>
+    <h2 class="text-3xl font-bold text-gray-800 mb-8">
+      ❤️ My Wishlist
+    </h2>
 
-<div *ngFor="let p of wishlist" class="border p-4 rounded mb-4 flex justify-between items-center">
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center text-gray-500 py-10">
+      Loading wishlist...
+    </div>
 
-  <div>
-    <h4 class="font-semibold">{{p.name}}</h4>
-    <p>₹ {{p.price}}</p>
+    <!-- Empty state -->
+    <div *ngIf="!loading && wishlist.length === 0" 
+         class="text-center text-gray-500 py-10">
+      Your wishlist is empty
+    </div>
+
+    <!-- Wishlist items -->
+    <div *ngIf="!loading && wishlist.length > 0" class="grid md:grid-cols-2 gap-6">
+
+      <div *ngFor="let p of wishlist" 
+           class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition p-5 flex justify-between items-center">
+
+        <!-- Product Info -->
+        <div>
+          <h4 class="text-lg font-semibold text-gray-800 mb-1">
+            {{ p.name }}
+          </h4>
+          <p class="text-gray-600 font-medium">
+            ₹ {{ p.price }}
+          </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col gap-2">
+
+          <button 
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl transition"
+            (click)="moveToCart(p)">
+            Move to Cart
+          </button>
+
+          <button 
+            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl transition"
+            (click)="remove(p.id)">
+            Remove
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
-
-  <div class="flex gap-2">
-    <button 
-      class="bg-green-600 text-white px-3 py-1 rounded"
-      (click)="moveToCart(p)">
-      Move to Cart
-    </button>
-
-    <button 
-      class="bg-red-500 text-white px-3 py-1 rounded"
-      (click)="remove(p.id)">
-      Remove
-    </button>
-  </div>
-
-</div>
 
 </div>

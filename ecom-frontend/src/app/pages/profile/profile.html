@@ -1,72 +1,130 @@
-<div class="max-w-xl mx-auto mt-10 bg-white shadow-lg rounded-xl p-6">
+<app-navbar></app-navbar>
 
-  <div class="flex items-center gap-3 mb-6">
-    <span class="text-3xl">👤</span>
-    <h2 class="text-2xl font-bold">My Profile</h2>
-  </div>
+<div class="bg-gray-100 min-h-screen py-12 px-4">
 
-  <!-- Loading -->
-  <div *ngIf="loading" class="text-center text-gray-500">
-    Loading profile...
-  </div>
+  <div class="max-w-4xl mx-auto">
 
-  <!-- View Mode -->
-  <div *ngIf="!loading && user && !edit" class="space-y-3">
+    <div class="bg-white rounded-3xl shadow-lg overflow-hidden">
 
-    <div class="flex justify-between border-b pb-2">
-      <span class="font-semibold">Name</span>
-      <span>{{user.name}}</span>
-    </div>
+      <!-- Header Section -->
+      <div class="p-8 border-b bg-white">
 
-    <div class="flex justify-between border-b pb-2">
-      <span class="font-semibold">Email</span>
-      <span>{{user.email}}</span>
-    </div>
+        <div class="flex items-center gap-6">
 
-    <div class="flex justify-between border-b pb-2">
-      <span class="font-semibold">Role</span>
-      <span class="uppercase">{{user.role}}</span>
-    </div>
+          <!-- Avatar -->
+          <div class="w-20 h-20 rounded-full bg-black text-white 
+                      flex items-center justify-center text-3xl font-semibold">
+            {{ user?.name?.charAt(0) || 'U' }}
+          </div>
 
-    <button
-      (click)="edit=true"
-      class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full transition">
-      ✏️ Edit Profile
-    </button>
+          <div>
+            <h2 class="text-2xl font-semibold text-gray-900">
+              {{ user?.name }}
+            </h2>
+            <p class="text-gray-500 text-sm">
+              {{ user?.email }}
+            </p>
+          </div>
 
-  </div>
+        </div>
 
-  <!-- Edit Mode -->
-  <div *ngIf="edit" class="space-y-4">
+      </div>
 
-    <div>
-      <label class="block text-sm font-semibold mb-1">Name</label>
-      <input
-        [(ngModel)]="profile.name"
-        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300" />
-    </div>
+      <!-- Body -->
+      <div class="p-8">
 
-    <div>
-      <label class="block text-sm font-semibold mb-1">Email</label>
-      <input
-        [(ngModel)]="profile.email"
-        disabled
-        class="w-full bg-gray-100 border rounded px-3 py-2 cursor-not-allowed" />
-    </div>
+        <!-- Loading -->
+        <div *ngIf="loading" class="text-center py-10 text-gray-500">
+          Loading profile...
+        </div>
 
-    <div class="flex gap-3 mt-4">
+        <!-- VIEW MODE -->
+        <div *ngIf="!loading && user && !edit" class="space-y-8">
 
-      <button
-        (click)="updateProfile()"
-        class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded transition">
-        💾 Save
-      </button>
+          <div class="grid md:grid-cols-2 gap-6">
 
-      <button
-        (click)="edit=false"
-        class="flex-1 bg-gray-400 hover:bg-gray-500 text-white py-2 rounded transition">
-        ❌ Cancel
-      </button>
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Full Name</p>
+              <p class="text-lg font-medium text-gray-800">
+                {{ user.name }}
+              </p>
+            </div>
+
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Email Address</p>
+              <p class="text-lg font-medium text-gray-800">
+                {{ user.email }}
+              </p>
+            </div>
+
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Account Role</p>
+              <span class="inline-block bg-gray-200 text-gray-700 
+                           text-xs font-semibold px-3 py-1 rounded-full uppercase">
+                {{ user.role }}
+              </span>
+            </div>
+
+          </div>
+
+          <div class="pt-6 border-t">
+            <button
+              (click)="edit = true"
+              class="bg-black hover:bg-gray-900 text-white 
+                     px-6 py-3 rounded-xl transition">
+              Edit Profile
+            </button>
+          </div>
+
+        </div>
+
+        <!-- EDIT MODE -->
+        <div *ngIf="edit" class="space-y-6">
+
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">
+              Full Name
+            </label>
+            <input
+              [(ngModel)]="profile.name"
+              class="w-full border border-gray-300 rounded-xl 
+                     px-4 py-3 focus:outline-none 
+                     focus:ring-2 focus:ring-black transition"
+              placeholder="Enter your name" />
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-600 mb-2">
+              Email Address
+            </label>
+            <input
+              [(ngModel)]="profile.email"
+              disabled
+              class="w-full bg-gray-100 border border-gray-200 
+                     rounded-xl px-4 py-3 text-gray-500 cursor-not-allowed" />
+          </div>
+
+          <div class="flex gap-4 pt-4">
+
+            <button
+              (click)="updateProfile()"
+              class="bg-black hover:bg-gray-900 text-white 
+                     px-6 py-3 rounded-xl transition">
+              Save Changes
+            </button>
+
+            <button
+              (click)="edit = false"
+              class="border border-gray-300 hover:bg-gray-100 
+                     px-6 py-3 rounded-xl transition">
+              Cancel
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
 

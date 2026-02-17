@@ -1,18 +1,64 @@
-<nav class="bg-green-900 text-white px-6 flex justify-between items-center">
-    <h1 class="text-xl font-bold">ShopNest</h1>
+<nav class="bg-white shadow-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex justify-between items-center h-16">
 
-    <a routerLink="/orders">My Orders</a>
+      <!-- Logo -->
+      <div class="flex items-center gap-8">
+        <h1 class="text-2xl font-bold text-green-900 tracking-wide cursor-pointer">
+          ShopNest
+        </h1>
 
-    <a routerLink="/wishlist"
- class="flex items-center gap-1 hover:text-red-500">
- ❤️ Wishlist
-</a>
-<a routerLink="/profile">Profile</a>
+        <!-- Desktop Links -->
+        <div class="hidden md:flex items-center gap-6 text-gray-700 font-medium">
+          <a routerLink="/home" class="hover:text-green-700 transition">Home</a>
+          <a routerLink="/orders" class="hover:text-green-700 transition">My Orders</a>
+          <a routerLink="/wishlist" 
+             class="relative hover:text-red-500 transition">
+            ❤️ Wishlist
+            <!-- Wishlist Badge -->
+            <span class="absolute -top-2 -right-4 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+              2
+            </span>
+          </a>
+        </div>
+      </div>
 
+      <!-- Search Bar -->
+      <div class="hidden md:flex flex-1 mx-8 max-w-md">
+        <input
+          type="text"
+          placeholder="Search products..."
+          class="w-full border rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-700"
+        />
+        <button class="bg-green-900 text-white px-4 rounded-r-lg hover:bg-green-800">
+          🔍
+        </button>
+      </div>
 
+      <!-- Right Section -->
+      <div class="flex items-center gap-4">
 
+        <!-- Profile -->
+        <a routerLink="/profile"
+           class="hidden md:flex items-center gap-2 text-gray-700 hover:text-green-700 transition">
+          👤 Profile
+        </a>
 
-    <button (click)="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded">
-        Logout
-    </button>
+        <!-- Logout -->
+        <button
+          (click)="logout()"
+          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition shadow-sm"
+        >
+          Logout
+        </button>
+
+        <!-- Mobile Menu Button -->
+        <button class="md:hidden text-2xl text-gray-700">
+          ☰
+        </button>
+
+      </div>
+
+    </div>
+  </div>
 </nav>

@@ -1,43 +1,89 @@
 <app-navbar></app-navbar>
 
-<div class="p-6">
-  <h2 class="text-2xl font-bold mb-4">Products</h2>
+<div class="bg-gray-50 min-h-screen py-10 px-6">
 
-  <p class="text-green-600 mb-3" *ngIf="message">
-    {{ message }}
-  </p>
+  <div class="max-w-7xl mx-auto">
 
-  <ng-container *ngIf="products$ | async as products; else loading">
+    <!-- Page Header -->
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-3xl font-bold text-gray-800">Featured Products</h2>
+      <p class="text-green-600 font-medium" *ngIf="message">
+        {{ message }}
+      </p>
+    </div>
 
-    <div *ngIf="products.length > 0; else noProducts"
-         class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <ng-container *ngIf="products$ | async as products; else loading">
 
-      <div *ngFor="let p of products"
-           class="border rounded p-4 shadow hover:shadow-lg">
+      <div *ngIf="products.length > 0; else noProducts"
+           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
 
-        <h3 class="font-semibold text-lg">{{ p.name }}</h3>
-        <p class="text-gray-600">{{ p.description }}</p>
-        <p class="font-bold mt-2">₹ {{ p.price }}</p>
+        <!-- Product Card -->
+        <div *ngFor="let p of products"
+             class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden group">
 
-       <button
-  class="mt-3 bg-blue-600 text-white px-4 py-2 rounded"
-  (click)="addToCart(p.id)">
-  Add to Cart
-</button>
-<button (click)="addWishlist(p.id) "class="text-red-500 text-xl">  ❤️</button>
-<button class="mt-3 ml-2 bg-blue-600 text-white px-4 py-2 rounded"
-   
-(click)="goToCart()">go to cart</button>
+          <!-- Product Image Placeholder -->
+          <div class="h-48 bg-gray-200 flex items-center justify-center">
+            <span class="text-gray-400 text-sm">Product Image</span>
+          </div>
+
+          <!-- Product Details -->
+          <div class="p-5">
+
+            <h3 class="font-semibold text-lg text-gray-800 group-hover:text-blue-600 transition">
+              {{ p.name }}
+            </h3>
+
+            <p class="text-gray-500 text-sm mt-2 line-clamp-2">
+              {{ p.description }}
+            </p>
+
+            <p class="font-bold text-xl mt-3 text-gray-900">
+              ₹ {{ p.price }}
+            </p>
+
+            <!-- Buttons -->
+            <div class="flex items-center justify-between mt-5">
+
+              <button
+                (click)="addToCart(p.id)"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition text-sm">
+                Add to Cart
+              </button>
+
+              <button
+                (click)="addWishlist(p.id)"
+                class="text-gray-400 hover:text-red-500 text-2xl transition">
+                ❤️
+              </button>
+
+            </div>
+
+            <!-- Go to Cart -->
+            <button
+              (click)="goToCart()"
+              class="w-full mt-4 border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white py-2 rounded-lg transition text-sm">
+              Go to Cart
+            </button>
+
+          </div>
+        </div>
 
       </div>
-    </div>
-  </ng-container>
+    </ng-container>
 
-  <ng-template #loading>
-    <p>Loading products...</p>
-  </ng-template>
+    <!-- Loading -->
+    <ng-template #loading>
+      <div class="text-center text-gray-500 text-lg py-20">
+        Loading products...
+      </div>
+    </ng-template>
 
-  <ng-template #noProducts>
-    <p>No products available</p>
-  </ng-template>
+    <!-- No Products -->
+    <ng-template #noProducts>
+      <div class="text-center text-gray-400 text-lg py-20">
+        No products available
+      </div>
+    </ng-template>
+
+  </div>
 </div>

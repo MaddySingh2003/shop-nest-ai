@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order.service';
 import { Observable, map, BehaviorSubject } from 'rxjs';
 import { RouterModule } from '@angular/router';
+import { Navbar } from '../../components/navbar/navbar';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule,Navbar],
   templateUrl: './orders.html'
 })export class OrdersComponent {
 

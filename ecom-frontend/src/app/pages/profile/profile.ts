@@ -2,11 +2,12 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ProfileService } from "../../services/profile.service";
 import { FormsModule } from "@angular/forms";
+import { Navbar } from "../../components/navbar/navbar";
 
 @Component({
     selector:'app-profile',
     standalone:true,
-    imports:[CommonModule,FormsModule],
+    imports:[CommonModule,FormsModule,Navbar],
     templateUrl:'./profile.html'
 })
 export class ProfileComponent implements OnInit{

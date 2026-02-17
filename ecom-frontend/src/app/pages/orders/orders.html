@@ -1,46 +1,89 @@
-<div class="max-w-5xl mx-auto p-6">
+<app-navbar></app-navbar>
 
-  <h2 class="text-2xl font-bold mb-6">📦 My Orders</h2>
+<div class="bg-gray-50 min-h-screen py-10 px-6">
 
-  <div *ngIf="orders$ | async as orders">
+  <div class="max-w-6xl mx-auto">
 
-    <div *ngIf="orders.length===0" class="text-center text-gray-500">
-      No orders found
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-3xl font-bold text-gray-800">
+        📦 My Orders
+      </h2>
     </div>
 
-    <div *ngFor="let o of orders"
-         class="border rounded p-4 mb-4 shadow flex justify-between items-center">
+    <div *ngIf="orders$ | async as orders">
 
-      <div>
-        <p class="font-semibold text-lg">
-          Order: {{ o.items[0]?.productName }}
-          <span *ngIf="o.items.length > 1" class="text-gray-500">
-            + {{ o.items.length-1 }} more item(s)
-          </span>
+      <!-- Empty State -->
+      <div *ngIf="orders.length === 0"
+           class="bg-white rounded-2xl shadow-md p-12 text-center">
+
+        <p class="text-gray-500 text-lg mb-4">
+          You haven't placed any orders yet.
         </p>
 
-        <p>Status: <b>{{o.status}}</b></p>
-        <p>Total: ₹{{o.totalAmount}}</p>
+        <a routerLink="/home"
+           class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">
+          Start Shopping
+        </a>
       </div>
 
-      <div class="flex gap-3">
+      <!-- Orders List -->
+      <div *ngFor="let o of orders"
+           class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition p-6 mb-6 flex flex-col md:flex-row md:justify-between md:items-center">
 
-        <a
-          [routerLink]="['/order-details', o.id]"
-          class="bg-blue-600 text-white px-3 py-1 rounded">
-          View
-        </a>
+        <!-- Order Info -->
+        <div class="mb-4 md:mb-0">
 
-        <button
-          class="bg-red-600 text-white px-3 py-1 rounded"
-          (click)="cancelOrder(o.id)">
-          Cancel
-        </button>
+          <p class="font-semibold text-lg text-gray-800">
+            {{ o.items[0]?.productName }}
+            <span *ngIf="o.items.length > 1"
+                  class="text-gray-500 font-normal">
+              + {{ o.items.length - 1 }} more item(s)
+            </span>
+          </p>
+
+          <div class="flex items-center gap-4 mt-2 text-sm text-gray-600">
+            <span>
+              Total: <b class="text-gray-800">₹{{o.totalAmount}}</b>
+            </span>
+
+            <!-- Status Badge -->
+            <span
+              class="px-3 py-1 rounded-full text-xs font-medium"
+              [ngClass]="{
+                'bg-yellow-100 text-yellow-700': o.status === 'PENDING',
+                'bg-blue-100 text-blue-700': o.status === 'CONFIRMED',
+                'bg-purple-100 text-purple-700': o.status === 'SHIPPED',
+                'bg-green-100 text-green-700': o.status === 'DELIVERED',
+                'bg-red-100 text-red-700': o.status === 'CANCELLED'
+              }">
+              {{o.status}}
+            </span>
+          </div>
+
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex gap-3">
+
+          <a
+            [routerLink]="['/order-details', o.id]"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition text-sm">
+            View Details
+          </a>
+
+          <button
+            *ngIf="o.status === 'PENDING' || o.status === 'CONFIRMED'"
+            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition text-sm"
+            (click)="cancelOrder(o.id)">
+            Cancel
+          </button>
+
+        </div>
 
       </div>
 
     </div>
 
   </div>
-
 </div>
