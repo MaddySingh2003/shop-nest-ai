@@ -56,3 +56,30 @@ def recommend(product_id:int):
 
     return {"recommendations": recommendations[:5]}
 
+from pydantic import BaseModel
+
+class RecommendationRequest(BaseModel):
+    description: str
+
+
+@app.post("/recommend")
+def recommend(data: RecommendationRequest):
+
+    input_vector = vectorizer.transform([data.description])
+
+    cosine_sim = cosine_similarity(
+        input_vector,
+        tfidf_matrix
+    )
+
+    similar_indices = cosine_sim[0].argsort()[-6:][::-1]
+
+    recommendations = []
+
+    for idx in similar_indices:
+        recommendations.append({
+            "category": products_df.iloc[idx]["category"],
+            "brand": products_df.iloc[idx]["brand"]
+        })
+
+    return {"recommendations": recommendations[:5]}

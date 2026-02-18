@@ -41,7 +41,7 @@ public class SecurityConfig {
     .requestMatchers("/auth/**").permitAll()
 
     // PRODUCTS
-    .requestMatchers("/products", "/products/{id}", "/products/search", "/products/filter").permitAll()
+    .requestMatchers("/products", "/products/{id}", "/products/search", "/products/filter","/products/{id}/recommendations").permitAll()
     .requestMatchers("/products/**").hasRole("ADMIN")
 
     // USER

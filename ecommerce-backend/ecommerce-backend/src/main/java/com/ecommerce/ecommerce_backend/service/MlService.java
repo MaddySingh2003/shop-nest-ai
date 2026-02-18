@@ -3,9 +3,12 @@ package com.ecommerce.ecommerce_backend.service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import java.util.*;
 
 import com.ecommerce.ecommerce_backend.dto.PricePredictionRequest;
 import com.ecommerce.ecommerce_backend.dto.PricePredictionResponse;
+import com.ecommerce.ecommerce_backend.dto.RecommendationRequest;
+import com.ecommerce.ecommerce_backend.dto.RecommendationResponse;
 
 @Service
 public class MlService {
@@ -19,4 +22,22 @@ public class MlService {
             PricePredictionResponse.class);
             return response.getBody().getPredictedPrice();
     }
+
+public List<Map<String, String>> getRecommendations(String description) {
+
+    String url = "http://localhost:8000/recommend";
+
+    RecommendationRequest req = new RecommendationRequest();
+    req.setDescription(description);
+
+    ResponseEntity<RecommendationResponse> response =
+            restTemplate.postForEntity(
+                    url,
+                    req,
+                    RecommendationResponse.class
+            );
+
+    return response.getBody().getRecommendations();
+}
+
 }

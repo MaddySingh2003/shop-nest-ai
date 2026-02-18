@@ -101,4 +101,11 @@ public ResponseEntity<?> updateStock(
         productService.deleteProduct(id);
         return ResponseEntity.ok("Product Deleted");
     }
+
+   @GetMapping("/{id}/recommendations")
+public List<Product> recommend(@PathVariable Long id) {
+    return productService.getRecommendedProducts(id);
+}
+
+
 }

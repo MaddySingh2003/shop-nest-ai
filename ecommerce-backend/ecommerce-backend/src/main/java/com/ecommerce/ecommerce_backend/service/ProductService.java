@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -105,4 +106,19 @@ public Page<Product> filterByPrice(double min, double max, Pageable pageable){
     p.setStock(stock);
     return productRepository.save(p);
 }
+public List<Product> getRecommendedProducts(Long productId) {
+
+    Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new RuntimeException("Product not found"));
+
+    List<Map<String, String>> mlResults =
+            mlService.getRecommendations(product.getDescription());
+
+    String category = mlResults.get(0).get("category");
+    String brand = mlResults.get(0).get("brand");
+
+    return productRepository
+            .findByCategoryAndBrand(category, brand);
+}
+
 }
