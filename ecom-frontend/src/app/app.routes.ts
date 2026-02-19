@@ -71,6 +71,13 @@ export const routes: Routes = [
     import('./pages/product-details/product-details')
       .then(m => m.ProductDetailsComponent)
 },
+{
+  path: 'register',
+  loadComponent: () =>
+    import('./pages/register/register')
+      .then(m => m.RegisterComponent)
+}
+,
   {
     path: '',
     redirectTo: 'home',

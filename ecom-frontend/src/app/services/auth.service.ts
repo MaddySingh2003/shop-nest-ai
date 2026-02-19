@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +14,7 @@ export class AuthService {
     private router: Router
   ) {}
 
-  // ✅ LOGIN API (email + password)
+  // LOGIN
   login(email: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.API}/login`, {
       email,
@@ -23,23 +22,30 @@ export class AuthService {
     });
   }
 
-  // ✅ SAVE TOKEN & REDIRECT
+  // REGISTER
+  register(name: string, email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.API}/register`, {
+      name,
+      email,
+      password
+    });
+  }
+
+  // SAVE TOKEN
   loginSuccess(token: string) {
     localStorage.setItem('token', token);
     this.router.navigate(['/home']);
   }
 
-  // ✅ LOGOUT
   logout() {
     localStorage.removeItem('token');
     this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
-  if (typeof window === 'undefined') {
-    return false;
+    if (typeof window === 'undefined') {
+      return false;
+    }
+    return !!localStorage.getItem('token');
   }
-  return !!localStorage.getItem('token');
-}
-
 }
