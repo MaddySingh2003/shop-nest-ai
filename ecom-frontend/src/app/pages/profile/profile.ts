@@ -3,11 +3,12 @@ import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ProfileService } from "../../services/profile.service";
 import { FormsModule } from "@angular/forms";
 import { Navbar } from "../../components/navbar/navbar";
+import { RouterModule } from "@angular/router";
 
 @Component({
     selector:'app-profile',
     standalone:true,
-    imports:[CommonModule,FormsModule,Navbar],
+    imports:[CommonModule,FormsModule,Navbar,RouterModule],
     templateUrl:'./profile.html'
 })
 export class ProfileComponent implements OnInit{

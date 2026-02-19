@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { Navbar } from '../../components/navbar/navbar';
+import { CartService } from '../../services/cart.service';
 
 
 @Component({
@@ -21,7 +22,8 @@ export class ProductDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private cartService:CartService
   ) {}
 
   ngOnInit() {
@@ -71,7 +73,11 @@ export class ProductDetailsComponent implements OnInit {
     });
   }
 
-  addToCart() {
-    console.log("Add to cart clicked");
+     addToCart(productId: number) {
+    this.cartService.addToCart(productId, 1).subscribe({
+      next: () => alert('Product added to cart'),
+      error: () => alert('Failed to add')
+    });
   }
+
 }
