@@ -35,16 +35,16 @@ export class HomeComponent implements OnInit {
     
   }
 
-   addToCart(productId: number) {
-    this.cartService.addToCart(productId, 1).subscribe({
-      next: () => alert('Product added to cart'),
-      error: () => alert('Failed to add')
-    });
-  }
+   
 
   goToCart(){
    this.router.navigate(['./cart'])
   }
+  
+  goToDetail(id: number) {
+  this.router.navigate(['/product', id]);
+}
+
 addWishlist(id:number){
   this.wishlistService.add(id).subscribe(()=>{
     alert('added to wishlist');

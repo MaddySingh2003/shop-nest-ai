@@ -14,4 +14,13 @@ export class ProductService {
       map(res => res.content ?? res)
     );}
 
+
+    getById(id:number){
+      return this.http.get<any>(`http://localhost:8080/products/${id}`);
+
+    }
+
+    getRecommendation(id:number){
+      return this.http.get<any[]>(`http://localhost:8080/products/${id}/recommendations`);
+    }
 }

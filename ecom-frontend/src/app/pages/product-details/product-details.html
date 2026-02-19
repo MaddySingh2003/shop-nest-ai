@@ -1,0 +1,84 @@
+<app-navbar></app-navbar>
+
+<div class="max-w-6xl mx-auto p-10">
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center text-lg">
+    Loading product...
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="text-red-600 text-center text-lg">
+    {{ error }}
+  </div>
+
+  <!-- Product Section -->
+  <div *ngIf="product as p" class="grid md:grid-cols-2 gap-10">
+
+    <!-- Left -->
+    <div class="bg-gray-200 h-80 flex items-center justify-center rounded">
+      <span>Product Image</span>
+    </div>
+
+    <!-- Right -->
+    <div>
+      <h2 class="text-3xl font-bold mb-4">
+        {{ p.name }}
+      </h2>
+
+      <p class="text-gray-600 mb-4">
+        {{ p.description }}
+      </p>
+
+      <p class="text-lg">
+        Market Price:
+        <span class="font-bold">₹{{ p.price }}</span>
+      </p>
+
+      <p class="text-lg text-green-600 mt-2">
+        AI Suggested Price:
+        <span class="font-bold">
+          ₹{{ p.predictedPrice || p.price }}
+        </span>
+      </p>
+
+      <button
+        class="bg-blue-600 text-white px-6 py-3 rounded mt-6 hover:bg-blue-700 transition"
+        (click)="addToCart()">
+        Add to Cart
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Recommendations -->
+  <div class="mt-16" *ngIf="recommendations.length > 0">
+
+    <h3 class="text-2xl font-bold mb-6">
+      You May Also Like
+    </h3>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <div *ngFor="let r of recommendations"
+           class="border p-5 rounded shadow hover:shadow-lg transition">
+
+        <h4 class="font-semibold mb-2">
+          {{ r.name }}
+        </h4>
+
+        <p>₹ {{ r.price }}</p>
+
+        <a [routerLink]="['/product', r.id]"
+           class="text-blue-600 underline">
+          View
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+    
