@@ -118,7 +118,10 @@ public List<Product> getRecommendedProducts(Long productId) {
     String brand = mlResults.get(0).get("brand");
 
     return productRepository
-            .findByCategoryAndBrand(category, brand);
+            .findByCategoryAndBrand(category, brand)
+            .stream()
+            .filter(p -> !p.getId().equals(productId)) // remove itself
+            .limit(5)
+            .toList();
 }
-
 }
