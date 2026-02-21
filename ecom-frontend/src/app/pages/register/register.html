@@ -1,55 +1,110 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-100">
+<div class="min-h-screen flex items-center justify-center 
+            bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-6">
 
-  <div class="bg-white p-10 rounded shadow w-96">
+  <div class="w-full max-w-md">
 
-    <h2 class="text-2xl font-bold mb-6 text-center">
-      Register
-    </h2>
+    <!-- Logo / Brand -->
+    <h1 class="text-4xl font-extrabold text-white text-center mb-6 tracking-wide">
+      Shop<span class="text-yellow-300">Ease</span>
+    </h1>
 
-    <div *ngIf="error" class="text-red-600 mb-4">
-      {{ error }}
+    <!-- Card -->
+    <div class="bg-white/90 backdrop-blur-lg p-8 rounded-2xl shadow-2xl">
+
+      <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
+        Create Your Account
+      </h2>
+
+      <!-- Error Message -->
+      <div *ngIf="error"
+           class="bg-red-100 text-red-600 text-sm p-3 rounded mb-4 border border-red-300">
+        {{ error }}
+      </div>
+
+      <!-- Full Name -->
+      <div class="relative mb-4">
+        <input
+          type="text"
+          placeholder="Full Name"
+          [(ngModel)]="name"
+          class="w-full border border-gray-300 p-3 rounded-lg 
+                 focus:outline-none focus:ring-2 focus:ring-purple-500 
+                 transition duration-300" />
+      </div>
+
+      <!-- Email -->
+      <div class="relative mb-4">
+        <input
+          type="email"
+          placeholder="Email Address"
+          [(ngModel)]="email"
+          class="w-full border border-gray-300 p-3 rounded-lg 
+                 focus:outline-none focus:ring-2 focus:ring-purple-500 
+                 transition duration-300" />
+      </div>
+
+      <!-- Password -->
+      <div class="relative mb-4">
+        <input
+          type="password"
+          placeholder="Password"
+          [(ngModel)]="password"
+          class="w-full border border-gray-300 p-3 rounded-lg 
+                 focus:outline-none focus:ring-2 focus:ring-purple-500 
+                 transition duration-300" />
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="relative mb-6">
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          [(ngModel)]="confirmPassword"
+          class="w-full border border-gray-300 p-3 rounded-lg 
+                 focus:outline-none focus:ring-2 focus:ring-purple-500 
+                 transition duration-300" />
+      </div>
+
+      <!-- Button -->
+      <button
+        (click)="register()"
+        [disabled]="loading"
+        class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 
+               hover:from-indigo-600 hover:to-purple-600 
+               text-white py-3 rounded-lg font-semibold 
+               shadow-lg transform hover:scale-[1.02] 
+               transition duration-300 disabled:opacity-60">
+
+        {{ loading ? 'Creating Account...' : 'Create Account' }}
+
+      </button>
+
+      <!-- Divider -->
+      <div class="flex items-center my-6">
+        <div class="flex-1 border-t"></div>
+        <span class="px-3 text-gray-400 text-sm">OR</span>
+        <div class="flex-1 border-t"></div>
+      </div>
+
+      <!-- Social Buttons -->
+      <div class="grid grid-cols-2 gap-3">
+        <button class="bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition">
+          Google
+        </button>
+        <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition">
+          Facebook
+        </button>
+      </div>
+
+      <!-- Login Link -->
+      <p class="mt-6 text-center text-sm text-gray-600">
+        Already have an account?
+        <a routerLink="/login"
+           class="text-purple-600 font-semibold hover:underline">
+          Login
+        </a>
+      </p>
+
     </div>
-
-    <input
-      type="text"
-      placeholder="Full Name"
-      [(ngModel)]="name"
-      class="w-full border p-3 mb-4 rounded" />
-
-    <input
-      type="email"
-      placeholder="Email"
-      [(ngModel)]="email"
-      class="w-full border p-3 mb-4 rounded" />
-
-    <input
-      type="password"
-      placeholder="Password"
-      [(ngModel)]="password"
-      class="w-full border p-3 mb-4 rounded" />
-
-    <input
-      type="password"
-      placeholder="Confirm Password"
-      [(ngModel)]="confirmPassword"
-      class="w-full border p-3 mb-6 rounded" />
-
-    <button
-      (click)="register()"
-      [disabled]="loading"
-      class="w-full bg-green-600 text-white py-3 rounded">
-
-      {{ loading ? 'Creating...' : 'Create Account' }}
-
-    </button>
-
-    <p class="mt-6 text-center text-sm">
-      Already have account?
-      <a routerLink="/login" class="text-blue-600 underline">
-        Login
-      </a>
-    </p>
-
   </div>
-
 </div>
