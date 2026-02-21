@@ -8,7 +8,7 @@ import { Navbar } from '../../components/navbar/navbar';
 @Component({
   selector: 'app-wishlist',
   standalone: true,
-  imports: [CommonModule,Navbar],
+  imports: [CommonModule],
   templateUrl: './wishlist.html'
 })
 export class WishlistComponent implements OnInit {

@@ -8,7 +8,7 @@ import { RouterModule } from "@angular/router";
 @Component({
     selector:'app-profile',
     standalone:true,
-    imports:[CommonModule,FormsModule,Navbar,RouterModule],
+    imports:[CommonModule,FormsModule],
     templateUrl:'./profile.html'
 })
 export class ProfileComponent implements OnInit{

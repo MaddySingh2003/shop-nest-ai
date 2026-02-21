@@ -1,160 +1,116 @@
-<app-navbar></app-navbar>
+<div class="bg-white rounded-3xl shadow-lg border border-gray-100 p-10">
 
-<div class="bg-gray-50 min-h-screen py-10 px-4">
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-16 text-gray-400 text-lg">
+    Loading profile...
+  </div>
 
-  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
 
-    <!-- Sidebar -->
-    <div class="bg-white rounded-2xl shadow-md p-6 space-y-6 h-fit">
+  <!-- VIEW MODE -->
+  <div *ngIf="!loading && user && !edit" class="space-y-10">
+     <div class="bg-gradient-to-r from-black to-gray-800 
+                  text-white rounded-3xl p-8 mb-8 shadow-lg">
 
-      <!-- Profile Mini -->
-      <div class="flex items-center gap-4">
-        <div class="w-14 h-14 rounded-full bg-gradient-to-r from-black to-gray-700 
-                    text-white flex items-center justify-center text-xl font-semibold">
-          {{ user?.name?.charAt(0) || 'U' }}
-        </div>
-        <div>
-          <p class="font-semibold text-gray-900">{{ user?.name }}</p>
-          <p class="text-xs text-gray-500">{{ user?.email }}</p>
-        </div>
-      </div>
-
-      <hr>
-
-      <!-- Navigation -->
-      <nav class="space-y-3 text-sm font-medium">
-        <a routerLink="/profile" 
-           class="block px-4 py-2 rounded-lg bg-black text-white">
-          My Profile
-        </a>
-
-        <a routerLink="/orders" 
-           class="block px-4 py-2 rounded-lg hover:bg-gray-100 transition">
-          My Orders
-        </a>
-
-        <a routerLink="/wishlist" 
-           class="block px-4 py-2 rounded-lg hover:bg-gray-100 transition">
-          Wishlist
-        </a>
-
-        <a routerLink="/addresses" 
-           class="block px-4 py-2 rounded-lg hover:bg-gray-100 transition">
-          Saved Addresses
-        </a>
-      </nav>
-
-    </div>
-
-    <!-- Main Content -->
-    <div class="md:col-span-3">
-
-      <!-- Header Banner -->
-      <div class="bg-gradient-to-r from-black to-gray-800 
-                  text-white rounded-2xl p-8 shadow-md mb-8">
-
-        <h2 class="text-2xl font-semibold">My Account</h2>
-        <p class="text-sm text-gray-300 mt-1">
-          Manage your personal details and account settings
+        <h2 class="text-2xl font-semibold tracking-wide">
+          My Account
+        </h2>
+        <p class="text-sm text-gray-300 mt-2">
+          Manage your personal information, orders and preferences
         </p>
 
       </div>
 
-      <!-- Card -->
-      <div class="bg-white rounded-2xl shadow-md p-8">
 
-        <!-- Loading -->
-        <div *ngIf="loading" class="text-center py-10 text-gray-500">
-          Loading profile...
-        </div>
+    <div class="flex justify-between items-center">
+      <h3 class="text-2xl font-semibold text-gray-900">
+        Personal Information
+      </h3>
 
-        <!-- VIEW MODE -->
-        <div *ngIf="!loading && user && !edit" class="space-y-8">
+      <button
+        (click)="edit = true"
+        class="bg-black hover:bg-gray-900 text-white 
+               px-6 py-2 rounded-xl transition shadow-md">
+        Edit
+      </button>
+    </div>
 
-          <div class="grid md:grid-cols-2 gap-8">
+    <div class="grid md:grid-cols-2 gap-8">
 
-            <div class="bg-gray-50 p-6 rounded-xl">
-              <p class="text-sm text-gray-500 mb-1">Full Name</p>
-              <p class="text-lg font-semibold text-gray-900">
-                {{ user.name }}
-              </p>
-            </div>
-
-            <div class="bg-gray-50 p-6 rounded-xl">
-              <p class="text-sm text-gray-500 mb-1">Email Address</p>
-              <p class="text-lg font-semibold text-gray-900">
-                {{ user.email }}
-              </p>
-            </div>
-
-            <div class="bg-gray-50 p-6 rounded-xl">
-              <p class="text-sm text-gray-500 mb-1">Account Role</p>
-              <span class="inline-block bg-black text-white 
-                           text-xs font-semibold px-3 py-1 rounded-full uppercase">
-                {{ user.role }}
-              </span>
-            </div>
-
-          </div>
-
-          <div class="pt-6 border-t">
-            <button
-              (click)="edit = true"
-              class="bg-black hover:bg-gray-900 text-white 
-                     px-8 py-3 rounded-xl transition shadow-md">
-              Edit Profile
-            </button>
-          </div>
-
-        </div>
-
-        <!-- EDIT MODE -->
-        <div *ngIf="edit" class="space-y-6">
-
-          <div>
-            <label class="block text-sm text-gray-600 mb-2">
-              Full Name
-            </label>
-            <input
-              [(ngModel)]="profile.name"
-              class="w-full border border-gray-300 rounded-xl 
-                     px-4 py-3 focus:outline-none 
-                     focus:ring-2 focus:ring-black transition"
-              placeholder="Enter your name" />
-          </div>
-
-          <div>
-            <label class="block text-sm text-gray-600 mb-2">
-              Email Address
-            </label>
-            <input
-              [(ngModel)]="profile.email"
-              disabled
-              class="w-full bg-gray-100 border border-gray-200 
-                     rounded-xl px-4 py-3 text-gray-500 cursor-not-allowed" />
-          </div>
-
-          <div class="flex gap-4 pt-4">
-
-            <button
-              (click)="updateProfile()"
-              class="bg-black hover:bg-gray-900 text-white 
-                     px-8 py-3 rounded-xl transition shadow-md">
-              Save Changes
-            </button>
-
-            <button
-              (click)="edit = false"
-              class="border border-gray-300 hover:bg-gray-100 
-                     px-8 py-3 rounded-xl transition">
-              Cancel
-            </button>
-
-          </div>
-
-        </div>
-
+      <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+        <p class="text-sm text-gray-500 mb-2">Full Name</p>
+        <p class="text-lg font-semibold text-gray-900">
+          {{ user.name }}
+        </p>
       </div>
+
+      <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+        <p class="text-sm text-gray-500 mb-2">Email Address</p>
+        <p class="text-lg font-semibold text-gray-900">
+          {{ user.email }}
+        </p>
+      </div>
+
+      <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+        <p class="text-sm text-gray-500 mb-2">Account Role</p>
+        <span class="inline-block bg-black text-white 
+                     text-xs font-semibold px-4 py-1 rounded-full uppercase tracking-wide">
+          {{ user.role }}
+        </span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- EDIT MODE -->
+  <div *ngIf="edit" class="space-y-8">
+
+    <h3 class="text-2xl font-semibold text-gray-900">
+      Edit Profile
+    </h3>
+
+    <div class="space-y-6">
+
+      <div>
+        <label class="block text-sm text-gray-600 mb-2">
+          Full Name
+        </label>
+        <input
+          [(ngModel)]="profile.name"
+          class="w-full border border-gray-300 rounded-xl 
+                 px-5 py-3 focus:outline-none 
+                 focus:ring-2 focus:ring-black transition"
+          placeholder="Enter your name" />
+      </div>
+
+      <div>
+        <label class="block text-sm text-gray-600 mb-2">
+          Email Address
+        </label>
+        <input
+          [(ngModel)]="profile.email"
+          disabled
+          class="w-full bg-gray-100 border border-gray-200 
+                 rounded-xl px-5 py-3 text-gray-500 cursor-not-allowed" />
+      </div>
+
+    </div>
+
+    <div class="flex gap-4 pt-6">
+
+      <button
+        (click)="updateProfile()"
+        class="bg-black hover:bg-gray-900 text-white 
+               px-8 py-3 rounded-xl transition shadow-md">
+        Save Changes
+      </button>
+
+      <button
+        (click)="edit = false"
+        class="border border-gray-300 hover:bg-gray-100 
+               px-8 py-3 rounded-xl transition">
+        Cancel
+      </button>
 
     </div>
 

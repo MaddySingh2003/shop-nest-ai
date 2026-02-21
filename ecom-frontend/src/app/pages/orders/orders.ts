@@ -8,7 +8,7 @@ import { Navbar } from '../../components/navbar/navbar';
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule, RouterModule,Navbar],
+  imports: [CommonModule, RouterModule],
   templateUrl: './orders.html'
 })export class OrdersComponent {
 
