@@ -2,11 +2,12 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { OrderService } from '../../services/order.service';
+import { Navbar } from '../../components/navbar/navbar';
 
 @Component({
   selector: 'app-invoice',
   standalone: true,
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule,RouterModule,Navbar],
   templateUrl: './invoice.html'
 })
 export class InvoiceComponent implements OnInit {
