@@ -23,27 +23,10 @@ public class CartController {
                 .toString();
     }
 
-    private CartResponse toResponse(Cart cart) {
-        return CartResponse.builder()
-                .id(cart.getId())
-                .items(
-                        cart.getItems().stream()
-                                .map(i -> CartItemResponse.builder()
-                                        .itemId(i.getId())
-                                        .productId(i.getProduct().getId())
-                                        .productName(i.getProduct().getName())
-                                        .price(i.getProduct().getPrice())
-                                        .quantity(i.getQuantity())
-                                        .build()
-                                ).toList()
-                )
-                .build();
-    }
-
     @GetMapping("/my")
     public ResponseEntity<CartResponse> getCart() {
         return ResponseEntity.ok(
-                toResponse(cartService.getUserCart(getEmail()))
+                cartService.getCartResponse(getEmail())
         );
     }
 
@@ -52,8 +35,10 @@ public class CartController {
             @PathVariable Long productId,
             @RequestParam int qty
     ) {
+        cartService.addToCart(getEmail(), productId, qty);
+
         return ResponseEntity.ok(
-                toResponse(cartService.addToCart(getEmail(), productId, qty))
+                cartService.getCartResponse(getEmail())
         );
     }
 
@@ -62,8 +47,10 @@ public class CartController {
             @PathVariable Long itemId,
             @RequestParam int qty
     ) {
+        cartService.updateQuantity(getEmail(), itemId, qty);
+
         return ResponseEntity.ok(
-                toResponse(cartService.updateQuantity(getEmail(), itemId, qty))
+                cartService.getCartResponse(getEmail())
         );
     }
 
@@ -71,15 +58,19 @@ public class CartController {
     public ResponseEntity<CartResponse> removeItem(
             @PathVariable Long itemId
     ) {
+        cartService.removeItem(getEmail(), itemId);
+
         return ResponseEntity.ok(
-                toResponse(cartService.removeItem(getEmail(), itemId))
+                cartService.getCartResponse(getEmail())
         );
     }
 
     @DeleteMapping("/clear")
     public ResponseEntity<CartResponse> clearCart() {
+        cartService.clearCart(getEmail());
+
         return ResponseEntity.ok(
-                toResponse(cartService.clearCart(getEmail()))
+                cartService.getCartResponse(getEmail())
         );
     }
 }

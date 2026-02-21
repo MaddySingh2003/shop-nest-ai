@@ -1,5 +1,7 @@
 package com.ecommerce.ecommerce_backend.service;
 
+import com.ecommerce.ecommerce_backend.dto.CartItemResponse;
+import com.ecommerce.ecommerce_backend.dto.CartResponse;
 import com.ecommerce.ecommerce_backend.model.*;
 import com.ecommerce.ecommerce_backend.repository.*;
 
@@ -8,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -79,5 +82,24 @@ public Cart getUserCart(String email) {
         cart.getItems().clear();
         return cartRepository.save(cart);
     }
-    
+    public CartResponse getCartResponse(String email) {
+
+    Cart cart = getUserCart(email);
+
+    List<CartItemResponse> items = cart.getItems().stream()
+            .map(item -> CartItemResponse.builder()
+                    .itemId(item.getId())
+                    .productId(item.getProduct().getId())
+                    .productName(item.getProduct().getName())
+                    .price(item.getProduct().getPrice())
+                    .quantity(item.getQuantity())
+                    .stock(item.getProduct().getStock()) // ✅ IMPORTANT
+                    .build()
+            ).toList();
+
+    return CartResponse.builder()
+            .id(cart.getId())
+            .items(items)
+            .build();
+}
 }

@@ -6,5 +6,10 @@ import { routes } from './app/app.routes';
 import { jwtInterceptor } from './app/core/interceptore/jwt.interceptor';
 import { appConfig } from './app/app.config';
 
-bootstrapApplication(AppComponent, appConfig)
+bootstrapApplication(AppComponent, {
+    providers:[
+        provideRouter(routes),
+        provideHttpClient(withInterceptors([jwtInterceptor]))
+    ]
+})
 .catch(err => console.error(err));

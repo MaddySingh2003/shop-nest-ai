@@ -33,6 +33,10 @@ export class RegisterComponent {
       this.error = "All fields required";
       return;
     }
+    if (!this.email.includes('@')) {
+  this.error = "Invalid email";
+  return;
+}
 
     if (this.password !== this.confirmPassword) {
       this.error = "Passwords do not match";

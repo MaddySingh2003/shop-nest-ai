@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrderService } from '../../services/order.service';
@@ -18,8 +18,12 @@ export class CheckoutComponent implements OnInit {
   addresses: any[] = [];
   addressId: number | null = null;
   loading = true;
-  error = '';
   showForm = false;
+
+  cartItems: any[] = [];
+  total: number = 0;
+
+  outOfStock: boolean = false;
 
   newAddress: any = {
     fullName: '',
@@ -32,21 +36,18 @@ export class CheckoutComponent implements OnInit {
     defaultAddress: false
   };
 
-  cart: any = { items: [] }; // ✅ Add cart object
-  total: number = 0;         // ✅ Add total property
-
   constructor(
     private orderService: OrderService,
     private addressService: AddressService,
     private router: Router,
-    private cdr: ChangeDetectorRef,
-    private cartservice: CartService
+    private cartService: CartService,
+    private cdr:ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
-    console.log("Checkout init");
     this.loadAddresses();
     this.loadCart();
+   
   }
 
   // ------------------------
@@ -55,27 +56,127 @@ export class CheckoutComponent implements OnInit {
 
     this.addressService.getMyAddresses().subscribe({
       next: (res: any) => {
-        console.log("ADDRESS API RESPONSE:", res);
         this.addresses = res || [];
         this.loading = false;
-        this.cdr.detectChanges();
+
+        // ✅ Auto-select first address (UX improvement)
+        if (this.addresses.length > 0 && !this.addressId) {
+          this.addressId = this.addresses[0].id;
+        }
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.loading = false;
-        this.cdr.detectChanges();
       }
     });
+     this.cdr.detectChanges();
+  }
+
+  // ------------------------
+  loadCart() {
+  this.cartService.getCart().subscribe({
+    next: (res: any) => {
+      console.log("RAW CART RESPONSE:", res);
+
+      const items = Array.isArray(res) ? res : res.items || [];
+
+      console.log("EXTRACTED ITEMS:", items);
+
+      this.cartItems = items;
+
+      // 🔥 IMPORTANT: call AFTER assignment
+      this.calculateTotal();
+      this.checkStock();
+    },
+    error: (err) => {
+      console.error(err);
+      this.cartItems = [];
+      this.total = 0;
+      this.outOfStock = false;
+    }
+  });
+  this.cdr.detectChanges();
+}
+  // ------------------------
+  checkStock() {
+    this.outOfStock = this.cartItems.some(item => {
+      const stock = item.product?.stock ?? item.stock ?? 0;
+      return stock <= 0;
+    });
+     this.cdr.detectChanges();
+
+    console.log("OUT OF STOCK:", this.outOfStock);
+  }
+
+  // ------------------------
+  calculateTotal() {
+    if (!this.cartItems || this.cartItems.length === 0) {
+      this.total = 0;
+      return;
+    }
+
+    this.total = this.cartItems.reduce((acc: number, item: any) => {
+      const price = item.product?.price ?? item.price ?? 0;
+      return acc + (price * item.quantity);
+    }, 0);
+ this.cdr.detectChanges();
+    console.log("TOTAL:", this.total);
+  }
+
+  // ------------------------
+  placeOrder() {
+
+    console.log("Selected addressId:", this.addressId);
+
+    if (!this.addressId) {
+      alert("Please select delivery address");
+      return;
+    }
+
+    if (this.outOfStock) {
+      alert("Some items are out of stock");
+      return;
+    }
+
+    if (this.total === 0) {
+      alert("Cart is empty");
+      return;
+    }
+
+    console.log("CALLING ORDER API...");
+
+    this.orderService.placeOrder(this.addressId).subscribe({
+      next: (res: any) => {
+        console.log("ORDER RESPONSE:", res);
+
+        const orderId = res?.id || res?.orderId;
+
+        if (!orderId) {
+          alert("Order created but ID missing");
+          return;
+        }
+
+        alert("Order placed successfully");
+
+        this.router.navigate(['/order-success', orderId]);
+      },
+      error: (err) => {
+        console.error("ORDER ERROR:", err);
+
+        const msg = err?.error?.error || "Order failed";
+        alert(msg);
+      }
+    });
+   this.cdr.detectChanges();
   }
 
   // ------------------------
   saveAddress() {
     this.addressService.addAddress(this.newAddress).subscribe(() => {
-      alert("Address saved");
       this.showForm = false;
       this.resetForm();
       this.loadAddresses();
     });
+     this.cdr.detectChanges();
   }
 
   editAddress(a: any) {
@@ -103,62 +204,4 @@ export class CheckoutComponent implements OnInit {
       defaultAddress: false
     };
   }
-
-  // ------------------------
-  placeOrder() {
-    console.log("PLACE ORDER CLICKED");
-
-    if (!this.addressId) {
-      alert("Select address");
-      return;
-    }
-
-    this.orderService.placeOrder(this.addressId).subscribe({
-      next: (res: any) => {
-        console.log("ORDER RESPONSE", res);
-        alert("Order placed successfully");
-        this.router.navigate(['/order-success', res.id]);
-      },
-      error: (err) => {
-        console.log("ORDER ERROR", err);
-        alert(err.error?.error || "Order failed");
-      }
-    });
-  }
-
-  // ------------------------
-  // Cart functions
-  loadCart() {
-    this.cart = this.cartservice.getCart() || { items: [] }; // adjust if you have a cart service
-    this.calculateTotal();
-  }
-
-  calculateTotal() {
-    this.total = this.cart.items.reduce((acc: number, item: any) => {
-      return acc + item.price * item.quantity;
-    }, 0);
-  }
-
-  increase(item: any) {
-    item.quantity++;
-    this.calculateTotal();
-  }
-
-  decrease(item: any) {
-    if (item.quantity > 1) {
-      item.quantity--;
-      this.calculateTotal();
-    }
-  }
-
-  remove(itemId: number) {
-    this.cart.items = this.cart.items.filter((i: any) => i.itemId !== itemId);
-    this.calculateTotal();
-  }
-
-  clearCart() {
-    this.cart.items = [];
-    this.calculateTotal();
-  }
-
 }

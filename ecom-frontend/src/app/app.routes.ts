@@ -25,6 +25,7 @@ export const routes: Routes = [
 
   {
     path:'cart',
+     canActivate: [authGuard],
     loadComponent:()=>
       import('./pages/cart/cart').then(m=>m.Cart)
   },
@@ -37,6 +38,7 @@ export const routes: Routes = [
   },
   {
     path:'orders',
+     canActivate: [authGuard],
     loadComponent:()=>import('./pages/orders/orders').then(m=>m.OrdersComponent)
   },
   {
@@ -51,6 +53,7 @@ export const routes: Routes = [
 },
   {
     path:'wishlist',
+     canActivate: [authGuard],
     loadComponent:()=>import('./pages/wishlist/wishlist').then(m=>m.WishlistComponent)
   },
   {

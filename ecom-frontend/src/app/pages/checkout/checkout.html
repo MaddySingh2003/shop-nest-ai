@@ -4,186 +4,74 @@
 
   <div class="max-w-6xl mx-auto">
 
-    <h2 class="text-3xl font-bold text-gray-800 mb-8">
+    <h2 class="text-3xl font-bold mb-8">
       Checkout
     </h2>
 
-    <!-- LOADING -->
-    <div *ngIf="loading" class="text-center text-gray-500 py-10">
-      Loading addresses...
+    <div *ngIf="loading" class="text-center py-10">
+      Loading...
     </div>
 
     <div *ngIf="!loading" class="grid md:grid-cols-3 gap-8">
 
-      <!-- LEFT SIDE - ADDRESSES -->
-      <div class="md:col-span-2 space-y-6">
+      <!-- LEFT -->
+      <div class="md:col-span-2">
 
-        <!-- Address List -->
-        <div *ngIf="addresses.length > 0">
+        <h3 class="text-lg font-semibold mb-4">
+          Select Delivery Address
+        </h3>
 
-          <h3 class="text-lg font-semibold mb-4">
-            Select Delivery Address
-          </h3>
+        <div *ngFor="let a of addresses"
+             (click)="addressId = a.id"
+             class="bg-white p-5 mb-4 rounded shadow cursor-pointer"
+             [class.border-black]="addressId === a.id">
 
-          <div *ngFor="let a of addresses"
-               class="bg-white rounded-2xl shadow-sm p-5 border-2 cursor-pointer transition"
-               [ngClass]="addressId === a.id ? 
-               'border-black shadow-md' : 'border-transparent'">
-
-            <div class="flex justify-between">
-
-              <div (click)="addressId = a.id">
-
-                <p class="font-semibold text-gray-800">
-                  {{a.fullName}}
-                </p>
-
-                <p class="text-gray-600 text-sm mt-1">
-                  {{a.street}}, {{a.city}}
-                </p>
-
-                <p class="text-gray-600 text-sm">
-                  {{a.state}} - {{a.zipCode}}
-                </p>
-
-                <p class="text-gray-600 text-sm">
-                  {{a.phone}}
-                </p>
-
-              </div>
-
-              <div class="text-right space-y-2">
-
-                <button class="text-blue-600 text-sm hover:underline"
-                        (click)="editAddress(a)">
-                  Edit
-                </button>
-
-                <button class="text-red-500 text-sm hover:underline"
-                        (click)="deleteAddress(a.id)">
-                  Delete
-                </button>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <button
-            class="mt-4 text-black font-medium hover:underline"
-            (click)="showForm = true">
-            + Add New Address
-          </button>
+          <p class="font-bold">{{a.fullName}}</p>
+          <p>{{a.street}}, {{a.city}}</p>
+          <p>{{a.state}} - {{a.zipCode}}</p>
+          <p>{{a.phone}}</p>
 
         </div>
 
-        <!-- NO ADDRESS -->
-        <div *ngIf="addresses.length === 0"
-             class="bg-white rounded-2xl shadow-md p-10 text-center">
-
-          <p class="text-gray-500 mb-4">
-            No saved addresses found.
-          </p>
-
-          <button
-            class="bg-black text-white px-6 py-2 rounded-xl"
-            (click)="showForm = true">
-            Add Address
-          </button>
-
-        </div>
-
-        <!-- ADD / EDIT FORM -->
-        <div *ngIf="showForm"
-             class="bg-white rounded-2xl shadow-md p-6 mt-6">
-
-          <h3 class="text-lg font-semibold mb-5">
-            Add / Edit Address
-          </h3>
-
-          <div class="grid md:grid-cols-2 gap-4">
-
-            <input [(ngModel)]="newAddress.fullName"
-                   placeholder="Full Name"
-                   class="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none"/>
-
-            <input [(ngModel)]="newAddress.phone"
-                   placeholder="Phone"
-                   class="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none"/>
-
-            <input [(ngModel)]="newAddress.street"
-                   placeholder="Street"
-                   class="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none md:col-span-2"/>
-
-            <input [(ngModel)]="newAddress.city"
-                   placeholder="City"
-                   class="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none"/>
-
-            <input [(ngModel)]="newAddress.state"
-                   placeholder="State"
-                   class="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none"/>
-
-            <input [(ngModel)]="newAddress.zipCode"
-                   placeholder="Zip Code"
-                   class="border rounded-xl px-4 py-3 focus:ring-2 focus:ring-black outline-none"/>
-          </div>
-
-          <div class="flex gap-4 mt-6">
-
-            <button
-              class="bg-black text-white px-6 py-2 rounded-xl"
-              (click)="saveAddress()">
-              Save Address
-            </button>
-
-            <button
-              class="border px-6 py-2 rounded-xl"
-              (click)="showForm = false">
-              Cancel
-            </button>
-
-          </div>
-
-        </div>
+        <button (click)="showForm = true">
+          + Add Address
+        </button>
 
       </div>
 
-      <!-- RIGHT SIDE - ORDER SUMMARY -->
-      <div class="bg-white rounded-2xl shadow-md p-6 h-fit">
+      <!-- RIGHT -->
+      <div class="bg-white p-6 rounded shadow">
 
-        <h3 class="text-lg font-semibold mb-5">
-          Order Summary
-        </h3>
+        <h3 class="font-bold mb-4">Order Summary</h3>
 
-        <div class="flex justify-between text-gray-600 mb-3">
+        <div class="flex justify-between mb-2">
           <span>Subtotal</span>
           <span>₹ {{ total }}</span>
         </div>
 
-        <div class="flex justify-between text-gray-600 mb-3">
+        <div class="flex justify-between mb-2">
           <span>Shipping</span>
           <span class="text-green-600">Free</span>
         </div>
 
-        <hr class="my-4">
+        <hr class="my-3">
 
-        <div class="flex justify-between font-bold text-lg">
+        <div class="flex justify-between font-bold">
           <span>Total</span>
           <span>₹ {{ total }}</span>
         </div>
 
-        <button
-          class="w-full bg-black text-white py-3 rounded-xl mt-6 disabled:opacity-50"
-          [disabled]="!addressId"
-          (click)="placeOrder()">
-          Place Order
-        </button>
+       <button
+  class="w-full bg-black text-white py-2 mt-4 disabled:bg-gray-400"
+  [disabled]="!addressId || total === 0 || outOfStock"
+  (click)="placeOrder()">
 
+  {{ outOfStock ? 'Out of Stock' : 'Place Order' }}
+
+</button>
       </div>
 
     </div>
 
   </div>
-
 </div>
