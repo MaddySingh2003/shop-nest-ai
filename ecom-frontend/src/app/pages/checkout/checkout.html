@@ -1,74 +1,129 @@
 <app-navbar></app-navbar>
 
-<div class="bg-gray-100 min-h-screen py-10 px-4">
+<div class="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 py-12 px-4">
 
-  <div class="max-w-6xl mx-auto">
+  <div class="max-w-7xl mx-auto">
 
-    <h2 class="text-3xl font-bold mb-8">
-      Checkout
+    <!-- Page Title -->
+    <h2 class="text-4xl font-bold text-gray-800 mb-10 tracking-tight">
+      Secure Checkout
     </h2>
 
-    <div *ngIf="loading" class="text-center py-10">
-      Loading...
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-16 text-gray-600 text-lg">
+      Processing your checkout...
     </div>
 
-    <div *ngIf="!loading" class="grid md:grid-cols-3 gap-8">
+    <div *ngIf="!loading" class="grid lg:grid-cols-3 gap-10">
 
-      <!-- LEFT -->
-      <div class="md:col-span-2">
+      <!-- LEFT SIDE - ADDRESS SECTION -->
+      <div class="lg:col-span-2">
 
-        <h3 class="text-lg font-semibold mb-4">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">
           Select Delivery Address
         </h3>
 
+        <!-- Address Cards -->
         <div *ngFor="let a of addresses"
              (click)="addressId = a.id"
-             class="bg-white p-5 mb-4 rounded shadow cursor-pointer"
-             [class.border-black]="addressId === a.id">
+             class="bg-white p-6 mb-6 rounded-3xl shadow-md 
+                    hover:shadow-xl transition duration-300 cursor-pointer border-2"
+             [ngClass]="{
+               'border-indigo-600 ring-2 ring-indigo-200': addressId === a.id,
+               'border-transparent': addressId !== a.id
+             }">
 
-          <p class="font-bold">{{a.fullName}}</p>
-          <p>{{a.street}}, {{a.city}}</p>
-          <p>{{a.state}} - {{a.zipCode}}</p>
-          <p>{{a.phone}}</p>
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="font-semibold text-lg text-gray-800">
+                {{a.fullName}}
+              </p>
+
+              <p class="text-gray-600 mt-1">
+                {{a.street}}, {{a.city}}
+              </p>
+
+              <p class="text-gray-600">
+                {{a.state}} - {{a.zipCode}}
+              </p>
+
+              <p class="text-gray-500 mt-1">
+                📞 {{a.phone}}
+              </p>
+            </div>
+
+            <!-- Selected Badge -->
+            <span *ngIf="addressId === a.id"
+                  class="bg-indigo-600 text-white text-xs px-3 py-1 rounded-full">
+              Selected
+            </span>
+          </div>
 
         </div>
 
-        <button (click)="showForm = true">
-          + Add Address
+        <!-- Add Address Button -->
+        <button
+          (click)="showForm = true"
+          class="mt-4 bg-gradient-to-r from-indigo-600 to-purple-600 
+                 text-white px-6 py-3 rounded-2xl shadow-md
+                 hover:scale-105 transform transition duration-200 font-medium">
+          + Add New Address
         </button>
 
       </div>
 
-      <!-- RIGHT -->
-      <div class="bg-white p-6 rounded shadow">
+      <!-- RIGHT SIDE - ORDER SUMMARY -->
+      <div class="bg-white p-8 rounded-3xl shadow-xl h-fit sticky top-24 border border-gray-100">
 
-        <h3 class="font-bold mb-4">Order Summary</h3>
+        <h3 class="text-2xl font-semibold mb-6 text-gray-800">
+          Order Summary
+        </h3>
 
-        <div class="flex justify-between mb-2">
-          <span>Subtotal</span>
-          <span>₹ {{ total }}</span>
+        <div class="space-y-4 text-gray-600">
+
+          <div class="flex justify-between">
+            <span>Subtotal</span>
+            <span>₹ {{ total }}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span>Shipping</span>
+            <span class="text-green-600 font-medium">Free</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span>Tax</span>
+            <span>₹ 0</span>
+          </div>
+
         </div>
 
-        <div class="flex justify-between mb-2">
-          <span>Shipping</span>
-          <span class="text-green-600">Free</span>
-        </div>
+        <hr class="my-6">
 
-        <hr class="my-3">
-
-        <div class="flex justify-between font-bold">
+        <div class="flex justify-between text-xl font-bold text-gray-900">
           <span>Total</span>
           <span>₹ {{ total }}</span>
         </div>
 
-       <button
-  class="w-full bg-black text-white py-2 mt-4 disabled:bg-gray-400"
-  [disabled]="!addressId || total === 0 || outOfStock"
-  (click)="placeOrder()">
+        <!-- Place Order Button -->
+        <button
+          class="w-full mt-8 py-4 rounded-2xl shadow-lg font-semibold text-lg
+                 transition duration-200 transform
+                 bg-gradient-to-r from-green-500 to-emerald-600 text-white
+                 hover:scale-105
+                 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed"
+          [disabled]="!addressId || total === 0 || outOfStock"
+          (click)="placeOrder()">
 
-  {{ outOfStock ? 'Out of Stock' : 'Place Order' }}
+          {{ outOfStock ? 'Out of Stock' : 'Place Order' }}
 
-</button>
+        </button>
+
+        <!-- Security Badge -->
+        <div class="text-center text-gray-400 text-sm mt-6">
+          🔒 Secure Payment | 100% Safe Checkout
+        </div>
+
       </div>
 
     </div>

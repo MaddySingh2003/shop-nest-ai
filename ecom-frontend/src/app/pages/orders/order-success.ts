@@ -22,7 +22,7 @@ export class OrderSuccessComponent implements OnInit {
   }
 
   goOrders(){
-    this.router.navigate(['/orders']);
+    this.router.navigate(['/account/orders']);
   }
 
   goHome(){
