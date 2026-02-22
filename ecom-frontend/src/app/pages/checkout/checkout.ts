@@ -47,6 +47,7 @@ export class CheckoutComponent implements OnInit {
   ngOnInit() {
     this.loadAddresses();
     this.loadCart();
+    this.cdr.detectChanges();
    
   }
 

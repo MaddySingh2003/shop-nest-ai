@@ -1,48 +1,148 @@
 <app-navbar></app-navbar>
-<div *ngIf="loading" class="text-center p-6">Loading invoice...</div>
 
-<div *ngIf="!loading && order" class="max-w-3xl mx-auto p-6 border rounded shadow bg-white">
+<div class="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 py-12">
 
-  <h2 class="text-2xl font-bold mb-4 text-center">🧾 Invoice</h2>
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center text-gray-600 text-lg font-medium">
+    Loading invoice...
+  </div>
 
-  <div class="flex justify-between mb-4">
-    <div>
-      <p><b>Order ID:</b> {{order.id}}</p>
-      <p><b>Date:</b> {{order.orderDate | date:'medium'}}</p>
+  <!-- Invoice Card -->
+  <div *ngIf="!loading && order"
+       class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
+
+    <!-- Top Brand Header -->
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-bold tracking-wide">YourStore</h1>
+        <p class="text-sm opacity-90">Premium Shopping Experience</p>
+      </div>
+      <div class="text-right">
+        <p class="text-sm opacity-90">Invoice</p>
+        <p class="text-xl font-semibold">#{{order.id}}</p>
+      </div>
     </div>
-    <div>
-      <p><b>Status:</b> {{order.status}}</p>
-      <p><b>Total:</b> ₹{{order.totalAmount}}</p>
+
+    <div class="p-10">
+
+      <!-- Order + Status Section -->
+      <div class="grid md:grid-cols-3 gap-6 mb-10">
+
+        <div class="bg-gray-50 p-5 rounded-xl shadow-sm">
+          <p class="text-gray-500 text-sm">Order Date</p>
+          <p class="font-semibold text-gray-800 mt-1">
+            {{order.orderDate | date:'medium'}}
+          </p>
+        </div>
+
+        <div class="bg-gray-50 p-5 rounded-xl shadow-sm">
+          <p class="text-gray-500 text-sm">Order Status</p>
+          <span class="inline-block mt-2 px-4 py-1 rounded-full text-xs font-semibold"
+                [ngClass]="{
+                  'bg-green-100 text-green-700': order.status === 'DELIVERED',
+                  'bg-yellow-100 text-yellow-700': order.status === 'PENDING',
+                  'bg-red-100 text-red-700': order.status === 'CANCELLED'
+                }">
+            {{order.status}}
+          </span>
+        </div>
+
+        <div class="bg-gray-50 p-5 rounded-xl shadow-sm text-right">
+          <p class="text-gray-500 text-sm">Total Amount</p>
+          <p class="text-2xl font-bold text-indigo-600 mt-1">
+            ₹{{order.totalAmount}}
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Shipping Info -->
+      <div class="mb-10">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+          Shipping Details
+        </h3>
+
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border">
+          <p class="font-medium text-gray-800">{{order.shippingName}}</p>
+          <p class="text-gray-600 mt-1">
+            {{order.shippingCity}}, {{order.shippingState}}
+          </p>
+          <p class="text-gray-600">{{order.shippingCountry}}</p>
+        </div>
+      </div>
+
+      <!-- Items Section -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+          Order Items
+        </h3>
+
+        <div class="divide-y border rounded-xl overflow-hidden">
+
+          <div *ngFor="let i of order.items"
+               class="flex justify-between items-center p-5 hover:bg-gray-50 transition duration-200">
+
+            <div>
+              <p class="font-medium text-gray-800">
+                {{i.productName}}
+              </p>
+              <p class="text-sm text-gray-500">
+                ₹{{i.price}} × {{i.quantity}}
+              </p>
+            </div>
+
+            <div class="text-right">
+              <p class="font-semibold text-gray-800">
+                ₹{{i.price * i.quantity}}
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Total Summary -->
+      <div class="flex justify-end mt-10">
+        <div class="w-full md:w-1/3 bg-gray-50 p-6 rounded-xl shadow-sm">
+          <div class="flex justify-between mb-2 text-gray-600">
+            <span>Subtotal</span>
+            <span>₹{{order.totalAmount}}</span>
+          </div>
+
+          <div class="flex justify-between mb-2 text-gray-600">
+            <span>Shipping</span>
+            <span>Free</span>
+          </div>
+
+          <hr class="my-3">
+
+          <div class="flex justify-between text-lg font-bold text-gray-900">
+            <span>Grand Total</span>
+            <span>₹{{order.totalAmount}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-between items-center mt-12">
+
+        <a routerLink="/orders"
+           class="text-indigo-600 hover:text-indigo-800 font-medium transition">
+          ← Back to My Orders
+        </a>
+
+        <button
+          class="bg-gradient-to-r from-green-500 to-emerald-600 
+                 hover:scale-105 transform transition duration-200
+                 text-white px-8 py-3 rounded-xl shadow-lg font-semibold"
+          (click)="downloadInvoice()">
+          Download Invoice PDF
+        </button>
+
+      </div>
+
     </div>
+
   </div>
-
-  <hr class="my-4">
-
-  <h3 class="font-bold mb-2">Shipping Address</h3>
-  <p>{{order.shippingName}}</p>
-  <p>{{order.shippingCity}}, {{order.shippingState}}</p>
-  <p>{{order.shippingCountry}}</p>
-
-  <hr class="my-4">
-
-  <h3 class="font-bold mb-2">Items</h3>
-
-  <div *ngFor="let i of order.items" class="flex justify-between border-b py-2">
-    <div>{{i.productName}}</div>
-    <div>₹{{i.price}} × {{i.quantity}}</div>
-  </div>
-
-  <div class="text-right font-bold mt-4">
-    Grand Total: ₹{{order.totalAmount}}
-  </div>
-
-  <div class="text-center mt-6">
-    <button
-      class="bg-green-600 text-white px-4 py-2 rounded"
-      (click)="downloadInvoice()">
-      Download Invoice PDF
-    </button>
-  </div>
-  <a routerLink="/orders">My Orders</a>
-
 </div>
