@@ -5,110 +5,108 @@
     Loading profile...
   </div>
 
-
   <!-- VIEW MODE -->
   <div *ngIf="!loading && user && !edit" class="space-y-10">
-     <div class="bg-gradient-to-r from-black to-gray-800 
-                  text-white rounded-3xl p-8 mb-8 shadow-lg">
 
-        <h2 class="text-2xl font-semibold tracking-wide">
-          My Account
-        </h2>
-        <p class="text-sm text-gray-300 mt-2">
-          Manage your personal information, orders and preferences
-        </p>
+    <!-- HEADER -->
+    <div class="bg-gradient-to-r from-black to-gray-800 
+                text-white rounded-3xl p-8 shadow-lg">
+      <h2 class="text-2xl font-semibold">My Account</h2>
+    </div>
 
-      </div>
-
-
+    <!-- PERSONAL INFO -->
     <div class="flex justify-between items-center">
-      <h3 class="text-2xl font-semibold text-gray-900">
-        Personal Information
-      </h3>
+      <h3 class="text-2xl font-semibold">Personal Information</h3>
 
-      <button
-        (click)="edit = true"
-        class="bg-black hover:bg-gray-900 text-white 
-               px-6 py-2 rounded-xl transition shadow-md">
+      <button (click)="edit = true"
+              class="bg-black text-white px-6 py-2 rounded-xl">
         Edit
       </button>
     </div>
 
     <div class="grid md:grid-cols-2 gap-8">
 
-      <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-        <p class="text-sm text-gray-500 mb-2">Full Name</p>
-        <p class="text-lg font-semibold text-gray-900">
-          {{ user.name }}
-        </p>
+      <div class="bg-gray-50 p-6 rounded-xl">
+        <p class="text-sm text-gray-500">Full Name</p>
+        <p class="font-semibold">{{ user.name }}</p>
       </div>
 
-      <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-        <p class="text-sm text-gray-500 mb-2">Email Address</p>
-        <p class="text-lg font-semibold text-gray-900">
-          {{ user.email }}
-        </p>
+      <div class="bg-gray-50 p-6 rounded-xl">
+        <p class="text-sm text-gray-500">Email</p>
+        <p class="font-semibold">{{ user.email }}</p>
       </div>
 
-      <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-        <p class="text-sm text-gray-500 mb-2">Account Role</p>
-        <span class="inline-block bg-black text-white 
-                     text-xs font-semibold px-4 py-1 rounded-full uppercase tracking-wide">
-          {{ user.role }}
-        </span>
+    </div>
+
+    <!-- 🔥 ADDRESS SECTION (SEPARATE BLOCK) -->
+    <div class="mt-10">
+
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-2xl font-semibold">Saved Addresses</h3>
+
+        <button (click)="showAddressForm = true"
+                class="bg-black text-white px-5 py-2 rounded-xl">
+          + Add Address
+        </button>
       </div>
 
+      <div class="grid md:grid-cols-2 gap-6">
+
+        <div *ngFor="let a of addresses"
+             class="bg-gray-50 p-5 rounded-xl border cursor-pointer"
+             [class.border-black]="selectedAddressId === a.id"
+             (click)="selectedAddressId = a.id">
+
+          <p class="font-semibold">{{a.fullName}}</p>
+          <p>{{a.street}}, {{a.city}}</p>
+          <p>{{a.state}} - {{a.zipCode}}</p>
+          <p>{{a.phone}}</p>
+
+          <div class="flex gap-3 mt-3">
+
+            <button
+              (click)="editAddress(a); $event.stopPropagation()"
+              class="text-blue-600 text-sm">
+              Edit
+            </button>
+
+            <button
+              (click)="deleteAddress(a.id); $event.stopPropagation()"
+              class="text-red-600 text-sm">
+              Delete
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
     </div>
 
   </div>
 
-  <!-- EDIT MODE -->
-  <div *ngIf="edit" class="space-y-8">
+  <!-- EDIT PROFILE -->
+  <div *ngIf="edit" class="space-y-6">
 
-    <h3 class="text-2xl font-semibold text-gray-900">
-      Edit Profile
-    </h3>
+    <h3 class="text-2xl font-semibold">Edit Profile</h3>
 
-    <div class="space-y-6">
+    <input [(ngModel)]="profile.name"
+           class="w-full border p-3 rounded"
+           placeholder="Name"/>
 
-      <div>
-        <label class="block text-sm text-gray-600 mb-2">
-          Full Name
-        </label>
-        <input
-          [(ngModel)]="profile.name"
-          class="w-full border border-gray-300 rounded-xl 
-                 px-5 py-3 focus:outline-none 
-                 focus:ring-2 focus:ring-black transition"
-          placeholder="Enter your name" />
-      </div>
+    <input [(ngModel)]="profile.email"
+           disabled
+           class="w-full bg-gray-100 border p-3 rounded"/>
 
-      <div>
-        <label class="block text-sm text-gray-600 mb-2">
-          Email Address
-        </label>
-        <input
-          [(ngModel)]="profile.email"
-          disabled
-          class="w-full bg-gray-100 border border-gray-200 
-                 rounded-xl px-5 py-3 text-gray-500 cursor-not-allowed" />
-      </div>
+    <div class="flex gap-4">
 
-    </div>
-
-    <div class="flex gap-4 pt-6">
-
-      <button
-        (click)="updateProfile()"
-        class="bg-black hover:bg-gray-900 text-white 
-               px-8 py-3 rounded-xl transition shadow-md">
-        Save Changes
+      <button (click)="updateProfile()"
+              class="bg-black text-white px-6 py-2 rounded">
+        Save
       </button>
 
-      <button
-        (click)="edit = false"
-        class="border border-gray-300 hover:bg-gray-100 
-               px-8 py-3 rounded-xl transition">
+      <button (click)="edit = false"
+              class="border px-6 py-2 rounded">
         Cancel
       </button>
 
@@ -116,4 +114,36 @@
 
   </div>
 
+</div>
+
+<!-- 🔥 ADDRESS MODAL (OUTSIDE EVERYTHING) -->
+<div *ngIf="showAddressForm"
+     class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+
+  <div class="bg-white p-8 rounded-2xl w-full max-w-md space-y-4">
+
+    <h3 class="text-xl font-semibold">Add Address</h3>
+
+    <input [(ngModel)]="newAddress.fullName" placeholder="Full Name" class="w-full border p-3 rounded"/>
+    <input [(ngModel)]="newAddress.phone" placeholder="Phone" class="w-full border p-3 rounded"/>
+    <input [(ngModel)]="newAddress.street" placeholder="Street" class="w-full border p-3 rounded"/>
+    <input [(ngModel)]="newAddress.city" placeholder="City" class="w-full border p-3 rounded"/>
+    <input [(ngModel)]="newAddress.state" placeholder="State" class="w-full border p-3 rounded"/>
+    <input [(ngModel)]="newAddress.zipCode" placeholder="Zip Code" class="w-full border p-3 rounded"/>
+
+    <div class="flex gap-3">
+
+      <button (click)="saveAddress()"
+              class="bg-black text-white px-6 py-2 rounded">
+        Save
+      </button>
+
+      <button (click)="showAddressForm = false"
+              class="border px-6 py-2 rounded">
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
 </div>
