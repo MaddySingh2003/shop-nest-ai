@@ -1,4 +1,27 @@
 
+<div class="flex gap-3 mb-6">
+
+  <button (click)="filter='ALL'; applyFilter()"
+          class="px-4 py-2 border rounded">
+    All
+  </button>
+
+  <button (click)="filter='PENDING'; applyFilter()"
+          class="px-4 py-2 border rounded">
+    Pending
+  </button>
+
+  <button (click)="filter='CONFIRMED'; applyFilter()"
+          class="px-4 py-2 border rounded">
+    Confirmed
+  </button>
+
+  <button (click)="filter='DELIVERED'; applyFilter()"
+          class="px-4 py-2 border rounded">
+    Delivered
+  </button>
+
+</div>
 <div class="bg-gray-50 min-h-screen py-10 px-6">
 
   <div class="max-w-6xl mx-auto">
@@ -10,10 +33,10 @@
       </h2>
     </div>
 
-    <div *ngIf="orders$ | async as orders">
+    <div *ngIf="filteredOrders.length >= 0">
 
       <!-- Empty State -->
-      <div *ngIf="orders.length === 0"
+      <div *ngIf="filteredOrders.length === 0"
            class="bg-white rounded-2xl shadow-md p-12 text-center">
 
         <p class="text-gray-500 text-lg mb-4">
@@ -27,7 +50,7 @@
       </div>
 
       <!-- Orders List -->
-      <div *ngFor="let o of orders"
+      <div *ngFor="let o of filteredOrders"
            class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition p-6 mb-6 flex flex-col md:flex-row md:justify-between md:items-center">
 
         <!-- Order Info -->

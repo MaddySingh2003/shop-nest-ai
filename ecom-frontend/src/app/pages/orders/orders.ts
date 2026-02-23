@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order.service';
-import { Observable, map, BehaviorSubject } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
 
@@ -10,28 +9,49 @@ import { Navbar } from '../../components/navbar/navbar';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './orders.html'
-})export class OrdersComponent {
+})
+export class OrdersComponent implements OnInit {
 
-  orders$!: Observable<any[]>;
+  orders: any[] = [];
+  filteredOrders: any[] = [];
 
-  constructor(private orderService: OrderService) {
-    this.orders$ = this.orderService.getMyOrders()
-      .pipe(
-        map((res:any)=>
-          res.content.filter((o:any)=>o.status!=='CANCELLED')
-        )
-      );
+  filter: string = 'ALL';
+
+  constructor(private orderService: OrderService) {}
+
+  ngOnInit() {
+    this.loadOrders();
   }
 
-  cancelOrder(id:number){
-    if(!confirm("Cancel this order?")) return;
+  // 🔥 Load orders
+  loadOrders() {
+    this.orderService.getMyOrders().subscribe((res: any) => {
+      const data = res.content || res;
 
-    this.orderService.cancelOrder(id).subscribe(()=>{
-      this.orders$ = this.orderService.getMyOrders()
-        .pipe(
-          map((res:any)=>res.content.filter((o:any)=>o.status!=='CANCELLED'))
-        );
+      // ❌ remove cancelled from main list
+      this.orders = data.filter((o: any) => o.status !== 'CANCELLED');
+
+      this.applyFilter();
+    });
+  }
+
+  // 🔥 Filter logic
+  applyFilter() {
+    if (this.filter === 'ALL') {
+      this.filteredOrders = this.orders;
+    } else {
+      this.filteredOrders = this.orders.filter(
+        o => o.status === this.filter
+      );
+    }
+  }
+
+  // 🔥 Cancel order
+  cancelOrder(id: number) {
+    if (!confirm("Cancel this order?")) return;
+
+    this.orderService.cancelOrder(id).subscribe(() => {
+      this.loadOrders(); // reload after cancel
     });
   }
 }
-

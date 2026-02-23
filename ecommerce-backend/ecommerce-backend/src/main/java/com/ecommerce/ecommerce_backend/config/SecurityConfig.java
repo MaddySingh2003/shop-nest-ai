@@ -45,11 +45,11 @@ public class SecurityConfig {
     .requestMatchers("/products/**").hasRole("ADMIN")
 
     // USER
-    .requestMatchers("/cart/**").hasRole("USER")
-    .requestMatchers("/wishlist/**").hasRole("USER")
-    .requestMatchers("/address/**").hasRole("USER")
-    .requestMatchers("/orders/place/**", "/orders/my", "/orders/{orderId}", "/orders/invoice/**").hasRole("USER")
-
+    .requestMatchers("/cart/**").hasAnyRole("USER","ADMIN")
+.requestMatchers("/wishlist/**").hasAnyRole("USER","ADMIN")
+.requestMatchers("/address/**").hasAnyRole("USER","ADMIN")
+.requestMatchers("/orders/place/**", "/orders/my", "/orders/{orderId}", "/orders/invoice/**")
+.hasAnyRole("USER","ADMIN")
     // ADMIN
     .requestMatchers("/admin/**").hasRole("ADMIN")
     .requestMatchers("/orders/admin/**", "/orders/update/**").hasRole("ADMIN")

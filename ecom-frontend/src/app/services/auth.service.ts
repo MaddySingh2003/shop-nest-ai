@@ -32,15 +32,17 @@ export class AuthService {
   }
 
   // SAVE TOKEN
-  loginSuccess(token: string) {
+  loginSuccess(token: string,role:string) {
     localStorage.setItem('token', token);
+    localStorage.setItem('role',role);
     this.router.navigate(['/home']);
   }
 
   logout() {
-    localStorage.removeItem('token');
-    this.router.navigate(['/login']);
-  }
+  localStorage.removeItem('token');
+  localStorage.removeItem('role'); // ✅ important
+  this.router.navigate(['/login']);
+}
 
   isLoggedIn(): boolean {
     if (typeof window === 'undefined') {

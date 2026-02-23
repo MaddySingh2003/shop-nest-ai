@@ -29,7 +29,7 @@ export class LoginComponent {
 
     this.auth.login(this.email, this.password).subscribe({
       next: (res: any) => {
-        this.auth.loginSuccess(res.token);
+        this.auth.loginSuccess(res.token, res.role);
       },
       error: () => {
         this.error = 'Invalid email or password';

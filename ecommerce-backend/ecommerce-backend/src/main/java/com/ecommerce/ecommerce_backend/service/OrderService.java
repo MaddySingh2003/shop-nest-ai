@@ -1,5 +1,6 @@
 package com.ecommerce.ecommerce_backend.service;
 
+import com.ecommerce.ecommerce_backend.dto.DashboardStats;
 import com.ecommerce.ecommerce_backend.model.*;
 import com.ecommerce.ecommerce_backend.model.Order.Status;
 import com.ecommerce.ecommerce_backend.repository.*;
@@ -259,6 +260,37 @@ public void softDeleteOrder(Long id) {
 
     order.setDeleted(true);
     orderRepository.save(order);
+}
+public DashboardStats getStats() {
+
+    List<Order> orders = orderRepository.findAll();
+
+    long totalOrders = orders.size();
+
+    double totalRevenue = orders.stream()
+            .filter(o -> "PAID".equals(o.getPaymentStatus()))
+            .mapToDouble(Order::getTotalAmount)
+            .sum();
+
+    long pending = orders.stream()
+            .filter(o -> o.getStatus().name().equals("PENDING"))
+            .count();
+
+    long confirmed = orders.stream()
+            .filter(o -> o.getStatus().name().equals("CONFIRMED"))
+            .count();
+
+    long delivered = orders.stream()
+            .filter(o -> o.getStatus().name().equals("DELIVERED"))
+            .count();
+
+    return DashboardStats.builder()
+            .totalOrders(totalOrders)
+            .totalRevenue(totalRevenue)
+            .pendingOrders(pending)
+            .confirmedOrders(confirmed)
+            .deliveredOrders(delivered)
+            .build();
 }
   
 }

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guards';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
 
@@ -78,6 +79,13 @@ export const routes: Routes = [
       import('./pages/admin/admin-orders')
         .then(m => m.AdminOrdersComponent)
   },
+   {
+  path: 'dashboard',
+  canActivate: [adminGuard], // optional but recommended
+  loadComponent: () =>
+    import('./pages/dashboard/dashboard')
+      .then(m => m.DashboardComponent)
+},
 
   // ✅ MAIN ACCOUNT SECTION (IMPORTANT)
   {
@@ -99,6 +107,7 @@ export const routes: Routes = [
         import('./pages/orders/orders')
           .then(m => m.OrdersComponent)
     },
+   
     {
       path: 'wishlist',
       loadComponent: () =>

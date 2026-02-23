@@ -52,6 +52,8 @@ deleteAdminOrder(id:number){
 }
 
 
-
+getStats(){
+  return this.http.get('http://localhost:8080/admin/stats');
+}
 
 }

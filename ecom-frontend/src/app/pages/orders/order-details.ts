@@ -23,12 +23,21 @@ export class OrderDetailsComponent implements OnInit {
     private cdr:ChangeDetectorRef
   ){}
 
+  intervalId:any;
   ngOnInit(){
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.loadOrder(id);
-    // setInterval(() => {
-    //   this.loadOrder(id);
-    // },5000);
+    
+    this.intervalId=setInterval(()=>{
+      this.loadOrder(id);
+    },5000);
+  }
+  
+
+  ngOnDestroy(){
+    if(this.intervalId){
+      clearInterval(this.intervalId);
+    }
   }
 
   loadOrder(id:number){
