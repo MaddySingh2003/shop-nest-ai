@@ -26,21 +26,33 @@ export class OrderDetailsComponent implements OnInit {
   ngOnInit(){
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.loadOrder(id);
+    // setInterval(() => {
+    //   this.loadOrder(id);
+    // },5000);
   }
 
   loadOrder(id:number){
-    this.orderService.getOrderById(id).subscribe(res=>{
+  this.orderService.getOrderById(id).subscribe({
+    next: (res)=>{
       this.order = res;
       this.loading = false;
       this.cdr.detectChanges();
-    });
-  }
+    },
+    error: ()=>{
+      alert("Failed to load order");
+      this.loading = false;
+      this.cdr.detectChanges();
+    }
+  });
+}
+  isCompleted(step: string) {
+  if (!this.order) return false;
 
-  isCompleted(step:string){
-    if(!this.order) return false;
-    return this.statuses.indexOf(this.order.status) 
-        >= this.statuses.indexOf(step);
-  }
+  if (this.order.status === 'CANCELLED') return false;
+
+  return this.statuses.indexOf(this.order.status) 
+       >= this.statuses.indexOf(step);
+}
 
   cancelOrder(){
     if(!confirm("Cancel this order?")) return;
@@ -60,4 +72,5 @@ export class OrderDetailsComponent implements OnInit {
       a.click();
     });
   }
+  
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ProfileService } from "../../services/profile.service";
 import { FormsModule } from "@angular/forms";
 import { AddressService } from "../../services/adress.service";
@@ -34,7 +34,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private profileService: ProfileService,
-    private addressService: AddressService
+    private addressService: AddressService,
+    private cdr:ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -47,6 +48,7 @@ export class ProfileComponent implements OnInit {
       this.user = res;
       this.profile = { ...res };
       this.loading = false;
+      this.cdr.detectChanges();
     });
   }
 
@@ -66,6 +68,7 @@ export class ProfileComponent implements OnInit {
         this.selectedAddressId = this.addresses[0].id;
       }
     });
+    this.cdr.detectChanges();
   }
 
   saveAddress() {
@@ -98,5 +101,6 @@ export class ProfileComponent implements OnInit {
     this.addressService.deleteAddress(id).subscribe(() => {
       this.loadAddresses();
     });
+    this.cdr.detectChanges();
   }
 }

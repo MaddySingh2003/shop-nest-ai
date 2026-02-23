@@ -18,11 +18,22 @@
         </p>
       </div>
 
-      <span class="px-4 py-2 rounded-full text-sm font-medium
-        bg-blue-100 text-blue-700">
-        {{order.status}}
-      </span>
+      <span
+  class="px-4 py-2 rounded-full text-sm font-medium"
+  [ngClass]="{
+    'bg-yellow-100 text-yellow-700': order.status === 'PENDING',
+    'bg-blue-100 text-blue-700': order.status === 'CONFIRMED',
+    'bg-purple-100 text-purple-700': order.status === 'SHIPPED',
+    'bg-green-100 text-green-700': order.status === 'DELIVERED',
+    'bg-red-100 text-red-700': order.status === 'CANCELLED'
+  }">
+  {{order.status}}
+</span>
     </div>
+    <div *ngIf="order.status==='CANCELLED'"
+     class="bg-red-100 text-red-700 p-4 rounded mb-6 text-center font-semibold">
+  This order has been cancelled ❌
+</div>
 
     <!-- Status Tracker -->
     <div class="mb-10">
@@ -33,6 +44,7 @@
         <div class="absolute top-4 left-0 right-0 h-1 bg-gray-200"></div>
 
         <!-- Active Line -->
+      <div *ngIf="order.status !== 'CANCELLED'" class="mb-10">
         <div class="absolute top-4 left-0 h-1 bg-green-500 transition-all duration-500"
           [style.width]="
             order.status==='PENDING' ? '0%' :
@@ -40,6 +52,7 @@
             order.status==='SHIPPED' ? '66%' :
             order.status==='DELIVERED' ? '100%' : '0%'
           ">
+        </div>
         </div>
 
         <!-- Steps -->
@@ -101,7 +114,7 @@
     <div class="flex flex-wrap gap-4 mb-8">
 
       <button *ngIf="order.status==='PENDING'"
-        routerLink="/payment/{{order.id}}"
+        [routerLink]="['/payment', order.id]"
         class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition">
         Pay Now
       </button>
