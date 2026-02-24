@@ -1,11 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order.service';
+import { Navbar } from '../../components/navbar/navbar';
 
 @Component({
   selector:'app-admin-orders',
   standalone:true,
-  imports:[CommonModule],
+  imports:[CommonModule,Navbar],
   templateUrl:'./admin-orders.html'
 })
 export class AdminOrdersComponent implements OnInit {

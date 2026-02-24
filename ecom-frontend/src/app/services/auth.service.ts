@@ -50,4 +50,14 @@ export class AuthService {
     }
     return !!localStorage.getItem('token');
   }
+  getRole():string |null{
+    return localStorage.getItem('role');
+  }
+  isAdmin(): boolean{
+    return this.getRole()==='ADMIN'
+
+  }
+  isUser():boolean{
+    return this.getRole()==='USER'
+  }
 }

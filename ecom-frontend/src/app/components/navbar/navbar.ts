@@ -8,12 +8,13 @@ import { Router, RouterModule } from '@angular/router';
   imports: [CommonModule,RouterModule],
   standalone:true,
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
+ 
 })
 export class Navbar {
   constructor(
-    private auth:AuthService,
-    private router:Router
+    public auth:AuthService,
+    private router:Router,
+    
   ){}
 
   logout(){
