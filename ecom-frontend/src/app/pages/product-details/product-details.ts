@@ -6,6 +6,8 @@ import { Navbar } from '../../components/navbar/navbar';
 import { CartService } from '../../services/cart.service';
 import { ReviewService } from '../../services/review.service';
 import { FormsModule } from '@angular/forms';
+import { jwtDecode } from 'jwt-decode';
+
 
 
 @Component({
@@ -20,6 +22,8 @@ export class ProductDetailsComponent implements OnInit {
   recommendations: any[] = [];
   loading = true;
   error: string | null = null;
+  currentUserEmail: string = '';
+isAdmin: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,7 +44,14 @@ export class ProductDetailsComponent implements OnInit {
       }
 
       this.loadProduct(id);
+      const token=localStorage.getItem('token');
+      if(token){
+        const decode:any=jwtDecode(token);
+        this.currentUserEmail=decode.sub;
+        this.isAdmin=decode.role==='ADMIN';
+      }
       this.loadRecommendations(id);
+      this.loadReviews(id);
     });
   }
 
@@ -101,6 +112,29 @@ export class ProductDetailsComponent implements OnInit {
       this.newReview={rating:5,comment:''};
       this.loadReviews(productId);
     })
+  }
+  deleteReview(id: number) {
+  this.reviewService.deleteReview(id).subscribe({
+    next: (res) => {
+      console.log("DELETE RESPONSE:", res);
+
+      this.reviews = this.reviews.filter(r => r.id !== id);
+
+      alert("Review deleted ✅");
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      console.error("DELETE ERROR:", err);
+
+      // 🔥 IMPORTANT: Check if actually deleted
+      this.reviews = this.reviews.filter(r => r.id !== id);
+
+      alert("Deleted but response issue ⚠️");
+    }
+  });
+}
+  isOwner(r:any){
+    return r.user?.email ===this.currentUserEmail;
   }
 
 }

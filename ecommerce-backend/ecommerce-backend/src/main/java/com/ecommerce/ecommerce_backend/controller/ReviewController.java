@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/reviews")
@@ -35,5 +36,17 @@ public class ReviewController {
     @GetMapping("/product/{productId}")
     public List<Review> getReviews(@PathVariable Long productId){
         return reviewService.getProductReviews(productId);
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<?>deleteReview(@PathVariable Long reviewId){
+        String email=SecurityContextHolder
+        .getContext()
+        .getAuthentication()
+        .getPrincipal()
+        .toString();
+
+    reviewService.deleteReview(reviewId,email);
+    return ResponseEntity.ok().body(Map.of("message","deleted"));
     }
 }

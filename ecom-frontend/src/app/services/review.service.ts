@@ -13,4 +13,7 @@ export class ReviewService{
     addReview(productId:number,review:any){
         return this.http.post(`${this.API}/add/${productId}`,review);
     }
+    deleteReview(id:number){
+        return this.http.delete(`${this.API}/${id}`);
+    }
 }

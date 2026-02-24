@@ -37,4 +37,24 @@ public class ReviewService {
 
         return reviewRepo.findByProduct(product);
     }
+    public void deleteReview(Long reviewId, String email){
+
+    Review review = reviewRepo.findById(reviewId)
+            .orElseThrow(() -> new RuntimeException("Review not found"));
+
+    User user = userRepo.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    // ✅ Allow if:
+    // 1. Owner of review
+    // 2. ADMIN
+
+    if(!review.getUser().getId().equals(user.getId()) 
+        && !user.getRole().name().equals("ADMIN")) {
+
+        throw new RuntimeException("Not allowed");
+    }
+
+    reviewRepo.delete(review);
+}
 }

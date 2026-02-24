@@ -147,7 +147,7 @@ export class CheckoutComponent implements OnInit {
 
     console.log("CALLING ORDER API...");
 
-  this.orderService.placeOrder(this.addressId, this.couponCode).subscribe({
+   this.orderService.placeOrder(this.addressId, this.couponCode).subscribe({
       next: (res: any) => {
         console.log("ORDER RESPONSE:", res);
 
