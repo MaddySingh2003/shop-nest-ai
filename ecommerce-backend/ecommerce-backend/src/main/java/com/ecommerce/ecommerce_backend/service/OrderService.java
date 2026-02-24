@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -263,26 +264,14 @@ public void softDeleteOrder(Long id) {
 }
 public DashboardStats getStats() {
 
-    List<Order> orders = orderRepository.findAll();
+    long totalOrders = orderRepository.count();
 
-    long totalOrders = orders.size();
+  double totalRevenue = Optional.ofNullable(orderRepository.getTotalRevenue()).orElse(0.0);
 
-    double totalRevenue = orders.stream()
-            .filter(o -> "PAID".equals(o.getPaymentStatus()))
-            .mapToDouble(Order::getTotalAmount)
-            .sum();
-
-    long pending = orders.stream()
-            .filter(o -> o.getStatus().name().equals("PENDING"))
-            .count();
-
-    long confirmed = orders.stream()
-            .filter(o -> o.getStatus().name().equals("CONFIRMED"))
-            .count();
-
-    long delivered = orders.stream()
-            .filter(o -> o.getStatus().name().equals("DELIVERED"))
-            .count();
+    long pending = orderRepository.countByStatus(Status.PENDING);
+    long confirmed = orderRepository.countByStatus(Status.CONFIRMED);
+    long delivered = orderRepository.countByStatus(Status.DELIVERED);
+    
 
     return DashboardStats.builder()
             .totalOrders(totalOrders)

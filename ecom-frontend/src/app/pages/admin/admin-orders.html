@@ -1,57 +1,121 @@
 <app-navbar></app-navbar>
-<table class="w-full border">
 
-<tr class="bg-gray-200">
-  <th>ID</th>
-  <th>User</th>
-  <th>Total</th>
-  <th>Status</th>
-  <th>Action</th>
-</tr>
+<div class="p-6 bg-gray-100 min-h-screen">
 
-<tr *ngFor="let o of orders" class="border-t">
+  <!-- Page Header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">Orders Management</h1>
+    <p class="text-gray-500">Manage and track customer orders</p>
+  </div>
 
-  <td>{{o.id}}</td>
-  <td>{{o.userEmail}}</td>
-  <td>₹{{o.totalAmount}}</td>
-  <td>{{o.status}}</td>
-  <td>{{o.paymentStatus}}</td>
-<td>{{o.paymentMethod}}</td>
+  <!-- Orders Table Card -->
+  <div class="bg-white shadow-lg rounded-xl overflow-hidden">
 
-<td class="flex gap-2">
+    <table class="w-full text-sm text-left">
 
-  <!-- PENDING / CONFIRMED -->
-  <button
-    *ngIf="o.status?.toUpperCase()==='CONFIRMED'"
-    class="bg-blue-600 text-white px-2"
-    (click)="updateStatus(o.id,'SHIPPED')">
-    Ship
-  </button>
+      <!-- Table Header -->
+      <thead class="bg-gray-800 text-white uppercase text-xs tracking-wider">
+        <tr>
+          <th class="px-6 py-4">Order ID</th>
+          <th class="px-6 py-4">Customer</th>
+          <th class="px-6 py-4">Amount</th>
+          <th class="px-6 py-4">Order Status</th>
+          <th class="px-6 py-4">Payment</th>
+          <th class="px-6 py-4">Method</th>
+          <th class="px-6 py-4 text-center">Actions</th>
+        </tr>
+      </thead>
 
-  <!-- SHIPPED -->
-  <button
-    *ngIf="o.status?.toUpperCase()==='SHIPPED'"
-    class="bg-green-600 text-white px-2"
-    (click)="updateStatus(o.id,'DELIVERED')">
-    Deliver
-  </button>
+      <!-- Table Body -->
+      <tbody class="divide-y divide-gray-200">
 
-  <!-- DELIVERED / CANCELLED -->
-  <button
-    *ngIf="o.status?.toUpperCase()==='DELIVERED' || o.status?.toUpperCase()==='CANCELLED'"
-    class="bg-red-600 text-white px-2"
-    (click)="deleteOrder(o.id)">
-    Delete
-  </button><button
-    *ngIf="o.status?.toUpperCase()==='PENDING'"
-    class="bg-red-600 text-white px-2"
-    (click)="deleteOrder(o.id)">
-    Force Delete
-  </button>
+        <tr *ngFor="let o of orders"
+            class="hover:bg-gray-50 transition duration-200">
 
-</td>
+          <td class="px-6 py-4 font-semibold text-gray-700">
+            #{{o.id}}
+          </td>
 
+          <td class="px-6 py-4 text-gray-600">
+            {{o.userEmail}}
+          </td>
 
-</tr>
+          <td class="px-6 py-4 font-bold text-indigo-600">
+            ₹{{o.totalAmount}}
+          </td>
 
-</table>
+          <!-- Order Status Badge -->
+          <td class="px-6 py-4">
+            <span
+              [ngClass]="{
+                'bg-yellow-100 text-yellow-700': o.status?.toUpperCase()==='PENDING',
+                'bg-blue-100 text-blue-700': o.status?.toUpperCase()==='CONFIRMED',
+                'bg-purple-100 text-purple-700': o.status?.toUpperCase()==='SHIPPED',
+                'bg-green-100 text-green-700': o.status?.toUpperCase()==='DELIVERED',
+                'bg-red-100 text-red-700': o.status?.toUpperCase()==='CANCELLED'
+              }"
+              class="px-3 py-1 rounded-full text-xs font-semibold">
+              {{o.status}}
+            </span>
+          </td>
+
+          <!-- Payment Status Badge -->
+          <td class="px-6 py-4">
+            <span
+              [ngClass]="{
+                'bg-green-100 text-green-700': o.paymentStatus==='PAID',
+                'bg-red-100 text-red-700': o.paymentStatus==='UNPAID'
+              }"
+              class="px-3 py-1 rounded-full text-xs font-semibold">
+              {{o.paymentStatus}}
+            </span>
+          </td>
+
+          <td class="px-6 py-4 text-gray-600">
+            {{o.paymentMethod}}
+          </td>
+
+          <!-- Action Buttons -->
+          <td class="px-6 py-4">
+            <div class="flex gap-2 justify-center">
+
+              <!-- CONFIRMED -->
+              <button
+                *ngIf="o.status?.toUpperCase()==='CONFIRMED'"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-xs shadow">
+                Ship
+              </button>
+
+              <!-- SHIPPED -->
+              <button
+                *ngIf="o.status?.toUpperCase()==='SHIPPED'"
+                class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs shadow">
+                Deliver
+              </button>
+
+              <!-- DELETE -->
+              <button
+                *ngIf="o.status?.toUpperCase()==='DELIVERED' || o.status?.toUpperCase()==='CANCELLED'"
+                class="bg-gray-700 hover:bg-black text-white px-3 py-1 rounded-lg text-xs shadow">
+                Delete
+              </button>
+
+              <!-- FORCE DELETE -->
+              <button
+                *ngIf="o.status?.toUpperCase()==='PENDING'"
+                class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-xs shadow">
+                Force Delete
+              </button>
+
+            </div>
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

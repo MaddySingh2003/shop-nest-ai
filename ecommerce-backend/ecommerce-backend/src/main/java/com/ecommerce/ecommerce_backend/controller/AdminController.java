@@ -20,10 +20,8 @@ public class AdminController {
 
 private final OrderService orderService;
   
-  @GetMapping("/test")
-      public ResponseEntity<String> adminTest(){
-        return ResponseEntity.ok("ADMIN endpoint working");
-      }
+ 
+
       @GetMapping("/stats")
 public ResponseEntity<DashboardStats> getStats(){
     return ResponseEntity.ok(orderService.getStats());
