@@ -58,6 +58,19 @@
               Selected
             </span>
           </div>
+          <div class="mt-4">
+
+  <input [(ngModel)]="couponCode"
+         placeholder="Enter coupon code"
+         class="border p-2 rounded w-full"/>
+
+  <button
+    (click)="applyCoupon()"
+    class="bg-green-600 text-white px-4 py-2 mt-2 rounded">
+    Apply Coupon
+  </button>
+
+</div>
 
         </div>
 

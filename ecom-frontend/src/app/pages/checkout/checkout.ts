@@ -19,7 +19,8 @@ export class CheckoutComponent implements OnInit {
   addressId: number | null = null;
   loading = true;
   showForm = false;
-
+ couponCode: string='';
+  discount:number=0;
   cartItems: any[] = [];
   total: number = 0;
 
@@ -50,6 +51,7 @@ export class CheckoutComponent implements OnInit {
     this.cdr.detectChanges();
    
   }
+
 
   // ------------------------
   loadAddresses() {
@@ -145,7 +147,7 @@ export class CheckoutComponent implements OnInit {
 
     console.log("CALLING ORDER API...");
 
-    this.orderService.placeOrder(this.addressId).subscribe({
+  this.orderService.placeOrder(this.addressId, this.couponCode).subscribe({
       next: (res: any) => {
         console.log("ORDER RESPONSE:", res);
 
@@ -204,5 +206,12 @@ export class CheckoutComponent implements OnInit {
       country: 'India',
       defaultAddress: false
     };
+  }
+  applyCoupon(){
+    if(!this.couponCode){
+      alert("Enter coupon");
+      return;
+    }
+    alert("Coupon appled");
   }
 }

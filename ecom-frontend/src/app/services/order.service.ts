@@ -16,8 +16,11 @@ export class OrderService {
     return this.http.get(`${this.API}/${id}`);
   }
 
-  placeOrder(addressId:number){
-    return this.http.post(`${this.API}/place/${addressId}`, {});
+  placeOrder(addressId:number,couponCode?:string){
+   return this.http.post('/orders/place', {
+    addressId,
+    couponCode
+  });
   }
 
   cancelOrder(id:number){
