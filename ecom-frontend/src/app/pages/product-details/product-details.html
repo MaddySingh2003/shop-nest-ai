@@ -48,6 +48,47 @@
         Add to Cart
       </button>
     </div>
+    <!-- REVIEWS SECTION -->
+<div class="mt-10">
+
+  <h3 class="text-xl font-semibold mb-4">Customer Reviews</h3>
+
+  <!-- ADD REVIEW -->
+  <div class="mb-6 bg-gray-50 p-4 rounded-xl">
+
+    <select [(ngModel)]="newReview.rating" class="border p-2 rounded">
+      <option *ngFor="let r of [5,4,3,2,1]" [value]="r">
+        {{r}} ⭐
+      </option>
+    </select>
+
+    <textarea [(ngModel)]="newReview.comment"
+              class="w-full border p-2 mt-2 rounded"
+              placeholder="Write your review..."></textarea>
+
+    <button
+      (click)="submitReview(product.id)"
+      class="bg-black text-white px-4 py-2 mt-2 rounded">
+      Submit Review
+    </button>
+  </div>
+
+  <!-- LIST -->
+  <div *ngFor="let r of reviews" class="border-b py-3">
+
+    <p class="font-semibold">{{r.user?.name}}</p>
+
+    <p class="text-yellow-500">
+      {{r.rating}} ⭐
+    </p>
+
+    <p class="text-gray-600">
+      {{r.comment}}
+    </p>
+
+  </div>
+
+</div>
 
   </div>
 

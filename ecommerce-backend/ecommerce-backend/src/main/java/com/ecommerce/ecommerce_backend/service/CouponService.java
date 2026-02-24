@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class CouponService {
 
-    private final CouponRepository couponRepository;
+    private final CouponRepository repo;
 
     public Coupon validateCoupon(String code){
 
-        var coupon = couponRepository.findByCode(code)
+        var coupon = repo.findByCode(code)
                 .orElseThrow(() -> new RuntimeException("Coupon does not exist"));
 
         if(!coupon.isActive())
@@ -32,10 +32,8 @@ public class CouponService {
 
     public void markUsed(Coupon coupon){
         coupon.setUsedCount(coupon.getUsedCount() + 1);
-        couponRepository.save(coupon);
+        repo.save(coupon);
     }
-    
-    private final CouponRepository repo;
 
     public Coupon create(Coupon coupon){
         return repo.save(coupon);

@@ -4,12 +4,14 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { Navbar } from '../../components/navbar/navbar';
 import { CartService } from '../../services/cart.service';
+import { ReviewService } from '../../services/review.service';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, Navbar],
+  imports: [CommonModule, RouterModule, Navbar,FormsModule],
   templateUrl: './product-details.html'
 })
 export class ProductDetailsComponent implements OnInit {
@@ -23,7 +25,8 @@ export class ProductDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private productService: ProductService,
     private cdr: ChangeDetectorRef,
-    private cartService:CartService
+    private cartService:CartService,
+    private reviewService: ReviewService,
   ) {}
 
   ngOnInit() {
@@ -78,6 +81,26 @@ export class ProductDetailsComponent implements OnInit {
       next: () => alert('Product added to cart'),
       error: () => alert('Failed to add')
     });
+  }
+  reviews:any[]=[];
+  newReview={
+    rating:5,
+    comment:''
+  };
+
+  loadReviews(productId:number){
+    this.reviewService.getReview(productId).subscribe((res:any)=>{
+      this.reviews=res;
+      this.cdr.detectChanges();
+    });
+  }
+
+  submitReview(productId:number){
+    this.reviewService.addReview(productId,this.newReview).subscribe(()=>{
+      alert("Review added");
+      this.newReview={rating:5,comment:''};
+      this.loadReviews(productId);
+    })
   }
 
 }
