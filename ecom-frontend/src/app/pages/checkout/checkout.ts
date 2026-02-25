@@ -18,200 +18,136 @@ export class CheckoutComponent implements OnInit {
   addresses: any[] = [];
   addressId: number | null = null;
   loading = true;
-  showForm = false;
- couponCode: string='';
-  discount:number=0;
+  showForm:boolean=false;
+
   cartItems: any[] = [];
   total: number = 0;
 
-  outOfStock: boolean = false;
+  couponCode: string = '';
+  discount: number = 0;
+  finalTotal: number = 0;
 
-  newAddress: any = {
-    fullName: '',
-    phone: '',
-    street: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'India',
-    defaultAddress: false
-  };
+  outOfStock: boolean = false;
 
   constructor(
     private orderService: OrderService,
     private addressService: AddressService,
     private router: Router,
     private cartService: CartService,
-    private cdr:ChangeDetectorRef,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.loadAddresses();
     this.loadCart();
     this.cdr.detectChanges();
-   
   }
-
 
   // ------------------------
   loadAddresses() {
-    this.loading = true;
+    this.addressService.getMyAddresses().subscribe((res: any) => {
+      this.addresses = res || [];
 
-    this.addressService.getMyAddresses().subscribe({
-      next: (res: any) => {
-        this.addresses = res || [];
-        this.loading = false;
-
-        // ✅ Auto-select first address (UX improvement)
-        if (this.addresses.length > 0 && !this.addressId) {
-          this.addressId = this.addresses[0].id;
-        }
-      },
-      error: () => {
-        this.loading = false;
+      if (this.addresses.length > 0) {
+        this.addressId = this.addresses[0].id;
       }
+
+      this.loading = false;
     });
-     this.cdr.detectChanges();
+    this.cdr.detectChanges();
   }
 
   // ------------------------
   loadCart() {
-  this.cartService.getCart().subscribe({
-    next: (res: any) => {
-      console.log("RAW CART RESPONSE:", res);
+    this.cartService.getCart().subscribe({
+      next: (res: any) => {
+        const items = Array.isArray(res) ? res : res.items || [];
+        this.cartItems = items;
 
-      const items = Array.isArray(res) ? res : res.items || [];
+        this.calculateTotal();
+        this.checkStock();
+      },
+      error: () => {
+        this.cartItems = [];
+        this.total = 0;
+      }
+    });
+    this.cdr.detectChanges();
+  }
 
-      console.log("EXTRACTED ITEMS:", items);
+  // ------------------------
+  calculateTotal() {
+    this.total = this.cartItems.reduce((acc: number, item: any) => {
+      const price = item.product?.price ?? item.price ?? 0;
+      return acc + (price * item.quantity);
+    }, 0);
 
-      this.cartItems = items;
+    this.finalTotal = this.total; // default
+ this.cdr.detectChanges();
+  }
 
-      // 🔥 IMPORTANT: call AFTER assignment
-      this.calculateTotal();
-      this.checkStock();
-    },
-    error: (err) => {
-      console.error(err);
-      this.cartItems = [];
-      this.total = 0;
-      this.outOfStock = false;
-    }
-  });
-  this.cdr.detectChanges();
-}
+
   // ------------------------
   checkStock() {
     this.outOfStock = this.cartItems.some(item => {
       const stock = item.product?.stock ?? item.stock ?? 0;
       return stock <= 0;
     });
-     this.cdr.detectChanges();
-
-    console.log("OUT OF STOCK:", this.outOfStock);
+    this.cdr.detectChanges();
   }
 
   // ------------------------
-  calculateTotal() {
-    if (!this.cartItems || this.cartItems.length === 0) {
-      this.total = 0;
+  applyCoupon() {
+
+    if (!this.couponCode) {
+      alert("Enter coupon");
       return;
     }
 
-    this.total = this.cartItems.reduce((acc: number, item: any) => {
-      const price = item.product?.price ?? item.price ?? 0;
-      return acc + (price * item.quantity);
-    }, 0);
- this.cdr.detectChanges();
-    console.log("TOTAL:", this.total);
+    // 🔥 TEMP LOGIC (same as backend)
+    const percent = 10;
+    const max = 200;
+
+    let discount = this.total * (percent / 100);
+
+    if (discount > max) {
+      discount = max;
+    }
+
+    this.discount = discount;
+    this.finalTotal = this.total - discount;
+
+    alert("Coupon applied ✅");
+    this.cdr.detectChanges();
   }
 
   // ------------------------
   placeOrder() {
 
-    console.log("Selected addressId:", this.addressId);
-
     if (!this.addressId) {
-      alert("Please select delivery address");
+      alert("Select address");
       return;
     }
 
     if (this.outOfStock) {
-      alert("Some items are out of stock");
+      alert("Out of stock");
       return;
     }
 
     if (this.total === 0) {
-      alert("Cart is empty");
+      alert("Cart empty");
       return;
     }
 
-    console.log("CALLING ORDER API...");
-
-   this.orderService.placeOrder(this.addressId, this.couponCode).subscribe({
-      next: (res: any) => {
-        console.log("ORDER RESPONSE:", res);
-
-        const orderId = res?.id || res?.orderId;
-
-        if (!orderId) {
-          alert("Order created but ID missing");
-          return;
+    this.orderService.placeOrder(this.addressId, this.couponCode)
+      .subscribe({
+        next: (res: any) => {
+          this.router.navigate(['/order-success', res.id]);
+        },
+        error: (err) => {
+          alert(err?.error?.message || "Order failed");
         }
-
-        alert("Order placed successfully");
-
-        this.router.navigate(['/order-success', orderId]);
-      },
-      error: (err) => {
-        console.error("ORDER ERROR:", err);
-
-        const msg = err?.error?.error || "Order failed";
-        alert(msg);
-      }
-    });
-   this.cdr.detectChanges();
-  }
-
-  // ------------------------
-  saveAddress() {
-    this.addressService.addAddress(this.newAddress).subscribe(() => {
-      this.showForm = false;
-      this.resetForm();
-      this.loadAddresses();
-    });
-     this.cdr.detectChanges();
-  }
-
-  editAddress(a: any) {
-    this.newAddress = { ...a };
-    this.showForm = true;
-  }
-
-  deleteAddress(id: number) {
-    if (!confirm("Delete this address?")) return;
-
-    this.addressService.deleteAddress(id).subscribe(() => {
-      this.loadAddresses();
-    });
-  }
-
-  resetForm() {
-    this.newAddress = {
-      fullName: '',
-      phone: '',
-      street: '',
-      city: '',
-      state: '',
-      zipCode: '',
-      country: 'India',
-      defaultAddress: false
-    };
-  }
-  applyCoupon(){
-    if(!this.couponCode){
-      alert("Enter coupon");
-      return;
-    }
-    alert("Coupon appled");
+      });
+      this.cdr.detectChanges();
   }
 }

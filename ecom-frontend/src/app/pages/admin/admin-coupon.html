@@ -1,0 +1,28 @@
+<div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow mt-10">
+
+  <h2 class="text-xl font-bold mb-4">Create Coupon</h2>
+
+  <input [(ngModel)]="coupon.code"
+         placeholder="Code"
+         class="border p-2 w-full mb-2"/>
+
+  <input [(ngModel)]="coupon.discountPercent"
+         type="number"
+         placeholder="Discount %"
+         class="border p-2 w-full mb-2"/>
+
+  <input [(ngModel)]="coupon.maxDiscount"
+         type="number"
+         placeholder="Max Discount"
+         class="border p-2 w-full mb-2"/>
+
+  <input [(ngModel)]="coupon.expiryDate"
+         type="datetime-local"
+         class="border p-2 w-full mb-2"/>
+
+  <button (click)="createCoupon()"
+          class="bg-black text-white px-4 py-2 w-full rounded">
+    Create Coupon
+  </button>
+
+</div>

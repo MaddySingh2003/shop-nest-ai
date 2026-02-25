@@ -6,13 +6,14 @@ import { CartService } from '../../services/cart.service';
 import { Navbar } from '../../components/navbar/navbar';
 import { Router } from '@angular/router';
 import { WishlistService } from '../../services/wishlist.service';
+import { Footer } from '../../components/footer/footer';
 
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, Navbar],
+  imports: [CommonModule, Navbar,Footer],
   templateUrl: './home.html',
 })
 export class HomeComponent implements OnInit {

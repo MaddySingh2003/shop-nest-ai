@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guards';
 import { adminGuard } from './core/guards/admin.guard';
+import { AdminCouponComponent } from './pages/admin/admin-coupon';
 
 export const routes: Routes = [
 
@@ -120,7 +121,8 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin/admin-orders')
             .then(m => m.AdminOrdersComponent)
-      }
+      },
+      { path: 'coupon', component: AdminCouponComponent }
     ]
   },
 
