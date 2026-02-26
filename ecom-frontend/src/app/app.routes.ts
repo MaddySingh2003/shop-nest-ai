@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guards';
 import { adminGuard } from './core/guards/admin.guard';
 import { AdminCouponComponent } from './pages/admin/admin-coupon';
+import { GiftComponent } from './pages/gift-coupon/gift';
 
 export const routes: Routes = [
 
@@ -38,7 +39,8 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/cart/cart').then(m => m.Cart)
   },
-  {
+  { path: 'gift', component: GiftComponent, canActivate:[authGuard] }
+ , {
     path: 'checkout',
     canActivate: [authGuard],
     loadComponent: () =>

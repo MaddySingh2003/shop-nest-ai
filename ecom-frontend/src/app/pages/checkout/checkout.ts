@@ -97,29 +97,34 @@ export class CheckoutComponent implements OnInit {
   }
 
   // ------------------------
-  applyCoupon() {
-
-    if (!this.couponCode) {
-      alert("Enter coupon");
-      return;
-    }
-
-    // 🔥 TEMP LOGIC (same as backend)
-    const percent = 10;
-    const max = 200;
-
-    let discount = this.total * (percent / 100);
-
-    if (discount > max) {
-      discount = max;
-    }
-
-    this.discount = discount;
-    this.finalTotal = this.total - discount;
-
-    alert("Coupon applied ✅");
-    this.cdr.detectChanges();
+  applyCoupon(){
+  if(!this.couponCode){
+    alert("Enter coupon");
+    return;
   }
+
+  this.orderService.validateCoupon(this.couponCode)
+    .subscribe({
+      next:(coupon:any)=>{
+
+        let discount = this.total * (coupon.discountPercent / 100);
+
+        if(discount > coupon.maxDiscount){
+          discount = coupon.maxDiscount;
+        }
+
+        this.discount = discount;
+        this.finalTotal = this.total - discount;
+
+        alert("Coupon applied ✅");
+      },
+      error:()=>{
+        alert("Invalid coupon ❌");
+        this.discount = 0;
+        this.finalTotal = this.total;
+      }
+    });
+}
 
   // ------------------------
   placeOrder() {

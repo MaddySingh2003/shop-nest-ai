@@ -58,5 +58,10 @@ deleteAdminOrder(id:number){
 getStats(){
   return this.http.get('http://localhost:8080/admin/stats');
 }
-
+validateCoupon(code:string){
+  return this.http.get(`http://localhost:8080/coupon/validate/${code}`);
 }
+
+tryGiftCoupon(){
+  return this.http.get(`http://localhost:8080/coupon/gift`);
+}}

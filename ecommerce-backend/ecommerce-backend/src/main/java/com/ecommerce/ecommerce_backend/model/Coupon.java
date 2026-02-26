@@ -13,18 +13,22 @@ public class Coupon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique=true)
+    @Column(unique = true)
     private String code;
 
-    private double discountPercent;   // Example: 10 = 10%
-    private double maxDiscount;       // Optional safety cap
+    private double discountPercent;
+    private double maxDiscount;
 
     private LocalDateTime expiryDate;
-    private boolean active;
 
-   @Builder.Default
-private int usageLimit = 10;
+    private Boolean active; // ✅ IMPORTANT FIX
 
-@Builder.Default
-private int usedCount = 0;
+    @Builder.Default
+    private Integer usageLimit = 10;
+
+    @Builder.Default
+    private Integer usedCount = 0;
+
+    @ManyToOne
+    private Product product;
 }

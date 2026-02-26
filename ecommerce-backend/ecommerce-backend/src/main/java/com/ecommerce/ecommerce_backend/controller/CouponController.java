@@ -2,51 +2,49 @@ package com.ecommerce.ecommerce_backend.controller;
 
 import com.ecommerce.ecommerce_backend.model.Coupon;
 import com.ecommerce.ecommerce_backend.service.CouponService;
+import com.ecommerce.ecommerce_backend.service.UserCouponService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin/coupon")
+@RequestMapping("/coupon")
 @RequiredArgsConstructor
 public class CouponController {
 
     private final CouponService couponService;
+    private final UserCouponService userCouponService;
 
-    // ---------------- CREATE COUPON (ADMIN) ----------------
-    @PostMapping("/create")
+    // ================= ADMIN =================
+    @PostMapping("/admin/create")
     public ResponseEntity<Coupon> create(@RequestBody Coupon coupon){
+
+        if(coupon.getActive() == null){
+            coupon.setActive(true);
+        }
+
         coupon.setUsedCount(0);
-        coupon.setActive(true);
+
         return ResponseEntity.ok(couponService.create(coupon));
     }
 
-    // ---------------- GET COUPON (ADMIN) ----------------
-    @GetMapping("/{code}")
-    public ResponseEntity<Coupon> getCoupon(@PathVariable String code){
-        return ResponseEntity.ok(couponService.getByCode(code));
+    // ✅ THIS MUST BE USER ACCESSIBLE ALSO
+    @GetMapping("/validate/{code}")
+    public ResponseEntity<Coupon> validate(@PathVariable String code){
+        return ResponseEntity.ok(couponService.validateCoupon(code));
     }
 
-    // ---------------- LIST ALL (ADMIN OPTIONAL) ----------------
-    // enable if needed
-    // @GetMapping("/all")
-    // public List<Coupon> all(){
-    //     return repo.findAll();
-    // }
+    // ================= USER =================
+    @GetMapping("/gift")
+    public ResponseEntity<?> tryCoupon(){
 
-    // ---------------- DISABLE COUPON (ADMIN) ----------------
-    @PutMapping("/disable/{code}")
-    public ResponseEntity<?> disable(@PathVariable String code){
-        Coupon coupon = couponService.getByCode(code);
-        coupon.setActive(false);
-        return ResponseEntity.ok("Coupon disabled");
-    }
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal()
+                .toString(); // ✅ FIXED
 
-    // ---------------- ENABLE COUPON (ADMIN) ----------------
-    @PutMapping("/enable/{code}")
-    public ResponseEntity<?> enable(@PathVariable String code){
-        Coupon coupon = couponService.getByCode(code);
-        coupon.setActive(true);
-        return ResponseEntity.ok("Coupon enabled");
+        return ResponseEntity.ok(userCouponService.tryLuck(email));
     }
 }

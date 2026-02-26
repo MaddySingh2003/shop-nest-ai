@@ -3,7 +3,11 @@ package com.ecommerce.ecommerce_backend.service;
 import com.ecommerce.ecommerce_backend.model.Coupon;
 import com.ecommerce.ecommerce_backend.repository.CouponRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDateTime;
 
@@ -15,11 +19,11 @@ public class CouponService {
 
     public Coupon validateCoupon(String code){
 
-        var coupon = repo.findByCode(code)
+        Coupon coupon = repo.findByCode(code)
                 .orElseThrow(() -> new RuntimeException("Coupon does not exist"));
 
-        if(!coupon.isActive())
-            throw new RuntimeException("Coupon is disabled");
+        if(Boolean.FALSE.equals(coupon.getActive()))
+            throw new RuntimeException("Coupon disabled");
 
         if(coupon.getExpiryDate().isBefore(LocalDateTime.now()))
             throw new RuntimeException("Coupon expired");
@@ -37,10 +41,5 @@ public class CouponService {
 
     public Coupon create(Coupon coupon){
         return repo.save(coupon);
-    }
-
-    public Coupon getByCode(String code){
-        return repo.findByCode(code)
-                .orElseThrow(() -> new RuntimeException("Invalid coupon"));
     }
 }

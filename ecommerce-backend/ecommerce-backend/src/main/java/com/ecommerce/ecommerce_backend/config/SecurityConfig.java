@@ -50,11 +50,11 @@ public class SecurityConfig {
 .requestMatchers("/address/**").hasAnyRole("USER","ADMIN")
 .requestMatchers("/orders/place/**", "/orders/my", "/orders/{orderId}", "/orders/invoice/**")
 .hasAnyRole("USER","ADMIN")
-    // ADMIN
-    .requestMatchers("/admin/**").hasRole("ADMIN")
+.requestMatchers("/coupon/gift").hasAnyRole("USER","ADMIN")
+.requestMatchers("/coupon/validate/**").hasAnyRole("USER","ADMIN")
+.requestMatchers("/coupon/admin/**").hasRole("ADMIN")    .requestMatchers("/admin/**").hasRole("ADMIN")
     .requestMatchers("/orders/admin/**", "/orders/update/**").hasRole("ADMIN")
-    .requestMatchers("/admin/coupon/**").hasRole("ADMIN")
-
+    
     .anyRequest().authenticated()
 )
 

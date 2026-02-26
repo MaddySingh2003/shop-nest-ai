@@ -15,6 +15,7 @@
            <a *ngIf="auth.isUser()" routerLink="/home">Home</a>
           <a *ngIf="auth.isUser()" routerLink="/cart">Cart</a>
           <a *ngIf="auth.isUser()" routerLink="/account/wishlist">Wishlist</a>
+          <a routerLink="/gift">🎁 Gift</a>
 
           <!-- ADMIN ONLY -->
           <a *ngIf="auth.isAdmin()" routerLink="/admin/dashboard">Dashboard</a>

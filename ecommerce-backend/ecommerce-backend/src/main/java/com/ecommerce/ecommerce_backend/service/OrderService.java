@@ -92,21 +92,34 @@ order.setPaymentMethod("NOT_SELECTED");
             product.setStock(product.getStock() - ci.getQuantity());
             productRepository.save(product);
         }
+// APPLY COUPON
+Coupon appliedCoupon = null;
 
-        // 7️⃣ APPLY COUPON
-        Coupon appliedCoupon = null;
+if (couponCode != null && !couponCode.isBlank()) {
 
-        if (couponCode != null && !couponCode.isBlank()) {
-            Coupon coupon = couponService.validateCoupon(couponCode);
+    Coupon coupon = couponService.validateCoupon(couponCode);
 
-            double discount = total * (coupon.getDiscountPercent() / 100.0);
-            if (discount > coupon.getMaxDiscount()) {
-                discount = coupon.getMaxDiscount();
-            }
+    // ✅ PRODUCT-SPECIFIC CHECK (THIS IS CORRECT)
+    if(coupon.getProduct() != null){
 
-            total -= discount;
-            appliedCoupon = coupon;
+        boolean valid = cart.getItems().stream()
+            .anyMatch(ci -> ci.getProduct().getId()
+                .equals(coupon.getProduct().getId()));
+
+        if(!valid){
+            throw new RuntimeException("Coupon not valid for this product");
         }
+    }
+
+    double discount = total * (coupon.getDiscountPercent() / 100.0);
+
+    if(discount > coupon.getMaxDiscount()){
+        discount = coupon.getMaxDiscount();
+    }
+
+    total -= discount;
+    appliedCoupon = coupon;
+}
 
         // 8️⃣ SET TOTAL & ITEMS
         order.setTotalAmount(total);
