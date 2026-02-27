@@ -1,0 +1,14 @@
+<div class="p-6">
+
+  <h2 class="text-2xl font-bold mb-4">🎁 My Coupons</h2>
+
+  <div *ngFor="let c of coupons" class="border p-4 mb-3 rounded">
+
+    <p><b>{{c.coupon.code}}</b></p>
+    <p>{{c.coupon.discountPercent}}% OFF</p>
+    <p *ngIf="c.used" class="text-red-500">Used</p>
+    <p *ngIf="!c.used" class="text-green-600">Available</p>
+
+  </div>
+
+</div>

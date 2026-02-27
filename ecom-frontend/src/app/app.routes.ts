@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guards';
 import { adminGuard } from './core/guards/admin.guard';
 import { AdminCouponComponent } from './pages/admin/admin-coupon';
-import { GiftComponent } from './pages/gift-coupon/gift';
+import { GiftComponent } from './pages/coupon/gift-coupon/gift';
 
 export const routes: Routes = [
 

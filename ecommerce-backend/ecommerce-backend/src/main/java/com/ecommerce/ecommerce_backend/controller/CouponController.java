@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/coupon")
 @RequiredArgsConstructor
 public class CouponController {
 
@@ -18,32 +17,26 @@ public class CouponController {
     private final UserCouponService userCouponService;
 
     // ================= ADMIN =================
-    @PostMapping("/admin/create")
+    @PostMapping("/admin/coupon/create")
     public ResponseEntity<Coupon> create(@RequestBody Coupon coupon){
-
-        if(coupon.getActive() == null){
-            coupon.setActive(true);
-        }
-
         coupon.setUsedCount(0);
-
+        coupon.setActive(true);
         return ResponseEntity.ok(couponService.create(coupon));
     }
 
-    // ✅ THIS MUST BE USER ACCESSIBLE ALSO
-    @GetMapping("/validate/{code}")
+    @GetMapping("/admin/coupon/validate/{code}")
     public ResponseEntity<Coupon> validate(@PathVariable String code){
         return ResponseEntity.ok(couponService.validateCoupon(code));
     }
 
     // ================= USER =================
-    @GetMapping("/gift")
+    @GetMapping("/coupon/gift")
     public ResponseEntity<?> tryCoupon(){
 
-        String email = SecurityContextHolder.getContext()
+        String email = SecurityContextHolder
+                .getContext()
                 .getAuthentication()
-                .getPrincipal()
-                .toString(); // ✅ FIXED
+                .getName(); // ✅ FIXED
 
         return ResponseEntity.ok(userCouponService.tryLuck(email));
     }

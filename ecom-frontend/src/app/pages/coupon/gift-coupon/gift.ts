@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OrderService } from '../../services/order.service';
+import { OrderService } from '../../../services/order.service';
 
 @Component({
   selector: 'app-gift',
@@ -27,6 +27,7 @@ tryCoupon(){
 
       const msg =
         err?.error?.message ||
+        err?.error?.error||
         err?.error ||
         "Try failed";
 

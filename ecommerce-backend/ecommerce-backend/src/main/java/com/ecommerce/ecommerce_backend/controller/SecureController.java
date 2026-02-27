@@ -13,12 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ecommerce.ecommerce_backend.model.User;
 import com.ecommerce.ecommerce_backend.repository.UserRepository;
+import com.ecommerce.ecommerce_backend.service.UserCouponService;
+
+import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class SecureController {
 
 @Autowired
 private UserRepository userRepository;
+private UserCouponService userCouponService;
 
 @GetMapping("/me")
 public ResponseEntity<?>getProfile(){
@@ -56,6 +61,15 @@ public ResponseEntity<?> updateProfile(@RequestBody User updatedUser){
                 "authorities", auth.getAuthorities()
         ));
     }
-   
+   @GetMapping("/coupon/my")
+public ResponseEntity<?> getMyCoupons(){
+
+    String email = SecurityContextHolder
+        .getContext()
+        .getAuthentication()
+        .getName();
+
+    return ResponseEntity.ok(userCouponService.getMyCoupons(email));
+}
 
 }
