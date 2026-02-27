@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../../services/order.service';
 
@@ -8,31 +8,65 @@ import { OrderService } from '../../../services/order.service';
   imports: [CommonModule],
   templateUrl: './gift.html'
 })
-export class GiftComponent {
+
+export class GiftComponent implements OnInit {
 
   loading = false;
   message = '';
 
-  constructor(private orderService: OrderService) {}
+  attempts = 0;
+  maxAttempts = 2;
+
+  constructor(private orderService: OrderService,
+    
+  ) {}
+
+  ngOnInit() {
+   
+
+    // optional: load attempts from backend later
+  }
 tryCoupon(){
+
+  if(this.attempts >= this.maxAttempts){
+    this.message = "❌ You used all attempts. Try after 5 days.";
+    window.location.reload();
+    return;
+  }
+
   this.loading = true;
 
   this.orderService.tryGiftCoupon().subscribe({
     next:(res:any)=>{
       this.loading = false;
-      this.message = "🎉 You got coupon: " + res.code;
+      this.attempts++;
+
+      alert("🎉 You got coupon: " + res.code);
+
+      if(this.attempts >= this.maxAttempts){
+        this.message = "❌ You used all attempts. Try after 5 days.";
+      }window.location.reload();
     },
+
     error:(err)=>{
       this.loading = false;
+      this.attempts++;
 
       const msg =
+        err?.error?.error ||
         err?.error?.message ||
-        err?.error?.error||
         err?.error ||
         "Try failed";
 
-      this.message = msg;
+      alert(msg);
+
+      if(this.attempts >= this.maxAttempts){
+        this.message = "❌ You used all attempts. Try after 5 days.";
+      }window.location.reload();
     }
   });
+
+}isDisabled(): boolean {
+  return this.loading || this.attempts >= this.maxAttempts;
 }
 }
