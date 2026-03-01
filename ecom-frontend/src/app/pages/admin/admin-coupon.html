@@ -1,27 +1,31 @@
-<div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow mt-10">
+<div class="p-10 max-w-xl mx-auto bg-white rounded-2xl shadow">
 
-  <h2 class="text-xl font-bold mb-4">Create Coupon</h2>
+  <h2 class="text-2xl font-bold mb-6">Create Coupon</h2>
 
-  <input [(ngModel)]="coupon.code"
-         placeholder="Code"
-         class="border p-2 w-full mb-2"/>
+  <input [(ngModel)]="coupon.code" placeholder="Code"
+         class="w-full border p-2 mb-3 rounded">
 
-  <input [(ngModel)]="coupon.discountPercent"
-         type="number"
+  <input [(ngModel)]="coupon.discountPercent" type="number"
          placeholder="Discount %"
-         class="border p-2 w-full mb-2"/>
+         class="w-full border p-2 mb-3 rounded">
 
-  <input [(ngModel)]="coupon.maxDiscount"
-         type="number"
+  <input [(ngModel)]="coupon.maxDiscount" type="number"
          placeholder="Max Discount"
-         class="border p-2 w-full mb-2"/>
+         class="w-full border p-2 mb-3 rounded">
 
-  <input [(ngModel)]="coupon.expiryDate"
-         type="datetime-local"
-         class="border p-2 w-full mb-2"/>
+  <input [(ngModel)]="coupon.expiryDate" type="datetime-local"
+         class="w-full border p-2 mb-3 rounded">
 
-  <button (click)="createCoupon()"
-          class="bg-black text-white px-4 py-2 w-full rounded">
+  <input [(ngModel)]="coupon.usageLimit" type="number"
+         placeholder="Usage Limit"
+         class="w-full border p-2 mb-3 rounded">
+
+  <input [(ngModel)]="coupon.productId" type="number"
+         placeholder="Product ID (optional)"
+         class="w-full border p-2 mb-3 rounded">
+
+  <button (click)="create()"
+          class="bg-black text-white px-4 py-2 rounded">
     Create Coupon
   </button>
 

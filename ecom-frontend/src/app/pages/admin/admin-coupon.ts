@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { CouponService } from '../../services/coupon.service';
+
 
 @Component({
   selector: 'app-admin-coupon',
@@ -11,20 +12,26 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AdminCouponComponent {
 
-  coupon = {
+  coupon:any = {
     code: '',
-    discountPercent: 10,
-    maxDiscount: 200,
+    discountPercent: 0,
+    maxDiscount: 0,
     expiryDate: '',
-    active: true
+    usageLimit: 10,
+    productId: null
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private couponService: CouponService) {}
 
-  createCoupon() {
-    this.http.post('http://localhost:8080/admin/coupon/create', this.coupon)
-      .subscribe(() => {
-        alert("Coupon created ✅");
+  create(){
+    this.couponService.createCoupon(this.coupon)
+      .subscribe({
+        next:()=>{
+          alert("Coupon created ✅");
+        },
+        error:(err)=>{
+          alert(err?.error?.message || "Error creating coupon");
+        }
       });
   }
 }

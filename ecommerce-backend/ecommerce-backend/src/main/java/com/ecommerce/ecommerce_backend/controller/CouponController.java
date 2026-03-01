@@ -18,11 +18,16 @@ public class CouponController {
 
     // ================= ADMIN =================
     @PostMapping("/admin/coupon/create")
-    public ResponseEntity<Coupon> create(@RequestBody Coupon coupon){
-        coupon.setUsedCount(0);
+public ResponseEntity<Coupon> create(@RequestBody Coupon coupon){
+
+    coupon.setUsedCount(0);
+
+    if(coupon.getActive() == null){
         coupon.setActive(true);
-        return ResponseEntity.ok(couponService.create(coupon));
     }
+
+    return ResponseEntity.ok(couponService.create(coupon));
+}
 
     @GetMapping("/admin/coupon/validate/{code}")
     public ResponseEntity<Coupon> validate(@PathVariable String code){
