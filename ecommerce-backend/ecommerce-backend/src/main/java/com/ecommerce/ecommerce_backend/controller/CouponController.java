@@ -52,4 +52,12 @@ public ResponseEntity<?> getMyCoupons(){
         userCouponService.getMyCoupons(email)
     );
 }
+@GetMapping("/coupon/validate/{code}")
+public ResponseEntity<?>validateUserCoupopn(@PathVariable String code){
+    String email=SecurityContextHolder
+    .getContext()
+    .getAuthentication()
+    .getName();
+    return ResponseEntity.ok(userCouponService.validateUserCoupon(email, code));
+}
 }

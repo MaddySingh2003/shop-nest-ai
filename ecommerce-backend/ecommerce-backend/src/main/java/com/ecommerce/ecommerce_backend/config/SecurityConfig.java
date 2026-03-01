@@ -38,26 +38,47 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
                .authorizeHttpRequests(auth -> auth
 
+    // AUTH
     .requestMatchers("/auth/**").permitAll()
 
-    // PRODUCTS
-    .requestMatchers("/products", "/products/{id}", "/products/search", "/products/filter","/products/{id}/recommendations").permitAll()
+    // PRODUCTS (PUBLIC + ADMIN)
+    .requestMatchers(
+        "/products",
+        "/products/{id}",
+        "/products/search",
+        "/products/filter",
+        "/products/{id}/recommendations"
+    ).permitAll()
     .requestMatchers("/products/**").hasRole("ADMIN")
 
-    // USER
-    .requestMatchers("/cart/**").hasAnyRole("USER","ADMIN")
-.requestMatchers("/wishlist/**").hasAnyRole("USER","ADMIN")
-.requestMatchers("/address/**").hasAnyRole("USER","ADMIN")
-.requestMatchers("/orders/place/**", "/orders/my", "/orders/{orderId}", "/orders/invoice/**")
-.hasAnyRole("USER","ADMIN")
-.requestMatchers("/coupon/gift").hasAnyRole("USER","ADMIN")
-.requestMatchers("/coupon/validate/**").hasAnyRole("USER","ADMIN")
-.requestMatchers("/coupon/admin/**").hasRole("ADMIN")    .requestMatchers("/admin/**").hasRole("ADMIN")
-    .requestMatchers("/orders/admin/**", "/orders/update/**").hasRole("ADMIN")
-    
+    // USER FEATURES
+    .requestMatchers(
+        "/cart/**",
+        "/wishlist/**",
+        "/address/**"
+    ).hasAnyRole("USER","ADMIN")
+
+    // ORDERS
+    .requestMatchers(
+        "/orders/place",
+        "/orders/my",
+        "/orders/{orderId}",
+        "/orders/invoice/**"
+    ).hasAnyRole("USER","ADMIN")
+
+    // COUPONS (USER)
+    .requestMatchers(
+        "/coupon/gift",
+        "/coupon/validate/**",
+        "/coupon/my"
+    ).hasAnyRole("USER","ADMIN")
+
+    // ADMIN
+    .requestMatchers("/admin/**").hasRole("ADMIN")
+
+    // EVERYTHING ELSE
     .anyRequest().authenticated()
 )
-
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

@@ -15,14 +15,12 @@ export class OrderService {
   getOrderById(id:number){
     return this.http.get(`${this.API}/${id}`);
   }
-
-  placeOrder(addressId:number,couponCode?:string){
-   return this.http.post('/orders/place', {
-    addressId,
-    couponCode
-  });
-  }
-
+placeOrder(addressId:number, couponCode?:string){
+  return this.http.post(
+    `http://localhost:8080/orders/place/${addressId}?coupon=${couponCode || ''}`,
+    {}
+  );
+}
   cancelOrder(id:number){
     return this.http.put(`${this.API}/cancel/${id}`, null);
   }

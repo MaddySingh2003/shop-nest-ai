@@ -41,6 +41,7 @@ export class CheckoutComponent implements OnInit {
     this.loadAddresses();
     this.loadCart();
     this.cdr.detectChanges();
+    
   }
 
   // ------------------------
@@ -117,6 +118,7 @@ export class CheckoutComponent implements OnInit {
         this.finalTotal = this.total - discount;
 
         alert("Coupon applied ✅");
+        this.cdr.detectChanges();
       },
       error:()=>{
         alert("Invalid coupon ❌");

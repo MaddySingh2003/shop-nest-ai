@@ -25,6 +25,8 @@ public class OrderService {
     private final AddressRepository addressRepository;
     private final CouponService couponService;
     private final ProductRepository productRepository;
+    private final UserCouponService userCouponService;
+    private final UserCouponRepository userCouponRepository;
 
     // =========================
     // PLACE ORDER
@@ -97,7 +99,7 @@ Coupon appliedCoupon = null;
 
 if (couponCode != null && !couponCode.isBlank()) {
 
-    Coupon coupon = couponService.validateCoupon(couponCode);
+    Coupon coupon = userCouponService.validateUserCoupon(email, couponCode);
 
     // ✅ PRODUCT-SPECIFIC CHECK (THIS IS CORRECT)
     if(coupon.getProduct() != null){
@@ -117,7 +119,8 @@ if (couponCode != null && !couponCode.isBlank()) {
         discount = coupon.getMaxDiscount();
     }
 
-    total -= discount;
+   total -= discount;
+total = Math.max(total, 0);
     appliedCoupon = coupon;
 }
 
@@ -135,13 +138,30 @@ if (couponCode != null && !couponCode.isBlank()) {
         order.setShippingCountry(address.getCountry());
 
         // 🔟 SAVE ORDER
-        Order savedOrder = orderRepository.save(order);
+Order savedOrder = orderRepository.save(order);
 
-        // 1️⃣1️⃣ MARK COUPON USED
-        if (appliedCoupon != null) {
-            couponService.markUsed(appliedCoupon);
-        }
+// 1️⃣1️⃣ MARK COUPON USED (BOTH GLOBAL + USER)
+if (appliedCoupon != null) {
 
+    // ✅ GLOBAL USAGE COUNT
+if(appliedCoupon.getUsageLimit() > appliedCoupon.getUsedCount()){
+    couponService.markUsed(appliedCoupon);
+}
+
+    // ✅ USER-SPECIFIC USAGE
+   Optional<UserCoupon> optionalUc =
+    userCouponRepository.findByUserAndCoupon_Code(user, appliedCoupon.getCode());
+
+if(optionalUc.isEmpty()){
+    throw new RuntimeException("Coupon not assigned to user");
+}
+
+UserCoupon uc = optionalUc.get();
+uc.setUsed(true);
+userCouponRepository.save(uc);
+    uc.setUsed(true);
+    userCouponRepository.save(uc);
+}
         // 1️⃣2️⃣ CLEAR CART
         cart.getItems().clear();
         cartRepository.save(cart);

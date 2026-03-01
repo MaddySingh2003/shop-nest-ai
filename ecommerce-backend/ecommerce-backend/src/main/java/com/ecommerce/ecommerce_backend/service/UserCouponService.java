@@ -89,4 +89,29 @@ public List<UserCoupon> getMyCoupons(String email){
             .orElseThrow();
 
     return userCouponRepository.findByUser(user);
-}}
+}public Coupon validateUserCoupon(String email, String code){
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow();
+
+    UserCoupon uc = userCouponRepository
+            .findByUserAndCoupon_Code(user, code)
+            .orElseThrow(() -> new RuntimeException("Coupon not yours"));
+
+    if(uc.isUsed()){
+        throw new RuntimeException("Coupon already used");
+    }
+
+    Coupon coupon = uc.getCoupon();
+
+    if(Boolean.FALSE.equals(coupon.getActive())){
+        throw new RuntimeException("Coupon disabled");
+    }
+
+    if(coupon.getExpiryDate().isBefore(LocalDateTime.now())){
+        throw new RuntimeException("Coupon expired");
+    }
+
+    return coupon;
+}
+}
