@@ -1,3 +1,4 @@
+<app-navbar></app-navbar>
 <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100">
 
   <div class="bg-white p-10 rounded-2xl shadow-xl text-center">
@@ -12,6 +13,19 @@
      (attempts >= maxAttempts ? 'No Attempts Left ❌' : 'Try Your Luck 🎁') }}
 
 </button>
+<div *ngIf="myCoupons.length > 0" class="mt-6">
+
+  <h3 class="font-semibold mb-2">🎟 Your Coupons</h3>
+
+  <div *ngFor="let c of myCoupons" class="bg-gray-100 p-3 rounded mb-2">
+
+    <p><b>{{c.coupon.code}}</b></p>
+    <p>{{c.coupon.discountPercent}}% OFF</p>
+    <p *ngIf="c.used" class="text-red-500">Used</p>
+
+  </div>
+
+</div>
 
     <p *ngIf="message" class="mt-6 text-lg font-medium">
       {{message}}

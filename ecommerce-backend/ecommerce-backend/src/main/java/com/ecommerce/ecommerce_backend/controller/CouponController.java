@@ -40,4 +40,16 @@ public class CouponController {
 
         return ResponseEntity.ok(userCouponService.tryLuck(email));
     }
+    @GetMapping("/coupon/my")
+public ResponseEntity<?> getMyCoupons(){
+
+    String email = SecurityContextHolder
+            .getContext()
+            .getAuthentication()
+            .getName();
+
+    return ResponseEntity.ok(
+        userCouponService.getMyCoupons(email)
+    );
+}
 }

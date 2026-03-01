@@ -65,6 +65,6 @@ validateCoupon(code:string){
 tryGiftCoupon(){
   return this.http.get(`http://localhost:8080/coupon/gift`);
 }getMyCoupons(){
-  return this.http.get('http://localhost:8080/user/coupon/my');
+  return this.http.get('http://localhost:8080/coupon/my');
 }
 }

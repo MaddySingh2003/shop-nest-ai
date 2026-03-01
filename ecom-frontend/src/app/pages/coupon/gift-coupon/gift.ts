@@ -1,11 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../../services/order.service';
+import { Navbar } from '../../../components/navbar/navbar';
 
 @Component({
   selector: 'app-gift',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,Navbar],
   templateUrl: './gift.html'
 })
 
@@ -18,19 +19,26 @@ export class GiftComponent implements OnInit {
   maxAttempts = 2;
 
   constructor(private orderService: OrderService,
+    private cdr:ChangeDetectorRef
     
   ) {}
 
-  ngOnInit() {
-   
+ myCoupons:any[] = [];
 
-    // optional: load attempts from backend later
-  }
-tryCoupon(){
+ngOnInit(){
+  this.loadMyCoupons();
+  this.cdr.detectChanges();
+}
+
+loadMyCoupons(){
+  this.orderService.getMyCoupons().subscribe((res:any)=>{
+    this.myCoupons = res;
+    this.cdr.detectChanges();
+  });
+}tryCoupon(){
 
   if(this.attempts >= this.maxAttempts){
     this.message = "❌ You used all attempts. Try after 5 days.";
-    window.location.reload();
     return;
   }
 
@@ -43,9 +51,12 @@ tryCoupon(){
 
       alert("🎉 You got coupon: " + res.code);
 
+      // ✅ IMPORTANT: reload coupons from backend
+      this.loadMyCoupons();
+
       if(this.attempts >= this.maxAttempts){
         this.message = "❌ You used all attempts. Try after 5 days.";
-      }window.location.reload();
+      }
     },
 
     error:(err)=>{
@@ -62,10 +73,9 @@ tryCoupon(){
 
       if(this.attempts >= this.maxAttempts){
         this.message = "❌ You used all attempts. Try after 5 days.";
-      }window.location.reload();
+      }
     }
   });
-
 }isDisabled(): boolean {
   return this.loading || this.attempts >= this.maxAttempts;
 }
