@@ -3,6 +3,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
 import { ProfileService } from '../../services/profile.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-account-layout',
@@ -18,7 +19,8 @@ export class AccountLayout implements OnInit {
 
   constructor(
     private profileService: ProfileService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public auth:AuthService
   ) {}
 
   ngOnInit() {

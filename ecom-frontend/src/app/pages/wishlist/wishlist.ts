@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { WishlistService } from '../../services/wishlist.service';
 import { CartService } from '../../services/cart.service';
 import { Navbar } from '../../components/navbar/navbar';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-wishlist',
@@ -19,7 +20,8 @@ export class WishlistComponent implements OnInit {
   constructor(
     private wishlistService:WishlistService,
     private cartService:CartService,
-    private cdr:ChangeDetectorRef
+    private cdr:ChangeDetectorRef,
+    public auth:AuthService
   ){}
 
   ngOnInit(){

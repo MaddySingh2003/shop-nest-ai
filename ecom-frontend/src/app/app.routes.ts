@@ -39,7 +39,8 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/cart/cart').then(m => m.Cart)
   },
-  { path: 'gift', component: GiftComponent, canActivate:[authGuard] }
+  { path: 'gift',
+    canActivate:[authGuard], component: GiftComponent }
  , {
     path: 'checkout',
     canActivate: [authGuard],
@@ -89,15 +90,23 @@ export const routes: Routes = [
       },
       {
         path: 'orders',
+        canActivate:[authGuard],
         loadComponent: () =>
           import('./pages/orders/orders')
             .then(m => m.OrdersComponent)
       },
       {
         path: 'wishlist',
+        canActivate:[authGuard],
         loadComponent: () =>
           import('./pages/wishlist/wishlist')
             .then(m => m.WishlistComponent)
+      },{
+        path: 'dashboard',
+        canActivate:[authGuard],
+        loadComponent: () =>
+          import('./pages/dashboard/dashboard')
+            .then(m => m.DashboardComponent)
       },
       {
         path: '',
@@ -112,12 +121,7 @@ export const routes: Routes = [
     path: 'admin',
     canActivate: [adminGuard],
     children: [
-      {
-        path: 'dashboard',
-        loadComponent: () =>
-          import('./pages/dashboard/dashboard')
-            .then(m => m.DashboardComponent)
-      },
+      
       {
         path: 'orders',
         loadComponent: () =>

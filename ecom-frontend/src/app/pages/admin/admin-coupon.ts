@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CouponService } from '../../services/coupon.service';
+import { Navbar } from '../../components/navbar/navbar';
 
 
 @Component({
   selector: 'app-admin-coupon',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,Navbar],
   templateUrl: './admin-coupon.html'
 })
 export class AdminCouponComponent {
