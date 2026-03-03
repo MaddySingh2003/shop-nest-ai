@@ -6,7 +6,7 @@ import { Navbar } from '../../components/navbar/navbar';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, Navbar],
+  imports: [CommonModule],
   templateUrl: './dashboard.html'
 })
 export class DashboardComponent implements OnInit {

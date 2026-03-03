@@ -74,7 +74,9 @@ loadMyCoupons(){
       if(this.attempts >= this.maxAttempts){
         this.message = "❌ You used all attempts. Try after 5 days.";
       }
+      window.location.reload();
     }
+    
   });
 }isDisabled(): boolean {
   return this.loading || this.attempts >= this.maxAttempts;

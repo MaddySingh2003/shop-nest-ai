@@ -6,6 +6,7 @@
 
     <p><b>{{c.coupon.code}}</b></p>
     <p>{{c.coupon.discountPercent}}% OFF</p>
+    <p>Expires: {{c.expiresAt | date:'short'}}</p>
     <p *ngIf="c.used" class="text-red-500">Used</p>
     <p *ngIf="!c.used" class="text-green-600">Available</p>
 

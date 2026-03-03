@@ -78,6 +78,7 @@ UserCoupon uc = UserCoupon.builder()
         .coupon(coupon)
         .used(false)
         .assignedAt(LocalDateTime.now())
+        .expiresAt(LocalDateTime.now().plusDays(5))
         .build();
 
 userCouponRepository.save(uc);
@@ -89,7 +90,8 @@ public List<UserCoupon> getMyCoupons(String email){
             .orElseThrow();
 
     return userCouponRepository.findByUser(user);
-}public Coupon validateUserCoupon(String email, String code){
+}
+public Coupon validateUserCoupon(String email, String code){
 
     User user = userRepository.findByEmail(email)
             .orElseThrow();
@@ -100,6 +102,12 @@ public List<UserCoupon> getMyCoupons(String email){
 
     if(uc.isUsed()){
         throw new RuntimeException("Coupon already used");
+    }
+
+    // ✅ USER EXPIRY (5 DAYS)
+    if(uc.getExpiresAt() != null &&
+       uc.getExpiresAt().isBefore(LocalDateTime.now())){
+        throw new RuntimeException("Coupon expired (5 days limit)");
     }
 
     Coupon coupon = uc.getCoupon();

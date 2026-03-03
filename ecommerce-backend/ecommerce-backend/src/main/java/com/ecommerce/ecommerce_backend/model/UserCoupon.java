@@ -2,6 +2,8 @@ package com.ecommerce.ecommerce_backend.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -23,4 +25,6 @@ public class UserCoupon {
 
     @ManyToOne
     private Coupon coupon;
+@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+private LocalDateTime expiresAt;
 }

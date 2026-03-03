@@ -19,12 +19,18 @@
 
   <div *ngFor="let c of myCoupons" class="bg-gray-100 p-3 rounded mb-2">
 
-    <p><b>{{c.coupon.code}}</b></p>
-    <p>{{c.coupon.discountPercent}}% OFF</p>
-    <p *ngIf="c.used" class="text-red-500">Used</p>
+  <p><b>{{c.coupon.code}}</b></p>
+  <p>{{c.coupon.discountPercent}}% OFF</p>
 
-  </div>
+  <!-- ✅ SHOW EXPIRY -->
+  <p class="text-sm text-gray-500">
+    Expires: {{ c.expiresAt | date:'short' }}
+  </p>
 
+  <p *ngIf="c.used" class="text-red-500">Used</p>
+  <p *ngIf="!c.used" class="text-green-600">Available</p>
+
+</div>
 </div>
 
     <p *ngIf="message" class="mt-6 text-lg font-medium">
