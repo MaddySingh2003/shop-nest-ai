@@ -2,25 +2,24 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 import { Product } from "../core/guards/models/product.model";
-
 @Injectable({ providedIn: 'root' })
 export class ProductService {
 
-  private API = 'http://localhost:8080/products/all';
+  private API = 'http://localhost:8080/products';
 
   constructor(private http: HttpClient) {}
- getProduct() {
+
+  getProduct(){
     return this.http.get<any>(this.API).pipe(
-      map(res => res.content ?? res)
-    );}
+      map(res => res.content)
+    );
+  }
 
+  getById(id:number){
+    return this.http.get(`${this.API}/${id}`);
+  }
 
-    getById(id:number){
-      return this.http.get<any>(`http://localhost:8080/products/${id}`);
-
-    }
-
-    getRecommendation(id:number){
-      return this.http.get<any[]>(`http://localhost:8080/products/${id}/recommendations`);
-    }
+  getRecommendation(id:number){
+    return this.http.get<any[]>(`${this.API}/${id}/recommendations`);
+  }
 }

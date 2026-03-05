@@ -3,6 +3,7 @@ package com.ecommerce.ecommerce_backend.controller;
 import com.ecommerce.ecommerce_backend.dto.ProductRequest;
 import com.ecommerce.ecommerce_backend.model.Product;
 import com.ecommerce.ecommerce_backend.repository.ProductRepository;
+import com.ecommerce.ecommerce_backend.service.ExternalProductService;
 import com.ecommerce.ecommerce_backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,7 @@ public class ProductController {
 
     private final ProductService productService;
     private final ProductRepository productRepository;
-
-   
+    private final ExternalProductService externalProductService;
 
    @GetMapping
 public Page<Product> getAllProducts(
@@ -32,12 +32,14 @@ public Page<Product> getAllProducts(
         @RequestParam(defaultValue = "id") String sortBy,
         @RequestParam(defaultValue = "asc") String direction
 ) {
+
     Sort sort = direction.equalsIgnoreCase("desc")
             ? Sort.by(sortBy).descending()
             : Sort.by(sortBy).ascending();
 
     Pageable pageable = PageRequest.of(page, size, sort);
-    return productRepository.findAll(pageable);
+
+    return productRepository.findByActiveTrue(pageable);
 }
 
 
@@ -70,7 +72,7 @@ public Page<Product> filterPrice(
 
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public Product getById(@PathVariable Long id){
         return productService.getById(id);
     }
@@ -106,6 +108,12 @@ public ResponseEntity<?> updateStock(
 public List<Product> recommend(@PathVariable Long id) {
     return productService.getRecommendedProducts(id);
 }
+@PostMapping("/sync")
+    public String sync(){
+externalProductService.syncProducts();
+return "Productssynced";
+    }
+
 
 
 }

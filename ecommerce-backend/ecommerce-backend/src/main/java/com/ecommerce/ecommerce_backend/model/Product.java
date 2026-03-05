@@ -38,4 +38,9 @@ private int stock = 0;
 private Double predictedPrice;
 
 private String category;
+@Builder.Default
+@Column(nullable = false)
+private boolean active = true;
+
+
 }
