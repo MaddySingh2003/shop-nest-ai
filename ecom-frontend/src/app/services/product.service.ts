@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 import { Product } from "../core/guards/models/product.model";
+
 @Injectable({ providedIn: 'root' })
 export class ProductService {
 
@@ -9,14 +10,12 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  getProduct(){
-    return this.http.get<any>(this.API).pipe(
-      map(res => res.content)
-    );
+  getProducts(page:number){
+    return this.http.get<any>(`${this.API}?page=${page}&size=12`);
   }
 
   getById(id:number){
-    return this.http.get(`${this.API}/${id}`);
+    return this.http.get(`${this.API}/id/${id}`);
   }
 
   getRecommendation(id:number){
