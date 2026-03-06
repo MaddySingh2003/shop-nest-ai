@@ -12,14 +12,14 @@
         <div class="hidden md:flex items-center gap-6 text-gray-700 font-medium">
 
           <!-- USER ONLY -->
-           <a *ngIf="auth.isUser()" routerLink="/home">Home</a>
+           <a  routerLink="/home">Home</a>
           <a *ngIf="auth.isUser()" routerLink="/cart">Cart</a>
           <a *ngIf="auth.isUser()" routerLink="/account/wishlist">Wishlist</a>
           <a  *ngIf="auth.isUser()" routerLink="/gift">🎁 Gift</a>
 
           <!-- ADMIN ONLY -->
           
-          <a *ngIf="auth.isAdmin()" routerLink="/admin/orders">Admin Orders</a>
+
             <a *ngIf="auth.isAdmin()" routerLink="/admin/coupon">Create Coupon</a>
              <a *ngIf="auth.isAdmin()" routerLink="/admin/products">Create Product</a>
 
@@ -29,7 +29,7 @@
       </div>
 
       <!-- Search -->
-      <div class="hidden md:flex flex-1 mx-8 max-w-md">
+      <div  class="hidden md:flex flex-1 mx-8 max-w-md">
         <input
           type="text"
           placeholder="Search products..."

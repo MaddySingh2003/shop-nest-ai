@@ -1,72 +1,146 @@
 <app-navbar></app-navbar>
-<div class="min-h-screen bg-gray-100 flex items-center justify-center p-6">
 
-  <div class="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8">
+<div class="min-h-screen bg-gray-100 flex justify-center items-center py-12 px-4">
 
-    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-3">
-      Add New Product
-    </h2>
+<div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-10">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<!-- Header -->
+<div class="flex justify-between items-center mb-10">
+<div>
+<h2 class="text-3xl font-bold text-gray-800">Add Product</h2>
+<p class="text-gray-500">Create a new product for your store</p>
+</div>
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-600 mb-1">Product Name</label>
-        <input [(ngModel)]="product.name" placeholder="Nike Air Max"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
-      </div>
+<span class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-medium">
+Admin Panel
+</span>
+</div>
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-600 mb-1">Brand</label>
-        <input [(ngModel)]="product.brand" placeholder="Nike"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
-      </div>
+<div class="grid md:grid-cols-2 gap-10">
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-600 mb-1">Category</label>
-        <input [(ngModel)]="product.category" placeholder="Shoes"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
-      </div>
+<!-- FORM -->
+<div class="space-y-6">
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-600 mb-1">Price</label>
-        <input type="number" [(ngModel)]="product.price" placeholder="₹1999"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
-      </div>
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Product Name
+</label>
+<input
+[(ngModel)]="product.name"
+placeholder="Name"
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none">
+</div>
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-600 mb-1">Stock</label>
-        <input type="number" [(ngModel)]="product.stock" placeholder="50"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
-      </div>
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Brand
+</label>
+<input
+[(ngModel)]="product.brand"
+placeholder="Brand"
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none">
+</div>
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-600 mb-1">Image URL</label>
-        <input [(ngModel)]="product.imageUrl" placeholder="https://image.com/product.jpg"
-          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
-      </div>
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Category
+</label>
+<input
+[(ngModel)]="product.category"
+placeholder="Category"
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none">
+</div>
 
-    </div>
+<div class="grid grid-cols-2 gap-6">
 
-    <div class="mt-5">
-      <label class="block text-sm font-semibold text-gray-600 mb-1">Description</label>
-      <textarea [(ngModel)]="product.description" rows="3"
-        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-        placeholder="Write product description..."></textarea>
-    </div>
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Price
+</label>
+<input
+type="number"
+[(ngModel)]="product.price"
+placeholder="0"
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none">
+</div>
 
-    <!-- Image Preview -->
-    <div *ngIf="product.imageUrl" class="mt-6">
-      <p class="text-sm font-semibold text-gray-600 mb-2">Preview</p>
-      <img [src]="product.imageUrl"
-        class="w-40 h-40 object-cover rounded-lg border">
-    </div>
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Stock
+</label>
+<input
+type="number"
+[(ngModel)]="product.stock"
+placeholder="0"
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none">
+</div>
 
-    <!-- Button -->
-    <button (click)="createProduct()"
-      class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 shadow-md">
-      Create Product
-    </button>
+</div>
 
-  </div>
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Image URL
+</label>
+<input
+[(ngModel)]="product.imageUrl"
+placeholder="img/link"
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none">
+</div>
 
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Description
+</label>
+
+<textarea
+[(ngModel)]="product.description"
+rows="3"
+placeholder="Product description..."
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none">
+</textarea>
+
+</div>
+
+<button
+(click)="createProduct()"
+class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold shadow-md transition">
+Add Product
+</button>
+
+</div>
+
+<!-- PRODUCT PREVIEW -->
+<div class="bg-gray-50 border rounded-xl p-6">
+
+<h3 class="text-lg font-semibold mb-4">Product Preview</h3>
+
+<div class="bg-white rounded-xl shadow p-4">
+
+<img
+[src]="product.imageUrl || 'https://via.placeholder.com/300'"
+class="w-full h-48 object-cover rounded-lg mb-4">
+
+<h4 class="font-semibold text-lg">
+{{product.name || 'Product Name'}}
+</h4>
+
+<p class="text-gray-500 text-sm">
+{{product.brand || 'Brand'}}
+</p>
+
+<p class="text-blue-600 font-bold text-lg mt-2">
+₹{{product.price || 0}}
+</p>
+
+<p class="text-gray-500 mt-2">
+Stock: {{product.stock || 0}}
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 </div>

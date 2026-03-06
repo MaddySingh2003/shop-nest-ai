@@ -1,121 +1,95 @@
-<app-navbar></app-navbar>
+<div class="p-10 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
 
-<div class="p-6 bg-gray-100 min-h-screen">
+<!-- Header -->
+<div class="flex justify-between items-center mb-10">
 
-  <!-- Page Header -->
-  <div class="mb-6">
-    <h1 class="text-3xl font-bold text-gray-800">Orders Management</h1>
-    <p class="text-gray-500">Manage and track customer orders</p>
-  </div>
+<div>
+<h1 class="text-4xl font-bold text-gray-800">Orders</h1>
+<p class="text-gray-500">Track and manage orders</p>
+</div>
 
-  <!-- Orders Table Card -->
-  <div class="bg-white shadow-lg rounded-xl overflow-hidden">
+<div class="bg-white shadow px-6 py-3 rounded-xl">
+<span class="text-gray-500 text-sm">Total Orders</span>
+<p class="text-xl font-bold text-indigo-600">{{orders.length}}</p>
+</div>
 
-    <table class="w-full text-sm text-left">
+</div>
 
-      <!-- Table Header -->
-      <thead class="bg-gray-800 text-white uppercase text-xs tracking-wider">
-        <tr>
-          <th class="px-6 py-4">Order ID</th>
-          <th class="px-6 py-4">Customer</th>
-          <th class="px-6 py-4">Amount</th>
-          <th class="px-6 py-4">Order Status</th>
-          <th class="px-6 py-4">Payment</th>
-          <th class="px-6 py-4">Method</th>
-          <th class="px-6 py-4 text-center">Actions</th>
-        </tr>
-      </thead>
+<!-- Table Card -->
+<div class="bg-white shadow-2xl rounded-2xl overflow-hidden">
 
-      <!-- Table Body -->
-      <tbody class="divide-y divide-gray-200">
+<table class="w-full">
 
-        <tr *ngFor="let o of orders"
-            class="hover:bg-gray-50 transition duration-200">
+<thead class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm">
 
-          <td class="px-6 py-4 font-semibold text-gray-700">
-            #{{o.id}}
-          </td>
+<tr>
+<th class="px-6 py-4">Order</th>
+<th class="px-6 py-4">Customer</th>
+<th class="px-6 py-4">Amount</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">Payment</th>
+<th class="px-6 py-4">Method</th>
+<th class="px-6 py-4 text-center">Actions</th>
+</tr>
 
-          <td class="px-6 py-4 text-gray-600">
-            {{o.userEmail}}
-          </td>
+</thead>
 
-          <td class="px-6 py-4 font-bold text-indigo-600">
-            ₹{{o.totalAmount}}
-          </td>
+<tbody class="divide-y">
 
-          <!-- Order Status Badge -->
-          <td class="px-6 py-4">
-            <span
-              [ngClass]="{
-                'bg-yellow-100 text-yellow-700': o.status?.toUpperCase()==='PENDING',
-                'bg-blue-100 text-blue-700': o.status?.toUpperCase()==='CONFIRMED',
-                'bg-purple-100 text-purple-700': o.status?.toUpperCase()==='SHIPPED',
-                'bg-green-100 text-green-700': o.status?.toUpperCase()==='DELIVERED',
-                'bg-red-100 text-red-700': o.status?.toUpperCase()==='CANCELLED'
-              }"
-              class="px-3 py-1 rounded-full text-xs font-semibold">
-              {{o.status}}
-            </span>
-          </td>
+<tr *ngFor="let o of orders"
+class="hover:bg-indigo-50 transition">
 
-          <!-- Payment Status Badge -->
-          <td class="px-6 py-4">
-            <span
-              [ngClass]="{
-                'bg-green-100 text-green-700': o.paymentStatus==='PAID',
-                'bg-red-100 text-red-700': o.paymentStatus==='UNPAID'
-              }"
-              class="px-3 py-1 rounded-full text-xs font-semibold">
-              {{o.paymentStatus}}
-            </span>
-          </td>
+<td class="px-6 py-4 font-semibold">#{{o.id}}</td>
 
-          <td class="px-6 py-4 text-gray-600">
-            {{o.paymentMethod}}
-          </td>
+<td class="px-6 py-4 text-gray-600">{{o.userEmail}}</td>
 
-          <!-- Action Buttons -->
-          <td class="px-6 py-4">
-            <div class="flex gap-2 justify-center">
+<td class="px-6 py-4 font-bold text-indigo-600">₹{{o.totalAmount}}</td>
 
-              <!-- CONFIRMED -->
-              <button
-                *ngIf="o.status?.toUpperCase()==='CONFIRMED'"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-xs shadow">
-                Ship
-              </button>
+<td class="px-6 py-4">
+<span class="status">
+{{o.status}}
+</span>
+</td>
 
-              <!-- SHIPPED -->
-              <button
-                *ngIf="o.status?.toUpperCase()==='SHIPPED'"
-                class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs shadow">
-                Deliver
-              </button>
+<td class="px-6 py-4">
+<span class="payment">
+{{o.paymentStatus}}
+</span>
+</td>
 
-              <!-- DELETE -->
-              <button
-                *ngIf="o.status?.toUpperCase()==='DELIVERED' || o.status?.toUpperCase()==='CANCELLED'"
-                class="bg-gray-700 hover:bg-black text-white px-3 py-1 rounded-lg text-xs shadow">
-                Delete
-              </button>
+<td class="px-6 py-4">{{o.paymentMethod}}</td>
 
-              <!-- FORCE DELETE -->
-              <button
-                *ngIf="o.status?.toUpperCase()==='PENDING'"
-                class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-xs shadow">
-                Force Delete
-              </button>
+<td class="px-6 py-4">
 
-            </div>
-          </td>
+<div class="flex justify-center gap-2">
 
-        </tr>
+<button
+*ngIf="o.status?.toUpperCase()==='CONFIRMED'"
+class="btn-blue">
+Ship
+</button>
 
-      </tbody>
+<button
+*ngIf="o.status?.toUpperCase()==='SHIPPED'"
+class="btn-green">
+Deliver
+</button>
 
-    </table>
+<button
+class="btn-dark">
+Delete
+</button>
 
-  </div>
+</div>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
 
 </div>

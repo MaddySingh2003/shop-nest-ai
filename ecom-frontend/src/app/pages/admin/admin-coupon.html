@@ -1,33 +1,87 @@
 <app-navbar></app-navbar>
-<div class="p-10 max-w-xl mx-auto bg-white rounded-2xl shadow">
 
-  <h2 class="text-2xl font-bold mb-6">Create Coupon</h2>
+<div class="min-h-screen bg-gray-100 flex justify-center items-center py-12 px-4">
 
-  <input [(ngModel)]="coupon.code" placeholder="Code"
-         class="w-full border p-2 mb-3 rounded">
+<div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl p-10">
 
-  <input [(ngModel)]="coupon.discountPercent" type="number"
-         placeholder="Discount %"
-         class="w-full border p-2 mb-3 rounded">
+<div class="mb-10">
+<h2 class="text-3xl font-bold text-gray-800">Create Coupon</h2>
+<p class="text-gray-500">Generate discount coupons for customers</p>
+</div>
 
-  <input [(ngModel)]="coupon.maxDiscount" type="number"
-         placeholder="Max Discount"
-         class="w-full border p-2 mb-3 rounded">
+<div class="grid md:grid-cols-2 gap-6">
 
-  <input [(ngModel)]="coupon.expiryDate" type="datetime-local"
-         class="w-full border p-2 mb-3 rounded">
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Coupon Code
+</label>
+<input
+[(ngModel)]="coupon.code"
+placeholder="SUMMER50"
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+</div>
 
-  <input [(ngModel)]="coupon.usageLimit" type="number"
-         placeholder="Usage Limit"
-         class="w-full border p-2 mb-3 rounded">
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Discount %
+</label>
+<input
+type="number"
+[(ngModel)]="coupon.discountPercent"
+placeholder="5-20%"
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+</div>
 
-  <input [(ngModel)]="coupon.productId" type="number"
-         placeholder="Product ID (optional)"
-         class="w-full border p-2 mb-3 rounded">
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Max Discount
+</label>
+<input
+type="number"
+[(ngModel)]="coupon.maxDiscount"
+placeholder="20-50%"
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+</div>
 
-  <button (click)="create()"
-          class="bg-black text-white px-4 py-2 rounded">
-    Create Coupon
-  </button>
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Expiry Date
+</label>
+<input
+type="datetime-local"
+[(ngModel)]="coupon.expiryDate"
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+</div>
 
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Usage Limit
+</label>
+<input
+type="number"
+[(ngModel)]="coupon.usageLimit"
+placeholder="0"
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+</div>
+
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+Product ID (optional)
+</label>
+<input
+type="number"
+[(ngModel)]="coupon.productId"
+placeholder="0"
+class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+</div>
+
+</div>
+
+<button
+(click)="create()"
+class="mt-8 w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-lg font-semibold shadow-md hover:scale-[1.02] transition">
+Create Coupon
+</button>
+
+</div>
 </div>

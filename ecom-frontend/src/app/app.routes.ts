@@ -108,6 +108,14 @@ export const routes: Routes = [
           import('./pages/dashboard/dashboard')
             .then(m => m.DashboardComponent)
       },
+     
+      {
+        path: 'A-orders',
+        canActivate:[authGuard],
+        loadComponent: () =>
+          import('./pages/admin/admin-orders')
+            .then(m => m.AdminOrdersComponent)
+      },
       {
         path: '',
         redirectTo: 'profile',
@@ -122,18 +130,15 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     children: [
       
-      {
-        path: 'orders',
-        loadComponent: () =>
-          import('./pages/admin/admin-orders')
-            .then(m => m.AdminOrdersComponent)
-      },
+      
       { path: 'coupon', component: AdminCouponComponent },
-      {path:'products',
+       {path:'products',
+        canActivate:[authGuard],
         loadComponent:()=>
           import('./pages/admin/admin-products')
         .then(m=>m.AdminProductsComponent)
-      }
+      },
+      
     ]
   },
 
