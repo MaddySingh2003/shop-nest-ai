@@ -30,6 +30,7 @@ public class ProductService {
             .brand(request.getBrand())
             .category(request.getCategory())   // ⚠ make sure category exists
             .price(request.getPrice())
+            .stock(request.getStock())
             .imageUrl(request.getImageUrl())
             .build();
 

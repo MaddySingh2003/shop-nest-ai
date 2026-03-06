@@ -77,6 +77,7 @@ public Page<Product> filterPrice(
         return productService.getById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
      @PostMapping("/add")
     public ResponseEntity<Product> add(@RequestBody ProductRequest request){
         return ResponseEntity.ok(productService.addProduct(request));

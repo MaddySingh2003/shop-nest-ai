@@ -49,7 +49,10 @@ public class SecurityConfig {
         "/products/filter",
         "/products/{id}/recommendations"
     ).permitAll()
-    .requestMatchers("/products/**").hasRole("ADMIN")
+    .requestMatchers("/products/add").hasRole("ADMIN")
+.requestMatchers("/products/update/**").hasRole("ADMIN")
+.requestMatchers("/products/delete/**").hasRole("ADMIN")
+.requestMatchers("/products/stock/**").hasRole("ADMIN")
 
     // USER FEATURES
     .requestMatchers(

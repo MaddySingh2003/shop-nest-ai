@@ -157,4 +157,5 @@ export class CheckoutComponent implements OnInit {
       });
       this.cdr.detectChanges();
   }
+  
 }

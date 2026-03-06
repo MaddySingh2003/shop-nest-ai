@@ -128,7 +128,12 @@ export const routes: Routes = [
           import('./pages/admin/admin-orders')
             .then(m => m.AdminOrdersComponent)
       },
-      { path: 'coupon', component: AdminCouponComponent }
+      { path: 'coupon', component: AdminCouponComponent },
+      {path:'products',
+        loadComponent:()=>
+          import('./pages/admin/admin-products')
+        .then(m=>m.AdminProductsComponent)
+      }
     ]
   },
 

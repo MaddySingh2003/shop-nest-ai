@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order.service';
 import { RouterModule } from '@angular/router';
@@ -17,10 +17,13 @@ export class OrdersComponent implements OnInit {
 
   filter: string = 'ALL';
 
-  constructor(private orderService: OrderService) {}
+  constructor(private orderService: OrderService,
+    private cdr:ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.loadOrders();
+    this.cdr.detectChanges();
   }
 
   // 🔥 Load orders
@@ -32,6 +35,7 @@ export class OrdersComponent implements OnInit {
       this.orders = data.filter((o: any) => o.status !== 'CANCELLED');
 
       this.applyFilter();
+      this.cdr.detectChanges();
     });
   }
 
@@ -53,5 +57,6 @@ export class OrdersComponent implements OnInit {
     this.orderService.cancelOrder(id).subscribe(() => {
       this.loadOrders(); // reload after cancel
     });
+    this.cdr.detectChanges();
   }
 }
