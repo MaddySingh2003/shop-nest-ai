@@ -21,7 +21,8 @@ export class ProductService {
   getRecommendation(id:number){
     return this.http.get<any[]>(`${this.API}/${id}/recommendations`);
   }
+
   addProduct(product:any){
-    return this.http.post(`http://localhost:8080/products/add`,product);
+    return this.http.post(`${this.API}/add`,product);
   }
 }

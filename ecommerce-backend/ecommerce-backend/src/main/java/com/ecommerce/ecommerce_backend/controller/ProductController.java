@@ -2,17 +2,17 @@ package com.ecommerce.ecommerce_backend.controller;
 
 import com.ecommerce.ecommerce_backend.dto.ProductRequest;
 import com.ecommerce.ecommerce_backend.model.Product;
-import com.ecommerce.ecommerce_backend.repository.ProductRepository;
-import com.ecommerce.ecommerce_backend.service.ExternalProductService;
 import com.ecommerce.ecommerce_backend.service.ProductService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -22,99 +22,72 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final ProductRepository productRepository;
-    private final ExternalProductService externalProductService;
 
-   @GetMapping
-public Page<Product> getAllProducts(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "12") int size,
-        @RequestParam(defaultValue = "id") String sortBy,
-        @RequestParam(defaultValue = "asc") String direction
-) {
+    @GetMapping
+    public Page<Product> getProducts(
+            @RequestParam(defaultValue="0") int page,
+            @RequestParam(defaultValue="12") int size){
 
-    Sort sort = direction.equalsIgnoreCase("desc")
-            ? Sort.by(sortBy).descending()
-            : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page,size);
 
-    Pageable pageable = PageRequest.of(page, size, sort);
-
-    return productRepository.findByActiveTrue(pageable);
-}
-
-
-@GetMapping("/search")
-public Page<Product> search(
-        @RequestParam String keyword,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "5") int size
-){
-    Pageable pageable = PageRequest.of(page, size);
-    return productService.search(keyword, pageable);
-}
-
-
-@GetMapping("/filter")
-public Page<Product> filterPrice(
-        @RequestParam double min,
-        @RequestParam double max,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "5") int size
-){
-    Pageable pageable = PageRequest.of(page, size);
-    return productService.filterByPrice(min, max, pageable);
-}
-
-  @GetMapping("/all")
-    public List<Product> getProducts(){
-        return productService.getAll();
+        return productService.getActiveProducts(pageable);
     }
-
-
 
     @GetMapping("/id/{id}")
     public Product getById(@PathVariable Long id){
         return productService.getById(id);
     }
 
+    @GetMapping("/search")
+    public Page<Product> search(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue="0") int page,
+            @RequestParam(defaultValue="5") int size){
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        return productService.search(keyword,pageable);
+    }
+
+    @GetMapping("/filter")
+    public Page<Product> filterPrice(
+            @RequestParam double min,
+            @RequestParam double max,
+            @RequestParam(defaultValue="0") int page,
+            @RequestParam(defaultValue="5") int size){
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        return productService.filterByPrice(min,max,pageable);
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
-     @PostMapping("/add")
+    @PostMapping("/add")
     public ResponseEntity<Product> add(@RequestBody ProductRequest request){
+
         return ResponseEntity.ok(productService.addProduct(request));
     }
 
-    @PutMapping("/stock/{productId}")
-@PreAuthorize("hasRole('ADMIN')")
-public ResponseEntity<?> updateStock(
-        @PathVariable Long productId,
-        @RequestParam int stock){
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/stock/{id}")
+    public ResponseEntity<Product> updateStock(
+            @PathVariable Long id,
+            @RequestParam int stock){
 
-    Product p = productService.updateStock(productId, stock);
-    return ResponseEntity.ok(p);
-}
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id,
-                                          @RequestBody ProductRequest request){
-        return ResponseEntity.ok(productService.updateProduct(id, request));
+        return ResponseEntity.ok(productService.updateStock(id,stock));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
+
         productService.deleteProduct(id);
-        return ResponseEntity.ok("Product Deleted");
+
+        return ResponseEntity.ok("Product deleted");
     }
 
-   @GetMapping("/{id}/recommendations")
-public List<Product> recommend(@PathVariable Long id) {
-    return productService.getRecommendedProducts(id);
-}
-@PostMapping("/sync")
-    public String sync(){
-externalProductService.syncProducts();
-return "Productssynced";
+    @GetMapping("/{id}/recommendations")
+    public List<Product> recommend(@PathVariable Long id){
+
+        return productService.getRecommendedProducts(id);
     }
-
-
-
 }

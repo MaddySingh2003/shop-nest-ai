@@ -4,13 +4,13 @@ import com.ecommerce.ecommerce_backend.dto.PricePredictionRequest;
 import com.ecommerce.ecommerce_backend.dto.ProductRequest;
 import com.ecommerce.ecommerce_backend.model.Product;
 import com.ecommerce.ecommerce_backend.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -21,108 +21,98 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final MlService mlService;
 
+    public Product addProduct(ProductRequest request){
 
-      public Product addProduct(ProductRequest request){
+        Product product = Product.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .brand(request.getBrand())
+                .category(request.getCategory())
+                .price(request.getPrice())
+                .stock(request.getStock())
+                .imageUrl(request.getImageUrl())
+                .build();
 
-    Product product = Product.builder()
-            .name(request.getName())
-            .description(request.getDescription())
-            .brand(request.getBrand())
-            .category(request.getCategory())   // ⚠ make sure category exists
-            .price(request.getPrice())
-            .stock(request.getStock())
-            .imageUrl(request.getImageUrl())
-            .build();
+        try{
 
-    // 🔥 CALL ML SERVICE
-    PricePredictionRequest mlRequest = new PricePredictionRequest();
-    mlRequest.setCategory(product.getCategory());
-    mlRequest.setBrand(product.getBrand());
-    mlRequest.setBase_price(product.getPrice());
-    mlRequest.setDemand_score(0.7);   // temporary static value
-    mlRequest.setRating(4.0);         // temporary static value
+            PricePredictionRequest mlRequest = new PricePredictionRequest();
+            mlRequest.setCategory(product.getCategory());
+            mlRequest.setBrand(product.getBrand());
+            mlRequest.setBase_price(product.getPrice());
+            mlRequest.setDemand_score(0.7);
+            mlRequest.setRating(4.0);
 
-    try {
-        Double predicted = mlService.getPredictedPrice(mlRequest);
-        product.setPredictedPrice(predicted);
-    } catch (Exception e) {
-        System.out.println("ML Service Failed: " + e.getMessage());
-        product.setPredictedPrice(product.getPrice()); // fallback
+            Double predicted = mlService.getPredictedPrice(mlRequest);
+
+            if(predicted == null || predicted <= 0){
+                predicted = product.getPrice();
+            }
+
+            product.setPredictedPrice(predicted);
+
+        }
+        catch(Exception e){
+
+            product.setPredictedPrice(product.getPrice());
+        }
+
+        return productRepository.save(product);
     }
 
-    return productRepository.save(product);
-}
+    public Page<Product> getActiveProducts(Pageable pageable){
 
-
-    public List<Product> getAll() {
-        return productRepository.findAll();
+        return productRepository.findByActiveTrue(pageable);
     }
 
     public Product getById(Long id){
+
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product Not Found"));
-    }
-
-    public Page<Product> getAllPaged(Pageable pageable){
-    return productRepository.findAll(pageable);
-}
-
-public Page<Product> search(String keyword, Pageable pageable){
-    return productRepository.findByNameContainingIgnoreCase(keyword, pageable);
-}
-
-public Page<Product> filterByPrice(double min, double max, Pageable pageable){
-    return productRepository.findByPriceBetween(min, max, pageable);
-}
-
-    public Product create(Product product){
-        product.setCreatedAt(LocalDateTime.now());
-        return productRepository.save(product);
-    }
-
-     public Product updateProduct(Long id, ProductRequest request){
-        Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setBrand(request.getBrand());
-        product.setPrice(request.getPrice());
-        product.setImageUrl(request.getImageUrl());
-
-        return productRepository.save(product);
     }
 
-     public void deleteProduct(Long id){
-        if(!productRepository.existsById(id)){
-            throw new RuntimeException("Product not found");
-        }
+    public Page<Product> search(String keyword, Pageable pageable){
+
+        return productRepository.findByNameContainingIgnoreCase(keyword,pageable);
+    }
+
+    public Page<Product> filterByPrice(double min,double max, Pageable pageable){
+
+        return productRepository.findByPriceBetween(min,max,pageable);
+    }
+
+    public void deleteProduct(Long id){
+
         productRepository.deleteById(id);
     }
 
-    public Product updateStock(Long id, int stock){
-    Product p = productRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Product not found"));
+    public Product updateStock(Long id,int stock){
 
-    p.setStock(stock);
-    return productRepository.save(p);
-}
-public List<Product> getRecommendedProducts(Long productId) {
+        Product p = getById(id);
 
-    Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new RuntimeException("Product not found"));
+        p.setStock(stock);
 
-    List<Map<String, String>> mlResults =
-            mlService.getRecommendations(product.getDescription());
+        return productRepository.save(p);
+    }
 
-    String category = mlResults.get(0).get("category");
-    String brand = mlResults.get(0).get("brand");
+    public List<Product> getRecommendedProducts(Long productId){
 
-    return productRepository
-            .findByCategoryAndBrand(category, brand)
-            .stream()
-            .filter(p -> !p.getId().equals(productId)) // remove itself
-            .limit(5)
-            .toList();
-}
+        Product product = getById(productId);
+
+        List<Map<String,String>> mlResults =
+                mlService.getRecommendations(product.getDescription());
+
+        if(mlResults == null || mlResults.isEmpty()){
+            return List.of();
+        }
+
+        String category = mlResults.get(0).get("category");
+        String brand = mlResults.get(0).get("brand");
+
+        return productRepository
+                .findByCategoryAndBrand(category,brand)
+                .stream()
+                .filter(p -> !p.getId().equals(productId))
+                .limit(5)
+                .toList();
+    }
 }

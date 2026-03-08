@@ -2,7 +2,6 @@ package com.ecommerce.ecommerce_backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "products")
+@Table(name="products")
 public class Product {
 
     @Id
@@ -30,17 +29,25 @@ public class Product {
     private String imageUrl;
 
     private LocalDateTime createdAt;
-    
-@Column(nullable = false)
-private int stock = 0;
 
-@Column(name="predicted-price")
-private Double predictedPrice;
+    @Column(nullable=false)
+    private int stock = 0;
 
-private String category;
-@Builder.Default
-@Column(nullable = false)
-private boolean active = true;
+    @Column(name="predicted_price")
+    private Double predictedPrice = 0.0;
 
+    private String category;
 
+    @Column(nullable=false)
+    private boolean active = true;
+
+    @Column(nullable=false)
+    private boolean externalProduct = false;
+
+    @PrePersist
+    public void prePersist(){
+        if(createdAt == null){
+            createdAt = LocalDateTime.now();
+        }
+    }
 }
