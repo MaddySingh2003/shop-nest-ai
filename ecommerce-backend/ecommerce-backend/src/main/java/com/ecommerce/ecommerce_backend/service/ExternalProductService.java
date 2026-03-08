@@ -6,6 +6,7 @@ import java.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.ecommerce.ecommerce_backend.dto.PricePredictionRequest;
 import com.ecommerce.ecommerce_backend.model.Product;
 import com.ecommerce.ecommerce_backend.repository.ProductRepository;
 
@@ -18,6 +19,7 @@ public class ExternalProductService {
 
     private final ProductRepository productRepository;
     private final RestTemplate restTemplate = new RestTemplate();
+    private final MlService mlService;
 public void syncProducts(){
 
     int limit = 30;
@@ -78,8 +80,21 @@ Product product = Product.builder()
         .stock(Integer.parseInt(p.get("stock").toString()))
         .createdAt(LocalDateTime.now())
         .active(true)
+        .externalProduct(true)
         .build();
-            productRepository.save(product);
+
+PricePredictionRequest req = new PricePredictionRequest();
+req.setCategory(product.getCategory());
+req.setBrand(product.getBrand());
+req.setBasePrice(product.getPrice());
+req.setDemandScore(0.6);
+req.setRating(4.0);
+
+Double predicted = mlService.getPredictedPrice(req);
+
+product.setPredictedPrice(predicted);
+
+productRepository.save(product);
         }
 
         skip += limit;

@@ -7,5 +7,5 @@ import lombok.Data;
 @Data
 public class PricePredictionResponse {
     @JsonProperty("predicted_price")
-    private double predictedPrice;
+    private Double predictedPrice;
 }

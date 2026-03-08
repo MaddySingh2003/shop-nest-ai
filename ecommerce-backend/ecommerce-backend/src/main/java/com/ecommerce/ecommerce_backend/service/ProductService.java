@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,9 @@ public class ProductService {
                 .category(request.getCategory())
                 .price(request.getPrice())
                 .stock(request.getStock())
+                .createdAt(LocalDateTime.now())
                 .imageUrl(request.getImageUrl())
+                .active(true)
                 .build();
 
         try{
@@ -38,8 +41,8 @@ public class ProductService {
             PricePredictionRequest mlRequest = new PricePredictionRequest();
             mlRequest.setCategory(product.getCategory());
             mlRequest.setBrand(product.getBrand());
-            mlRequest.setBase_price(product.getPrice());
-            mlRequest.setDemand_score(0.7);
+            mlRequest.setBasePrice(product.getPrice());
+            mlRequest.setDemandScore(0.7);
             mlRequest.setRating(4.0);
 
             Double predicted=mlService.getPredictedPrice(mlRequest);

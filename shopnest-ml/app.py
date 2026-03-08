@@ -16,8 +16,15 @@ products_df = joblib.load("model/products_df.pkl")
 @app.post("/predict-price")
 def predict_price(data:dict):
     try:
-        category = le_category.transform([data["category"]])[0]
-        brand = le_brand.transform([data["brand"]])[0]
+        try:
+            category = le_category.transform([data["category"]])[0]
+        except:
+            category = 0
+
+        try:
+            brand = le_brand.transform([data["brand"]])[0]
+        except:
+             brand = 0
         base_price = data["base_price"]
         demand_score = data["demand_score"]
         rating = data["rating"]

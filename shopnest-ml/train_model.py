@@ -1,41 +1,76 @@
 import pandas as pd
-import numpy as np
+import requests
 import random
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 import joblib
 import os
 
-# Create synthetic dataset
-categories = ["Electronics", "Clothing", "Shoes", "Books", "Home"]
-brands = ["Nike", "Samsung", "Apple", "Puma", "Sony", "Zara"]
+# -----------------------------
+# 1. Load DummyJSON products
+# -----------------------------
+url = "https://dummyjson.com/products?limit=200"
+data = requests.get(url).json()["products"]
 
-data = []
+df_api = pd.DataFrame(data)
 
-for _ in range(1000):
-    category = random.choice(categories)
-    brand = random.choice(brands)
-    base_price = random.randint(500, 50000)
-    demand_score = round(random.uniform(0.3, 1.0), 2)
-    rating = round(random.uniform(3.0, 5.0), 1)
+df_api["base_price"] = df_api["price"]
+df_api["demand_score"] = 0.6
+df_api["rating"] = df_api["rating"]
 
-    # Artificial pricing logic
-    actual_price = base_price * (1 + demand_score * 0.2) + rating * 100
+# simulate market pricing
+df_api["actual_price"] = df_api["price"] * (1 + df_api["rating"] / 10)
 
-    data.append([
-        category, brand, base_price, demand_score, rating, actual_price
+df_api = df_api[["category","brand","base_price","demand_score","rating","actual_price"]]
+
+
+# -----------------------------
+# 2. Add synthetic products
+# (for manual admin products)
+# -----------------------------
+manual_categories = [
+    "Electronics","Shoes","Food","Bottle","Mobile","Accessories"
+]
+
+manual_brands = [
+    "Samsung","Apple","Puma","Nike","As-It-Is","MB","BOLDFit"
+]
+
+synthetic_data = []
+
+for _ in range(500):
+
+    category = random.choice(manual_categories)
+    brand = random.choice(manual_brands)
+
+    base_price = random.randint(100, 100000)
+    demand_score = round(random.uniform(0.4,1.0),2)
+    rating = round(random.uniform(3.5,5.0),1)
+
+    actual_price = base_price * (1 + demand_score * 0.2) + rating * 80
+
+    synthetic_data.append([
+        category,brand,base_price,demand_score,rating,actual_price
     ])
 
-df = pd.DataFrame(data, columns=[
-    "category", "brand", "base_price",
-    "demand_score", "rating", "actual_price"
-])
+df_manual = pd.DataFrame(
+    synthetic_data,
+    columns=[
+        "category","brand","base_price",
+        "demand_score","rating","actual_price"
+    ]
+)
 
-os.makedirs("data", exist_ok=True)
-df.to_csv("data/products.csv", index=False)
+
+# -----------------------------
+# 3. Combine datasets
+# -----------------------------
+df = pd.concat([df_api, df_manual], ignore_index=True)
 
 
-# Encode categorical
+# -----------------------------
+# 4. Encode categorical features
+# -----------------------------
 le_category = LabelEncoder()
 le_brand = LabelEncoder()
 
@@ -43,37 +78,28 @@ df["category"] = le_category.fit_transform(df["category"].astype(str))
 df["brand"] = le_brand.fit_transform(df["brand"].astype(str))
 
 
-X = df[["category", "brand", "base_price", "demand_score", "rating"]]
+# -----------------------------
+# 5. Train model
+# -----------------------------
+X = df[["category","brand","base_price","demand_score","rating"]]
 y = df["actual_price"]
 
-model = RandomForestRegressor(n_estimators=100)
-model.fit(X, y)
-
-os.makedirs("model", exist_ok=True)
-
-joblib.dump(model, "model/price_model.pkl")
-joblib.dump(le_category, "model/le_category.pkl")
-joblib.dump(le_brand, "model/le_brand.pkl")
-
-print("Model trained and saved successfully!")
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-
-df_original=pd.read_csv("data/products.csv")
-
-df_original["description"]=(
-    df_original["category"]+" "+
-    df_original["brand"]
+model = RandomForestRegressor(
+    n_estimators=300,
+    max_depth=10,
+    random_state=42
 )
 
-vectorizer=TfidfVectorizer()
-tfidf_matrix=vectorizer.fit_transform(df_original["description"])
+model.fit(X,y)
 
-os.makedirs("model",exist_ok=True)
 
-joblib.dump(tfidf_matrix, "model/tfidf_matrix.pkl")
-joblib.dump(vectorizer, "model/vectorizer.pkl")
-joblib.dump(df_original, "model/products_df.pkl")
+# -----------------------------
+# 6. Save model
+# -----------------------------
+os.makedirs("model", exist_ok=True)
 
-print("Recomendation model saved.")
+joblib.dump(model,"model/price_model.pkl")
+joblib.dump(le_category,"model/le_category.pkl")
+joblib.dump(le_brand,"model/le_brand.pkl")
+
+print("✅ Model trained with API + manual product data")
