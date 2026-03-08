@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 @Entity
 @Getter
 @Setter
@@ -27,7 +29,9 @@ public class Product {
     private String brand;
 
     private String imageUrl;
-
+    
+    @Column(name="created_at" ,updatable=false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(nullable=false)

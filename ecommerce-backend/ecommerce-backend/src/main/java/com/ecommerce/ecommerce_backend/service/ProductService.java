@@ -42,10 +42,9 @@ public class ProductService {
             mlRequest.setDemand_score(0.7);
             mlRequest.setRating(4.0);
 
-            Double predicted = mlService.getPredictedPrice(mlRequest);
-
-            if(predicted == null || predicted <= 0){
-                predicted = product.getPrice();
+            Double predicted=mlService.getPredictedPrice(mlRequest);
+            if(predicted==null || predicted<=0||predicted.isNaN()){
+                predicted=product.getPrice();
             }
 
             product.setPredictedPrice(predicted);

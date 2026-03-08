@@ -1,5 +1,6 @@
 package com.ecommerce.ecommerce_backend.service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
@@ -67,18 +68,17 @@ public void syncProducts(){
                     ? images.get(0).toString()
                     : "";
 
-            Product product = Product.builder()
-                    .name(name)
-                    .brand(brand)
-                    .description((String)p.get("description"))
-                    .price(Double.parseDouble(p.get("price").toString()))
-                    .category((String)p.get("category"))
-                    .stock(Integer.parseInt(p.get("stock").toString()))
-                    .imageUrl(imageUrl)
-                    .externalProduct(true)
-                    .active(true)
-                    .build();
-
+Product product = Product.builder()
+        .name((String) p.get("title"))
+        .price(Double.parseDouble(p.get("price").toString()))
+        .description((String) p.get("description"))
+        .imageUrl(imageUrl)
+        .brand((String) p.get("brand"))
+        .category((String) p.get("category"))
+        .stock(Integer.parseInt(p.get("stock").toString()))
+        .createdAt(LocalDateTime.now())
+        .active(true)
+        .build();
             productRepository.save(product);
         }
 
