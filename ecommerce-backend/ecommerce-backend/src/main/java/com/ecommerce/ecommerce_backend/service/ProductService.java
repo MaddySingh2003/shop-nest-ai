@@ -27,7 +27,9 @@ public class ProductService {
         Product product = Product.builder()
                 .name(request.getName())
                 .description(request.getDescription())
-                .brand(request.getBrand())
+                .brand(request.getBrand()==null|| request.getBrand().isBlank()
+                ?"Generic"
+                :request.getBrand())
                 .category(request.getCategory())
                 .price(request.getPrice())
                 .stock(request.getStock())

@@ -52,9 +52,11 @@ public void syncProducts(){
             String name = (String)p.get("title");
             String brand = (String)p.get("brand");
 
-            if(brand == null){
-                brand = "Unknown";
-            }
+           
+
+if(brand == null || brand.isBlank()){
+    brand = "Generic";
+}
 
             Optional<Product> existing =
                     productRepository.findByNameAndBrand(name,brand);
@@ -69,19 +71,26 @@ public void syncProducts(){
                     images!=null && !images.isEmpty()
                     ? images.get(0).toString()
                     : "";
+            
 
 Product product = Product.builder()
         .name((String) p.get("title"))
         .price(Double.parseDouble(p.get("price").toString()))
         .description((String) p.get("description"))
         .imageUrl(imageUrl)
-        .brand((String) p.get("brand"))
+        .brand(brand)
         .category((String) p.get("category"))
         .stock(Integer.parseInt(p.get("stock").toString()))
         .createdAt(LocalDateTime.now())
         .active(true)
         .externalProduct(true)
         .build();
+
+String category=(String)p.get("category");
+
+if(category==null || category.isBlank()){
+    category="General";
+}
 
 PricePredictionRequest req = new PricePredictionRequest();
 req.setCategory(product.getCategory());

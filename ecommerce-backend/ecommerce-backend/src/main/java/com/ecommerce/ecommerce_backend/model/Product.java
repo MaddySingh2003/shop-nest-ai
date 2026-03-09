@@ -26,6 +26,7 @@ public class Product {
 
     private double price;
 
+    @Column(nullable = false)
     private String brand;
 
     private String imageUrl;
