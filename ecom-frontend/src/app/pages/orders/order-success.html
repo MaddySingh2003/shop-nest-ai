@@ -1,64 +1,44 @@
-<div class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center px-4">
+<div class="min-h-screen bg-green-50 flex items-center justify-center px-6">
 
-  <div class="bg-white rounded-3xl shadow-2xl p-12 max-w-2xl w-full text-center border border-gray-100">
+<div class="bg-white p-12 rounded-2xl shadow-xl max-w-xl w-full text-center">
 
-    <!-- Success Icon -->
-    <div class="w-24 h-24 mx-auto mb-6 flex items-center justify-center 
-                rounded-full bg-green-100 animate-pulse">
+<div class="text-green-600 text-5xl mb-6">✔</div>
 
-      <div class="text-green-600 text-5xl">✔</div>
+<h2 class="text-3xl font-bold mb-3">
+Order Placed Successfully!
+</h2>
 
-    </div>
+<p class="text-gray-600 mb-3">
+Thank you for shopping with us 🎉
+</p>
 
-    <!-- Title -->
-    <h2 class="text-3xl font-bold text-gray-800 mb-3">
-      Order Placed Successfully!
-    </h2>
+<p class="mb-6">
+Your Order ID:
+<span class="font-bold text-indigo-600">
+#{{orderId}}
+</span>
+</p>
 
-    <p class="text-gray-600 text-lg mb-2">
-      Thank you for shopping with us 🎉
-    </p>
+<div class="bg-gray-50 border rounded-lg p-5 mb-8">
+Track your order and payment status in your orders page.
+</div>
 
-    <p class="text-gray-700 mb-8">
-      Your Order ID is 
-      <span class="font-bold text-indigo-600 text-lg">
-        #{{orderId}}
-      </span>
-    </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
 
-    <!-- Info Box -->
-    <div class="bg-gray-50 rounded-2xl p-6 mb-8 border">
-      <p class="text-gray-600">
-        You can track your order status and complete payment from
-        your Orders page.
-      </p>
-    </div>
+<button
+(click)="goOrders()"
+class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg">
+View Orders and Proceed Payment
+</button>
 
-    <!-- Buttons -->
-    <div class="flex flex-col sm:flex-row justify-center gap-4">
+<button
+(click)="goHome()"
+class="border border-gray-400 px-6 py-3 rounded-lg hover:bg-gray-100">
+Continue Shopping
+</button>
 
-      <button
-        class="bg-gradient-to-r from-indigo-600 to-purple-600 
-               text-white px-8 py-3 rounded-2xl shadow-lg
-               hover:scale-105 transform transition duration-200 font-semibold"
-        (click)="goOrders()">
-        View Orders
-      </button>
+</div>
 
-      <button
-        class="border border-gray-400 text-gray-700 px-8 py-3 rounded-2xl
-               hover:bg-gray-100 transition font-medium"
-        (click)="goHome()">
-        Continue Shopping
-      </button>
-
-    </div>
-
-    <!-- Footer Note -->
-    <p class="text-gray-400 text-sm mt-10">
-      A confirmation email has been sent to your registered email address.
-    </p>
-
-  </div>
+</div>
 
 </div>

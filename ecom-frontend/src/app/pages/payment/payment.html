@@ -1,55 +1,51 @@
-<div class="max-w-lg mx-auto p-8 border rounded shadow">
+<div class="min-h-screen bg-gray-100 flex items-center justify-center px-6">
 
-  <h2 class="text-2xl font-bold mb-4 text-center">💳 Payment</h2>
+<div class="bg-white p-8 rounded-2xl shadow-md max-w-md w-full">
 
-  <p class="text-center text-gray-600 mb-6">
-    Order ID: {{orderId}}
-  </p>
+<h2 class="text-2xl font-bold text-center mb-6">
+💳 Payment
+</h2>
 
-  <div class="border p-4 rounded bg-gray-50 mb-6">
+<p class="text-center text-gray-600 mb-6">
+Order ID: {{orderId}}
+</p>
 
-    <p class="font-semibold mb-3">Select Payment Method:</p>
+<div class="border p-5 rounded-lg bg-gray-50 mb-6">
 
-    <label class="block mb-2">
-      <input
-        type="radio"
-        name="payment"
-        value="UPI"
-        [(ngModel)]="paymentMethod">
-      UPI
-    </label>
+<p class="font-semibold mb-3">
+Select Payment Method
+</p>
 
-    <label class="block mb-2">
-      <input
-        type="radio"
-        name="payment"
-        value="CARD"
-        [(ngModel)]="paymentMethod">
-      Credit / Debit Card
-    </label>
+<label class="block mb-2">
+<input type="radio" name="payment" value="UPI" [(ngModel)]="paymentMethod">
+ UPI
+</label>
 
-    <label class="block mb-2">
-      <input
-        type="radio"
-        name="payment"
-        value="COD"
-        [(ngModel)]="paymentMethod">
-      Cash on Delivery
-    </label>
+<label class="block mb-2">
+<input type="radio" name="payment" value="CARD" [(ngModel)]="paymentMethod">
+ Credit / Debit Card
+</label>
 
-  </div>
+<label class="block mb-2">
+<input type="radio" name="payment" value="COD" [(ngModel)]="paymentMethod">
+ Cash on Delivery
+</label>
 
-  <p class="text-center text-sm text-gray-500 mb-4">
-    Selected: <b>{{paymentMethod}}</b>
-  </p>
+</div>
 
-  <button
-    class="bg-green-600 text-white px-6 py-2 rounded w-full"
-    (click)="pay()"
-    [disabled]="loading">
+<p class="text-center text-sm text-gray-500 mb-4">
+Selected: <b>{{paymentMethod}}</b>
+</p>
 
-    {{ loading ? 'Processing...' : 'Pay Now' }}
+<button
+(click)="pay()"
+[disabled]="loading"
+class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg">
 
-  </button>
+{{ loading ? 'Processing...' : 'Pay Now' }}
+
+</button>
+
+</div>
 
 </div>

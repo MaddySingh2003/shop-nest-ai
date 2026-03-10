@@ -52,11 +52,22 @@ export class OrdersComponent implements OnInit {
 
   // 🔥 Cancel order
   cancelOrder(id: number) {
-    if (!confirm("Cancel this order?")) return;
 
-    this.orderService.cancelOrder(id).subscribe(() => {
-      this.loadOrders(); // reload after cancel
-    });
-    this.cdr.detectChanges();
-  }
+  if (!confirm("Cancel this order?")) return;
+
+  this.orderService.cancelOrder(id).subscribe({
+
+    next: () => {
+      alert("Order cancelled");
+      this.loadOrders();
+    },
+
+    error: (err) => {
+      console.error("Cancel failed", err);
+      alert("Order cannot be cancelled");
+    }
+
+  });
+
+}
 }

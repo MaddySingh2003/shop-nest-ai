@@ -1,111 +1,95 @@
+<div class="bg-gray-100 min-h-screen py-10 px-6">
 
-<div class="flex gap-3 mb-6">
+<div class="max-w-6xl mx-auto">
 
-  <button (click)="filter='ALL'; applyFilter()"
-          class="px-4 py-2 border rounded">
-    All
-  </button>
+<h2 class="text-3xl font-bold mb-8">
+📦 My Orders
+</h2>
 
-  <button (click)="filter='PENDING'; applyFilter()"
-          class="px-4 py-2 border rounded">
-    Pending
-  </button>
+<!-- Filters -->
 
-  <button (click)="filter='CONFIRMED'; applyFilter()"
-          class="px-4 py-2 border rounded">
-    Confirmed
-  </button>
+<div class="flex gap-3 mb-6 flex-wrap">
 
-  <button (click)="filter='DELIVERED'; applyFilter()"
-          class="px-4 py-2 border rounded">
-    Delivered
-  </button>
+<button
+(click)="filter='ALL'; applyFilter()"
+class="px-4 py-2 border rounded hover:bg-gray-100">
+All
+</button>
+
+<button
+(click)="filter='PENDING'; applyFilter()"
+class="px-4 py-2 border rounded hover:bg-gray-100">
+Pending
+</button>
+
+<button
+(click)="filter='CONFIRMED'; applyFilter()"
+class="px-4 py-2 border rounded hover:bg-gray-100">
+Confirmed
+</button>
+
+<button
+(click)="filter='DELIVERED'; applyFilter()"
+class="px-4 py-2 border rounded hover:bg-gray-100">
+Delivered
+</button>
 
 </div>
-<div class="bg-gray-50 min-h-screen py-10 px-6">
 
-  <div class="max-w-6xl mx-auto">
+<div *ngIf="filteredOrders.length === 0"
+class="bg-white rounded-xl shadow p-12 text-center">
 
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-8">
-      <h2 class="text-3xl font-bold text-gray-800">
-        📦 My Orders
-      </h2>
-    </div>
+<p class="text-gray-500 mb-4">
+No orders yet.
+</p>
 
-    <div *ngIf="filteredOrders.length >= 0">
+<a routerLink="/home"
+class="bg-indigo-600 text-white px-6 py-2 rounded-lg">
+Start Shopping
+</a>
 
-      <!-- Empty State -->
-      <div *ngIf="filteredOrders.length === 0"
-           class="bg-white rounded-2xl shadow-md p-12 text-center">
+</div>
 
-        <p class="text-gray-500 text-lg mb-4">
-          You haven't placed any orders yet.
-        </p>
+<div *ngFor="let o of filteredOrders"
+class="bg-white rounded-xl shadow-sm hover:shadow-lg transition p-6 mb-5 flex flex-col md:flex-row justify-between items-center">
 
-        <a routerLink="/home"
-           class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">
-          Start Shopping
-        </a>
-      </div>
+<div>
 
-      <!-- Orders List -->
-      <div *ngFor="let o of filteredOrders"
-           class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition p-6 mb-6 flex flex-col md:flex-row md:justify-between md:items-center">
+<p class="font-semibold text-lg">
+{{ o.items[0]?.productName }}
 
-        <!-- Order Info -->
-        <div class="mb-4 md:mb-0">
+<span *ngIf="o.items.length > 1"
+class="text-gray-500">
++ {{ o.items.length - 1 }} more
+</span>
 
-          <p class="font-semibold text-lg text-gray-800">
-            {{ o.items[0]?.productName }}
-            <span *ngIf="o.items.length > 1"
-                  class="text-gray-500 font-normal">
-              + {{ o.items.length - 1 }} more item(s)
-            </span>
-          </p>
+</p>
 
-          <div class="flex items-center gap-4 mt-2 text-sm text-gray-600">
-            <span>
-              Total: <b class="text-gray-800">₹{{o.totalAmount}}</b>
-            </span>
+<p class="text-sm text-gray-600 mt-1">
+Total: ₹{{o.totalAmount}}
+</p>
 
-            <!-- Status Badge -->
-            <span
-              class="px-3 py-1 rounded-full text-xs font-medium"
-              [ngClass]="{
-                'bg-yellow-100 text-yellow-700': o.status === 'PENDING',
-                'bg-blue-100 text-blue-700': o.status === 'CONFIRMED',
-                'bg-purple-100 text-purple-700': o.status === 'SHIPPED',
-                'bg-green-100 text-green-700': o.status === 'DELIVERED',
-                'bg-red-100 text-red-700': o.status === 'CANCELLED'
-              }">
-              {{o.status}}
-            </span>
-          </div>
+</div>
 
-        </div>
+<div class="flex gap-3 mt-4 md:mt-0">
 
-        <!-- Buttons -->
-        <div class="flex gap-3">
+<a
+[routerLink]="['/order-details', o.id]"
+class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+View Details
+</a>
 
-          <a
-            [routerLink]="['/order-details', o.id]"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition text-sm">
-            View Details
-          </a>
+<button
+*ngIf="o.status === 'PENDING' || o.status === 'CONFIRMED'"
+(click)="cancelOrder(o.id)"
+class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm">
+Cancel
+</button>
 
-          <button
-            *ngIf="o.status === 'PENDING' || o.status === 'CONFIRMED'"
-            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition text-sm"
-            (click)="cancelOrder(o.id)">
-            Cancel
-          </button>
+</div>
 
-        </div>
+</div>
 
-      </div>
+</div>
 
-    </div>
-
-  </div>
 </div>

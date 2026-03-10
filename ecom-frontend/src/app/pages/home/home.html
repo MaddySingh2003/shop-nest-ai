@@ -4,8 +4,9 @@
 
   <div class="max-w-7xl mx-auto">
 
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-8">
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-10">
+
       <h2 class="text-3xl font-bold text-gray-800">
         Featured Products
       </h2>
@@ -13,101 +14,119 @@
       <p class="text-green-600 font-medium" *ngIf="message">
         {{ message }}
       </p>
+
     </div>
 
-    <!-- Products -->
-    <ng-container *ngIf="products.length > 0; else loading">
+    <!-- PRODUCTS -->
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <div *ngIf="products.length > 0; else loading"
+         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
 
-        <div *ngFor="let p of products"
-             class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden">
+      <div *ngFor="let p of products"
+           class="bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition duration-300 overflow-hidden border">
 
-          <img
-            [src]="p.imageUrl"
-            class="h-48 w-full object-cover"
-          />
+        <img
+          [src]="p.imageUrl"
+          class="h-48 w-full object-cover"
+        />
 
-          <div class="p-5">
+        <div class="p-5">
 
-            <h3 class="font-semibold text-lg text-gray-800">
-              {{ p.name }}
-            </h3>
+          <h3 class="font-semibold text-lg text-gray-800">
+            {{ p.name }}
+          </h3>
 
-            <p class="text-gray-500 text-sm mt-2 line-clamp-2">
-              {{ p.description }}
-            </p>
+          <p class="text-gray-500 text-sm mt-2 line-clamp-2">
+            {{ p.description }}
+          </p>
 
-            <p class="font-bold text-xl mt-3 text-gray-900">
-              ₹ {{ p.price }}
-            </p>
+          <p class="font-bold text-xl mt-3 text-gray-900">
+            ₹ {{ p.price }}
+          </p>
 
-            <div class="flex items-center justify-between mt-5">
+          <div class="flex items-center justify-between mt-5">
 
-              <button
-                (click)="goToDetail(p.id)"
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                Check
-              </button>
+            <button
+              (click)="goToDetail(p.id)"
+              class="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800">
+              View
+            </button>
 
-              <button
-                (click)="addWishlist(p.id)"
-                class="text-gray-400 hover:text-red-500 text-2xl">
-                ❤️
-              </button>
-
-            </div>
+            <button
+              (click)="addWishlist(p.id)"
+              class="text-gray-400 hover:text-red-500 text-2xl transition transform hover:scale-125">
+              ❤️
+            </button>
 
           </div>
+
         </div>
 
       </div>
 
-      <!-- Pagination -->
-      <div class="flex justify-center items-center mt-12 gap-2">
+    </div>
 
-        <!-- Prev -->
+    <!-- PAGINATION -->
+
+    <div class="flex justify-center mt-14">
+
+      <div class="flex items-center gap-2 bg-white shadow-md px-6 py-3 rounded-xl">
+
         <button
           (click)="prevPage()"
           [disabled]="page === 0"
-          class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-40">
-          Prev
+          class="px-3 py-2 border rounded-lg hover:bg-gray-100 disabled:opacity-40">
+          ←
         </button>
 
-        <!-- Page Numbers -->
         <button
-          *ngFor="let p of [].constructor(totalPages); let i = index"
-          (click)="goToPage(i)"
-          [ngClass]="{
-            'bg-blue-600 text-white': page === i,
-            'bg-gray-200': page !== i
-          }"
-          class="px-4 py-2 rounded-lg hover:bg-blue-500 hover:text-white">
-          {{ i + 1 }}
+          *ngIf="page > 1"
+          (click)="goToPage(0)"
+          class="px-4 py-2 border rounded-lg hover:bg-gray-100">
+          1
         </button>
 
-        <!-- Next -->
+        <span *ngIf="page > 2" class="text-gray-400">...</span>
+
+        <button
+          *ngFor="let p of pages"
+          (click)="goToPage(p)"
+          [ngClass]="{
+            'bg-black text-white': page === p,
+            'bg-gray-100 hover:bg-gray-200': page !== p
+          }"
+          class="px-4 py-2 rounded-lg transition">
+          {{ p + 1 }}
+        </button>
+
+        <span *ngIf="page < totalPages-3" class="text-gray-400">...</span>
+
+        <button
+          *ngIf="page < totalPages-2"
+          (click)="goToPage(totalPages-1)"
+          class="px-4 py-2 border rounded-lg hover:bg-gray-100">
+          {{ totalPages }}
+        </button>
+
         <button
           (click)="nextPage()"
-          [disabled]="page === totalPages - 1"
-          class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-40">
-          Next
+          [disabled]="page === totalPages-1"
+          class="px-3 py-2 border rounded-lg hover:bg-gray-100 disabled:opacity-40">
+          →
         </button>
 
       </div>
 
-      <!-- Page Info -->
-      <p class="text-center text-gray-500 mt-4">
-        Page {{ page + 1 }} of {{ totalPages }}
-      </p>
+    </div>
 
-    </ng-container>
+    <!-- LOADING -->
 
-    <!-- Loading -->
     <ng-template #loading>
+
       <div class="text-center text-gray-500 text-lg py-20">
         Loading products...
       </div>
+
     </ng-template>
 
   </div>

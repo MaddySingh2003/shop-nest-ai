@@ -1,176 +1,130 @@
 <app-navbar></app-navbar>
-<div *ngIf="loading" class="min-h-screen flex items-center justify-center bg-gray-50">
-  <p class="text-lg text-gray-500 animate-pulse">Loading order details...</p>
+
+<div *ngIf="loading"
+class="min-h-screen flex items-center justify-center bg-gray-50">
+
+<p class="text-lg text-gray-500 animate-pulse">
+Loading order details...
+</p>
+
 </div>
 
-<div *ngIf="!loading && order" class="bg-gray-50 min-h-screen py-10 px-6">
+<div *ngIf="!loading && order"
+class="bg-gray-100 min-h-screen py-12 px-6">
 
-  <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+<div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-md p-8">
 
-    <!-- Order Header -->
-    <div class="flex justify-between items-center mb-8">
-      <div>
-        <h2 class="text-3xl font-bold text-gray-800">
-          Order #{{order.id}}
-        </h2>
-        <p class="text-sm text-gray-500 mt-1">
-          Payment: {{order.paymentStatus}} ({{order.paymentMethod}})
-        </p>
-      </div>
+<div class="flex justify-between items-center mb-8">
 
-      <span
-  class="px-4 py-2 rounded-full text-sm font-medium"
-  [ngClass]="{
-    'bg-yellow-100 text-yellow-700': order.status === 'PENDING',
-    'bg-blue-100 text-blue-700': order.status === 'CONFIRMED',
-    'bg-purple-100 text-purple-700': order.status === 'SHIPPED',
-    'bg-green-100 text-green-700': order.status === 'DELIVERED',
-    'bg-red-100 text-red-700': order.status === 'CANCELLED'
-  }">
-  {{order.status}}
+<div>
+
+<h2 class="text-3xl font-bold text-gray-800">
+Order #{{order.id}}
+</h2>
+
+<p class="text-sm text-gray-500">
+Payment: {{order.paymentStatus}} ({{order.paymentMethod}})
+</p>
+
+</div>
+
+<span
+class="px-4 py-2 rounded-full text-sm font-medium"
+[ngClass]="{
+'bg-yellow-100 text-yellow-700': order.status === 'PENDING',
+'bg-blue-100 text-blue-700': order.status === 'CONFIRMED',
+'bg-purple-100 text-purple-700': order.status === 'SHIPPED',
+'bg-green-100 text-green-700': order.status === 'DELIVERED',
+'bg-red-100 text-red-700': order.status === 'CANCELLED'
+}">
+{{order.status}}
 </span>
-    </div>
-    <div *ngIf="order.status==='CANCELLED'"
-     class="bg-red-100 text-red-700 p-4 rounded mb-6 text-center font-semibold">
-  This order has been cancelled ❌
+
 </div>
 
-    <!-- Status Tracker -->
-    <div class="mb-10">
+<div *ngIf="order.status==='CANCELLED'"
+class="bg-red-100 text-red-700 p-4 rounded mb-6 text-center font-medium">
+This order has been cancelled ❌
+</div>
 
-      <div class="flex items-center justify-between relative">
+<!-- Order Summary -->
 
-        <!-- Progress Line Background -->
-        <div class="absolute top-4 left-0 right-0 h-1 bg-gray-200"></div>
+<div class="grid md:grid-cols-2 gap-6 mb-8">
 
-        <!-- Active Line -->
-      <div *ngIf="order.status !== 'CANCELLED'" class="mb-10">
-        <div class="absolute top-4 left-0 h-1 bg-green-500 transition-all duration-500"
-          [style.width]="
-            order.status==='PENDING' ? '0%' :
-            order.status==='CONFIRMED' ? '33%' :
-            order.status==='SHIPPED' ? '66%' :
-            order.status==='DELIVERED' ? '100%' : '0%'
-          ">
-        </div>
-        </div>
+<div class="bg-gray-50 p-5 rounded-lg">
+<p class="text-gray-600">Order Status</p>
+<p class="font-semibold text-lg">{{order.status}}</p>
+</div>
 
-        <!-- Steps -->
-        <div class="flex justify-between w-full relative">
+<div class="bg-gray-50 p-5 rounded-lg">
+<p class="text-gray-600">Total Amount</p>
+<p class="font-bold text-xl text-gray-800">
+₹{{order.totalAmount}}
+</p>
+</div>
 
-          <div class="flex flex-col items-center z-10">
-            <div class="w-8 h-8 flex items-center justify-center rounded-full"
-              [ngClass]="isCompleted('PENDING') ? 'bg-green-500 text-white' : 'bg-gray-300'">
-              1
-            </div>
-            <span class="text-sm mt-2">Pending</span>
-          </div>
+</div>
 
-          <div class="flex flex-col items-center z-10">
-            <div class="w-8 h-8 flex items-center justify-center rounded-full"
-              [ngClass]="isCompleted('CONFIRMED') ? 'bg-green-500 text-white' : 'bg-gray-300'">
-              2
-            </div>
-            <span class="text-sm mt-2">Confirmed</span>
-          </div>
+<!-- Buttons -->
 
-          <div class="flex flex-col items-center z-10">
-            <div class="w-8 h-8 flex items-center justify-center rounded-full"
-              [ngClass]="isCompleted('SHIPPED') ? 'bg-green-500 text-white' : 'bg-gray-300'">
-              3
-            </div>
-            <span class="text-sm mt-2">Shipped</span>
-          </div>
+<div class="flex flex-wrap gap-3 mb-8">
 
-          <div class="flex flex-col items-center z-10">
-            <div class="w-8 h-8 flex items-center justify-center rounded-full"
-              [ngClass]="isCompleted('DELIVERED') ? 'bg-green-500 text-white' : 'bg-gray-300'">
-              4
-            </div>
-            <span class="text-sm mt-2">Delivered</span>
-          </div>
+<button
+*ngIf="order.status==='PENDING'"
+[routerLink]="['/payment', order.id]"
+class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg">
+Pay Now
+</button>
 
-        </div>
-      </div>
+<button
+*ngIf="order.status==='PENDING' || order.status==='CONFIRMED'"
+(click)="cancelOrder()"
+class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg">
+Cancel Order
+</button>
 
-    </div>
+<button
+*ngIf="order.status==='CONFIRMED' || order.status==='DELIVERED'"
+(click)="downloadInvoice()"
+class="bg-gray-700 hover:bg-gray-800 text-white px-5 py-2 rounded-lg">
+Download Invoice
+</button>
 
-    <!-- Order Summary -->
-    <div class="grid md:grid-cols-2 gap-6 mb-8">
+</div>
 
-      <div class="bg-gray-50 p-5 rounded-xl">
-        <p class="text-gray-600">Order Status</p>
-        <p class="font-semibold text-lg">{{order.status}}</p>
-      </div>
+<h3 class="text-xl font-semibold mb-4">
+Order Items
+</h3>
 
-      <div class="bg-gray-50 p-5 rounded-xl">
-        <p class="text-gray-600">Total Amount</p>
-        <p class="font-bold text-xl text-gray-800">₹{{order.totalAmount}}</p>
-      </div>
+<div class="divide-y">
 
-    </div>
+<div *ngFor="let i of order.items"
+class="flex justify-between py-4">
 
-    <!-- Action Buttons -->
-    <div class="flex flex-wrap gap-4 mb-8">
+<div>
+<p class="font-medium">{{i.productName}}</p>
+<p class="text-sm text-gray-500">
+Quantity: {{i.quantity}}
+</p>
+</div>
 
-      <button *ngIf="order.status==='PENDING'"
-        [routerLink]="['/payment', order.id]"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition">
-        Pay Now
-      </button>
+<p class="font-semibold">
+₹{{i.price}} x {{i.quantity}}
+</p>
 
-      <button *ngIf="order.status==='PENDING' || order.status==='CONFIRMED'"
-        class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg transition"
-        (click)="cancelOrder()">
-        Cancel Order
-      </button>
+</div>
 
-      <button *ngIf="order.status==='CONFIRMED'"
-        class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg transition"
-        (click)="downloadInvoice()">
-        Download Invoice PDF
-      </button>
+</div>
 
-      <button *ngIf="order.status==='DELIVERED'"
-        class="bg-gray-700 hover:bg-gray-800 text-white px-5 py-2 rounded-lg transition"
-        (click)="downloadInvoice()">
-        Download Invoice
-      </button>
+<div class="mt-8 text-right">
 
-    </div>
+<a routerLink="/account/orders"
+class="text-indigo-600 hover:text-indigo-800 font-medium">
+← Back to My Orders
+</a>
 
-    <!-- Items List -->
-    <h3 class="text-xl font-semibold mb-4">Order Items</h3>
+</div>
 
-    <div class="divide-y">
+</div>
 
-      <div *ngFor="let i of order.items"
-           class="flex justify-between py-4">
-
-        <div>
-          <p class="font-medium text-gray-800">
-            {{i.productName}}
-          </p>
-          <p class="text-sm text-gray-500">
-            Quantity: {{i.quantity}}
-          </p>
-        </div>
-
-        <div class="font-semibold text-gray-700">
-          ₹{{i.price}} x {{i.quantity}}
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- Admin Link -->
-    <div class="mt-8 text-right">
-       <a routerLink="/account/orders"
-           class="text-indigo-600 hover:text-indigo-800 font-medium transition">
-          ← Back to My Orders
-        </a>
-    </div>
-
-  </div>
 </div>

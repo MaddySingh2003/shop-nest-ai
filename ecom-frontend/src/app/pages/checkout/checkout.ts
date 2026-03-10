@@ -6,6 +6,7 @@ import { AddressService } from '../../services/adress.service';
 import { Router } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
 import { CartService } from '../../services/cart.service';
+import { count } from 'rxjs';
 
 @Component({
   selector: 'app-checkout',
@@ -26,7 +27,7 @@ export class CheckoutComponent implements OnInit {
   couponCode: string = '';
   discount: number = 0;
   finalTotal: number = 0;
-
+  count:number=0;
   outOfStock: boolean = false;
 
   constructor(
@@ -40,7 +41,11 @@ export class CheckoutComponent implements OnInit {
   ngOnInit() {
     this.loadAddresses();
     this.loadCart();
-    this.cdr.detectChanges();
+    
+    if(this.loadAddresses!=null&& this.loadCart!=null&& this.count==0 ){
+      window.location.reload();
+      this.count=this.count+1;
+    }
     
   }
 
