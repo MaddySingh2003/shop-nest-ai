@@ -39,6 +39,12 @@ isAdmin: boolean = false;
 
     const id = Number(params.get('id'));
 
+    // ✅ Scroll to top when product changes
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
     if (!id || id <= 0) {
       this.error = "Invalid product ID";
       this.loading = false;
@@ -147,8 +153,6 @@ loadProduct(id: number) {
   isOwner(r:any){
     return r.user?.email ===this.currentUserEmail;
   }
-  rel(){
-    window.location.reload();
-  }
+  
 
 }
