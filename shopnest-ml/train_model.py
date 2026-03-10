@@ -31,3 +31,30 @@ model.fit(X,y)
 joblib.dump(model,"model/price_model.pkl")
 joblib.dump(le_category,"model/le_category.pkl")
 joblib.dump(le_brand,"model/le_brand.pkl")
+import pandas as pd
+import requests
+from sklearn.feature_extraction.text import TfidfVectorizer
+import joblib
+
+url = "https://dummyjson.com/products?limit=200"
+data = requests.get(url).json()["products"]
+
+df = pd.DataFrame(data)
+
+# combine text fields
+df["text"] = (
+    df["title"].fillna("") + " " +
+    df["description"].fillna("") + " " +
+    df["brand"].fillna("") + " " +
+    df["category"].fillna("")
+)
+
+vectorizer = TfidfVectorizer(stop_words="english")
+
+tfidf_matrix = vectorizer.fit_transform(df["text"])
+
+joblib.dump(tfidf_matrix, "model/tfidf_matrix.pkl")
+joblib.dump(vectorizer, "model/vectorizer.pkl")
+joblib.dump(df, "model/products_df.pkl")
+
+print("Recommendation model trained")

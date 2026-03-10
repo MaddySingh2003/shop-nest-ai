@@ -72,21 +72,28 @@ class RecommendationRequest(BaseModel):
 @app.post("/recommend")
 def recommend(data: RecommendationRequest):
 
-    input_vector = vectorizer.transform([data.description])
+    try:
 
-    cosine_sim = cosine_similarity(
-        input_vector,
-        tfidf_matrix
-    )
+        input_vector = vectorizer.transform([data.description])
 
-    similar_indices = cosine_sim[0].argsort()[-6:][::-1]
+        cosine_sim = cosine_similarity(input_vector, tfidf_matrix)
 
-    recommendations = []
+        similar_indices = cosine_sim[0].argsort()[::-1][1:6]
 
-    for idx in similar_indices:
-        recommendations.append({
-            "category": products_df.iloc[idx]["category"],
-            "brand": products_df.iloc[idx]["brand"]
-        })
+        recommendations = []
 
-    return {"recommendations": recommendations[:5]}
+        for idx in similar_indices:
+
+            product = products_df.iloc[idx]
+
+            recommendations.append({
+                "name": str(product["title"])
+            })
+
+        return {"recommendations": recommendations}
+
+    except Exception as e:
+
+        print("Recommendation error:", e)
+
+        return {"recommendations": []}

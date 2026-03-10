@@ -34,45 +34,56 @@ isAdmin: boolean = false;
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      const id = Number(params.get('id'));
 
-      if (!id || id <= 0) {
-        this.error = "Invalid product ID";
-        this.loading = false;
-        return;
-      }
+  this.route.paramMap.subscribe(params => {
 
-      this.loadProduct(id);
-      const token=localStorage.getItem('token');
-      if(token){
-        const decode:any=jwtDecode(token);
-        this.currentUserEmail=decode.sub;
-        this.isAdmin=decode.role==='ADMIN';
-      }
+    const id = Number(params.get('id'));
+
+    if (!id || id <= 0) {
+      this.error = "Invalid product ID";
+      this.loading = false;
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+
+    if(token){
+      const decode:any = jwtDecode(token);
+      this.currentUserEmail = decode.sub;
+      this.isAdmin = decode.role === 'ADMIN';
+    }
+
+    this.loadProduct(id);
+    this.loadReviews(id);
+
+  });
+
+}
+loadProduct(id: number) {
+
+  this.productService.getById(id).subscribe({
+
+    next: (res) => {
+
+      this.product = res;
+      this.loading = false;
+
+      // LOAD recommendations AFTER product loads
       this.loadRecommendations(id);
-      this.loadReviews(id);
-    });
-  }
 
-  loadProduct(id: number) {
-    this.productService.getById(id).subscribe({
-      next: (res) => {
-        console.log("PRODUCT RESPONSE:", res);
-        this.product = res;
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error("Product load error:", err);
-        this.error = "Failed to load product";
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
-      
-    });
-  }
+      this.cdr.detectChanges();
+    },
 
+    error: (err) => {
+
+      this.error = "Failed to load product";
+      this.loading = false;
+      this.cdr.detectChanges();
+    }
+
+  });
+
+}
   loadRecommendations(id: number) {
     this.productService.getRecommendation(id).subscribe({
       next: (res: any) => {
@@ -135,6 +146,9 @@ isAdmin: boolean = false;
 }
   isOwner(r:any){
     return r.user?.email ===this.currentUserEmail;
+  }
+  rel(){
+    window.location.reload();
   }
 
 }

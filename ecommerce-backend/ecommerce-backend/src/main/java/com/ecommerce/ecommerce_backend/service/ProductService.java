@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -97,26 +98,32 @@ public class ProductService {
 
         return productRepository.save(p);
     }
+public List<Product> getRecommendedProducts(Long productId){
 
-    public List<Product> getRecommendedProducts(Long productId){
+    Product product = getById(productId);
 
-        Product product = getById(productId);
+    List<Map<String,String>> mlResults =
+            mlService.getRecommendations(product.getDescription());
 
-        List<Map<String,String>> mlResults =
-                mlService.getRecommendations(product.getDescription());
-
-        if(mlResults == null || mlResults.isEmpty()){
-            return List.of();
-        }
-
-        String category = mlResults.get(0).get("category");
-        String brand = mlResults.get(0).get("brand");
-
-        return productRepository
-                .findByCategoryAndBrand(category,brand)
-                .stream()
-                .filter(p -> !p.getId().equals(productId))
-                .limit(5)
-                .toList();
+    if(mlResults == null || mlResults.isEmpty()){
+        return List.of();
     }
+
+    List<Product> results = new ArrayList<>();
+
+    for(Map<String,String> rec : mlResults){
+
+        String name = rec.get("name");
+
+        productRepository.findByNameIgnoreCase(name)
+                .ifPresent(results::add);
+    }
+
+    return results.stream()
+            .filter(p -> !p.getId().equals(productId))
+            .distinct()
+            .limit(5)
+            .toList();
+}
+    
 }
