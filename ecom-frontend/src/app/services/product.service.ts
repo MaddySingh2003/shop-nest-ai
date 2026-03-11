@@ -30,4 +30,9 @@ export class ProductService {
     `${this.API}/search?keyword=${keyword}&page=${page}&size=12`
   );
 }
+getuggestions(keyword:string){
+  return this.http.get<any>(
+    `${this.API}/search?keyword=${keyword}&page=0&size=5`
+  );
+}
 }
