@@ -25,4 +25,9 @@ export class ProductService {
   addProduct(product:any){
     return this.http.post(`${this.API}/add`,product);
   }
+  getSearch(keyword:string,page:number=0){
+  return this.http.get<any>(
+    `${this.API}/search?keyword=${keyword}&page=${page}&size=12`
+  );
+}
 }
