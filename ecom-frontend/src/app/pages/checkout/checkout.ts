@@ -42,10 +42,7 @@ export class CheckoutComponent implements OnInit {
     this.loadAddresses();
     this.loadCart();
     
-    if(this.loadAddresses!=null&& this.loadCart!=null&& this.count==0 ){
-      window.location.reload();
-      this.count=this.count+1;
-    }
+    this.cdr.detectChanges();
     
   }
 
