@@ -52,6 +52,10 @@ public class ProductService {
             if(predicted==null || predicted<=0||predicted.isNaN()){
                 predicted=product.getPrice();
             }
+            double min=product.getPrice()*0.7;
+            double max=product.getPrice()*1.3;
+            if(predicted<min)predicted=min;
+            if(predicted>max)predicted=max;
 
             product.setPredictedPrice(predicted);
 
