@@ -7,13 +7,14 @@ import { CartService } from '../../services/cart.service';
 import { ReviewService } from '../../services/review.service';
 import { FormsModule } from '@angular/forms';
 import { jwtDecode } from 'jwt-decode';
+import { Footer } from '../../components/footer/footer';
 
 
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, Navbar,FormsModule],
+  imports: [CommonModule, RouterModule, Navbar,FormsModule,Footer],
   templateUrl: './product-details.html'
 })
 export class ProductDetailsComponent implements OnInit {

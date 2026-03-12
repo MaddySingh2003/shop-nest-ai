@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
 import { ProfileService } from '../../services/profile.service';
 import { AuthService } from '../../services/auth.service';
+import { Footer } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-account-layout',
   standalone: true,
-  imports: [RouterModule, CommonModule, Navbar],
+  imports: [RouterModule, CommonModule, Navbar,Footer],
   templateUrl: './account-layout.html',
   styleUrl: './account-layout.css',
 })

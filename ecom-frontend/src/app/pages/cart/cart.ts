@@ -3,11 +3,12 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CartService } from '../../services/cart.service';
 import { RouterModule } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
+import { Footer } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule,RouterModule,Navbar],
+  imports: [CommonModule,RouterModule,Navbar,Footer],
   templateUrl: './cart.html',
   styleUrls: ['./cart.css']
 })
