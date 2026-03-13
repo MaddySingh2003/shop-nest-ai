@@ -46,4 +46,6 @@ public class User {
         USER,
         ADMIN
     }
+    @Column(nullable = false)
+    private Boolean enabled=false;
 }

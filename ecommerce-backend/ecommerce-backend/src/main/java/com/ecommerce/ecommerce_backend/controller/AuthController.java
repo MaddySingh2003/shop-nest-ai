@@ -2,13 +2,16 @@ package com.ecommerce.ecommerce_backend.controller;
 
 import com.ecommerce.ecommerce_backend.dto.LoginRequest;
 import com.ecommerce.ecommerce_backend.model.User;
+import com.ecommerce.ecommerce_backend.model.VerificationToken;
 import com.ecommerce.ecommerce_backend.repository.UserRepository;
+import com.ecommerce.ecommerce_backend.repository.VerificationTokenRepository;
 import com.ecommerce.ecommerce_backend.service.JwtService;
 import com.ecommerce.ecommerce_backend.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -25,33 +28,56 @@ public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final VerificationTokenRepository tokenRepository;
 
    
 
     // ---------------- REGISTER ----------------
-   @PostMapping("/register")
+@PostMapping("/register")
 public ResponseEntity<?> register(@RequestBody User user) {
+
     try {
-        return ResponseEntity.ok(userService.register(user));
+
+        userService.register(user);
+
+        return ResponseEntity.ok(
+            Map.of("message",
+            "Registration successful. Please verify your email.")
+        );
+
     } catch (RuntimeException ex) {
+
         return ResponseEntity.badRequest().body(ex.getMessage());
+
     }
 }
 
+@GetMapping("/verify")
+public ResponseEntity<?> verifyEmail(@RequestParam String token){
 
-//                test mapings    ///////
+    VerificationToken verificationToken =
+            tokenRepository.findByToken(token)
+            .orElseThrow(() -> new RuntimeException("Invalid token"));
 
+    if(verificationToken.getExpiryDate().isBefore(java.time.LocalDateTime.now())){
+        return ResponseEntity.badRequest().body("Token expired");
+    }
+
+    User user = verificationToken.getUser();
+
+    if(user.getEnabled()){
+        return ResponseEntity.ok("Email already verified");
+    }
+
+    user.setEnabled(true);
+    userRepository.save(user);
+
+    return ResponseEntity.ok("Email verified successfully");
+}
 
 @GetMapping("/secure")
 public ResponseEntity<String> secured(){
     return ResponseEntity.ok("You are authorized 🎉");
-}
-
-
-
-    @GetMapping("/test")
-public String test(){
-    return "OK";
 }
 
 @GetMapping("/users")
@@ -76,6 +102,10 @@ public ResponseEntity<?> login(@RequestBody LoginRequest request){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Invalid Credentials");
     }
+    if(Boolean.FALSE.equals(user.getEnabled())){
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body("Please verify your email before login");
+}
 
     String token = jwtService.generateToken(user.getEmail());
     var expiry = jwtService.getExpiry(token);
