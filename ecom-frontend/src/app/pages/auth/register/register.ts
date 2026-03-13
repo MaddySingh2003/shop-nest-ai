@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -18,19 +18,22 @@ export class RegisterComponent {
   confirmPassword = '';
 
   error: string | null = null;
-  success: string | null = null;
-
+  success: boolean = false;
   loading = false;
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
-  register() {
+  register(event?: Event) {
+
+    if(event){
+      event.preventDefault();
+    }
 
     this.error = null;
-    this.success = null;
 
     if (!this.name || !this.email || !this.password) {
       this.error = "All fields required";
@@ -51,28 +54,32 @@ export class RegisterComponent {
 
     this.authService.register(this.name, this.email, this.password)
       .subscribe({
+
         next: (res:any) => {
 
           this.loading = false;
 
-          this.success = res.message ||
-            "Registration successful. Please check your email.";
+          // show success UI
+          this.success = true;
 
-          // clear form
-          this.name = '';
-          this.email = '';
-          this.password = '';
-          this.confirmPassword = '';
+          // force UI refresh
+          this.cdr.detectChanges();
 
         },
+
         error: (err) => {
 
           this.loading = false;
 
-          this.error =
-            err?.error || "Registration failed";
+          this.error = err?.error || "Registration failed";
 
+          this.cdr.detectChanges();
         }
+
       });
+  }
+
+  goLogin(){
+    this.router.navigate(['/login']);
   }
 }
