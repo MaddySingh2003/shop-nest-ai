@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -24,20 +24,31 @@ export class LoginComponent {
   ) {}
 
   submit() {
-    this.loading = true;
-    this.error = '';
 
-    this.auth.login(this.email, this.password).subscribe({
-      next: (res: any) => {
-        this.auth.loginSuccess(res.token, res.role);
-      },
-      error: () => {
-        this.error = 'Invalid email or password';
-        this.loading = false;
-      }
-    });
-  }
-  registerR(){
+  this.loading = true;
+  this.error = '';
+
+  this.auth.login(this.email, this.password).subscribe({
+
+    next: (res: any) => {
+
+      this.auth.loginSuccess(res.token, res.role);
+
+    },
+
+    error: (err) => {
+
+      this.loading = false;
+
+      this.error =
+        err?.error ||
+        "Invalid email or password";
+
+    }
+
+  });
+
+}  registerR(){
     this.router.navigate(['./register']);
   }
 }

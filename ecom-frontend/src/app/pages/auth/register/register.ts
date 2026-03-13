@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -18,6 +18,8 @@ export class RegisterComponent {
   confirmPassword = '';
 
   error: string | null = null;
+  success: string | null = null;
+
   loading = false;
 
   constructor(
@@ -28,15 +30,17 @@ export class RegisterComponent {
   register() {
 
     this.error = null;
+    this.success = null;
 
     if (!this.name || !this.email || !this.password) {
       this.error = "All fields required";
       return;
     }
+
     if (!this.email.includes('@')) {
-  this.error = "Invalid email";
-  return;
-}
+      this.error = "Invalid email";
+      return;
+    }
 
     if (this.password !== this.confirmPassword) {
       this.error = "Passwords do not match";
@@ -47,13 +51,27 @@ export class RegisterComponent {
 
     this.authService.register(this.name, this.email, this.password)
       .subscribe({
-        next: () => {
+        next: (res:any) => {
+
           this.loading = false;
-          this.router.navigate(['/login']);
+
+          this.success = res.message ||
+            "Registration successful. Please check your email.";
+
+          // clear form
+          this.name = '';
+          this.email = '';
+          this.password = '';
+          this.confirmPassword = '';
+
         },
         error: (err) => {
+
           this.loading = false;
-          this.error = err?.error?.message || "Registration failed";
+
+          this.error =
+            err?.error || "Registration failed";
+
         }
       });
   }

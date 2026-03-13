@@ -10,12 +10,12 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./pages/login/login').then(m => m.LoginComponent)
+      import('./pages/auth/login/login').then(m => m.LoginComponent)
   },
   {
     path: 'register',
     loadComponent: () =>
-      import('./pages/register/register').then(m => m.RegisterComponent)
+      import('./pages/auth/register/register').then(m => m.RegisterComponent)
   },
 
   // PUBLIC / USER
