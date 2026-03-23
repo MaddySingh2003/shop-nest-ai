@@ -1,0 +1,214 @@
+<app-navbar></app-navbar>
+
+<!-- Loading -->
+
+<div *ngIf="loading"
+class="min-h-screen flex items-center justify-center bg-gray-50">
+
+<p class="text-lg text-gray-500 animate-pulse">
+Loading order details...
+</p>
+
+</div>
+
+<!-- Order Page -->
+
+<div *ngIf="!loading && order"
+class="bg-gray-100 min-h-screen py-12 px-6">
+
+<div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-md p-8">
+
+<!-- Header -->
+
+<div class="flex justify-between items-center mb-8">
+
+<div>
+
+<h2 class="text-3xl font-bold text-gray-800">
+Order #{{order.id}}
+</h2>
+
+<p class="text-sm text-gray-500">
+Payment: {{order.paymentStatus}} ({{order.paymentMethod}})
+</p>
+
+</div>
+
+<span
+class="px-4 py-2 rounded-full text-sm font-medium"
+[ngClass]="{
+'bg-yellow-100 text-yellow-700': order.status === 'PENDING',
+'bg-blue-100 text-blue-700': order.status === 'CONFIRMED',
+'bg-purple-100 text-purple-700': order.status === 'SHIPPED',
+'bg-green-100 text-green-700': order.status === 'DELIVERED',
+'bg-red-100 text-red-700': order.status === 'CANCELLED'
+}">
+{{order.status}}
+</span>
+
+</div>
+
+<!-- Cancel Message -->
+
+<div *ngIf="order.status==='CANCELLED'"
+class="bg-red-100 text-red-700 p-4 rounded mb-6 text-center font-medium">
+This order has been cancelled ❌
+</div>
+
+<!-- Timeline -->
+
+<div *ngIf="order.status !== 'CANCELLED'" class="mb-10">
+
+<h3 class="text-xl font-semibold mb-6">
+Order Progress
+</h3>
+
+<div class="flex items-center justify-between relative">
+
+<div class="absolute top-5 left-0 w-full h-1 bg-gray-200"></div>
+
+<div
+class="absolute top-5 left-0 h-1 bg-green-500 transition-all"
+[style.width.%]="(statuses.indexOf(order.status)+1)*33">
+</div>
+
+<div *ngFor="let step of statuses"
+class="relative z-10 flex flex-col items-center w-1/4">
+
+<div
+class="w-10 h-10 flex items-center justify-center rounded-full border-2"
+[ngClass]="{
+'bg-green-500 border-green-500 text-white': isCompleted(step),
+'bg-white border-gray-300 text-gray-400': !isCompleted(step)
+}">
+✔
+</div>
+
+<p class="text-sm mt-2 font-medium"
+[ngClass]="{
+'text-green-600': isCompleted(step),
+'text-gray-400': !isCompleted(step)
+}">
+{{statusLabels[step]}}
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Order Summary -->
+
+<div class="grid md:grid-cols-3 gap-6 mb-8">
+
+<div class="bg-gray-50 p-5 rounded-lg">
+
+<p class="text-gray-600">Order Status</p>
+
+<p class="font-semibold text-lg">
+{{order.status}}
+</p>
+
+</div>
+
+<div class="bg-gray-50 p-5 rounded-lg">
+
+<p class="text-gray-600">Total Amount</p>
+
+<p class="font-bold text-xl">
+₹{{order.totalAmount}}
+</p>
+
+</div>
+
+<div class="bg-gray-50 p-5 rounded-lg">
+
+<p class="text-gray-600">Order Date</p>
+
+<p class="font-semibold">
+{{order.createdAt | date:'medium'}}
+</p>
+
+</div>
+
+</div>
+
+<!-- Buttons -->
+
+<div class="flex flex-wrap gap-3 mb-8">
+
+<button
+*ngIf="order.status==='PENDING'"
+[routerLink]="['/payment', order.id]"
+class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg">
+Pay Now
+</button>
+
+<button
+*ngIf="order.status==='PENDING' || order.status==='CONFIRMED'"
+(click)="cancelOrder()"
+class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg">
+Cancel Order
+</button>
+
+<button
+*ngIf="order.status==='CONFIRMED' || order.status==='DELIVERED'"
+(click)="downloadInvoice()"
+class="bg-gray-700 hover:bg-gray-800 text-white px-5 py-2 rounded-lg">
+Download Invoice
+</button>
+
+</div>
+
+<!-- Items -->
+
+<h3 class="text-xl font-semibold mb-4">
+Order Items
+</h3>
+
+<div class="divide-y">
+
+<div *ngFor="let i of order.items"
+class="flex items-center justify-between py-4">
+
+<div class="flex items-center gap-4">
+
+
+
+<div>
+
+<p class="font-medium">
+{{i.productName}}
+</p>
+
+<p class="text-sm text-gray-500">
+Quantity: {{i.quantity}}
+</p>
+
+</div>
+
+</div>
+
+<p class="font-semibold">
+₹{{i.price}} x {{i.quantity}}
+</p>
+
+</div>
+
+</div>
+
+<!-- Footer -->
+
+<div class="mt-8 text-right">
+
+<a routerLink="/account/orders"
+class="text-indigo-600 hover:text-indigo-800 font-medium">
+← Back to My Orders
+</a>
+
+</div>
+
+</div>
+
+</div>

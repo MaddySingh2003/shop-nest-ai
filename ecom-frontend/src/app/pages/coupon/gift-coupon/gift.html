@@ -1,0 +1,63 @@
+<app-navbar></app-navbar>
+
+<div class="min-h-screen flex items-center justify-center bg-gray-100 px-6">
+
+<div class="bg-white p-10 rounded-xl shadow-md text-center max-w-md w-full">
+
+<h2 class="text-3xl font-bold mb-6">
+🎁 Try Your Luck
+</h2>
+
+<button
+(click)="tryCoupon()"
+[disabled]="isDisabled()"
+class="bg-purple-600 text-white px-6 py-3 rounded-lg w-full hover:bg-purple-700 disabled:bg-gray-400">
+
+{{ loading ? 'Trying...' :
+(attempts >= maxAttempts ? 'No Attempts Left' : 'Try Your Luck 🎁') }}
+
+</button>
+
+<!-- Coupons -->
+
+<div *ngIf="myCoupons.length > 0" class="mt-8">
+
+<h3 class="font-semibold mb-4">
+Your Coupons
+</h3>
+
+<div *ngFor="let c of myCoupons"
+class="bg-gray-100 p-4 rounded-lg mb-3 text-left">
+
+<p class="font-semibold">
+{{c.coupon.code}}
+</p>
+
+<p class="text-sm text-gray-600">
+{{c.coupon.discountPercent}}% OFF
+</p>
+
+<p class="text-xs text-gray-500">
+Expires: {{ c.expiresAt | date:'short' }}
+</p>
+
+<p *ngIf="c.used" class="text-red-500 text-sm">
+Used
+</p>
+
+<p *ngIf="!c.used" class="text-green-600 text-sm">
+Available
+</p>
+
+</div>
+
+</div>
+
+<p *ngIf="message"
+class="mt-6 font-medium text-gray-700">
+{{message}}
+</p>
+
+</div>
+
+</div>

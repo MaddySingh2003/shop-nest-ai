@@ -1,0 +1,193 @@
+<div class="bg-white rounded-2xl shadow-md border p-10">
+
+<!-- Loading -->
+<div *ngIf="loading" class="text-center py-16 text-gray-400 text-lg">
+Loading profile...
+</div>
+
+<!-- PROFILE VIEW -->
+<div *ngIf="!loading && user && !edit" class="space-y-10">
+
+<!-- Header -->
+<div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl p-6">
+<h2 class="text-2xl font-semibold">My Account</h2>
+</div>
+
+<!-- Personal Info -->
+<div class="flex justify-between items-center">
+
+<h3 class="text-xl font-semibold text-gray-800">
+Personal Information
+</h3>
+
+<button
+(click)="edit = true"
+class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
+Edit
+</button>
+
+</div>
+
+<div class="grid md:grid-cols-2 gap-6">
+
+<div class="bg-gray-50 border p-5 rounded-lg">
+<p class="text-sm text-gray-500">Full Name</p>
+<p class="font-semibold text-gray-800">{{ user.name }}</p>
+</div>
+
+<div class="bg-gray-50 border p-5 rounded-lg">
+<p class="text-sm text-gray-500">Email</p>
+<p class="font-semibold text-gray-800">{{ user.email }}</p>
+</div>
+
+</div>
+
+<!-- Address Section -->
+
+<div>
+
+<div class="flex justify-between items-center mb-6">
+
+<h3 class="text-xl font-semibold text-gray-800">
+Saved Addresses
+</h3>
+
+<button
+(click)="showAddressForm = true"
+class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
++ Add Address
+</button>
+
+</div>
+
+<div class="grid md:grid-cols-2 gap-6">
+
+<div
+*ngFor="let a of addresses"
+(click)="selectedAddressId = a.id"
+class="bg-gray-50 border rounded-lg p-5 cursor-pointer hover:border-indigo-600 transition"
+[ngClass]="{'border-indigo-600': selectedAddressId === a.id}">
+
+<p class="font-semibold text-gray-800">
+{{a.fullName}}
+</p>
+
+<p class="text-gray-600 text-sm">
+{{a.street}}, {{a.city}}
+</p>
+
+<p class="text-gray-600 text-sm">
+{{a.state}} - {{a.zipCode}}
+</p>
+
+<p class="text-gray-500 text-sm">
+📞 {{a.phone}}
+</p>
+
+<div class="flex gap-4 mt-3 text-sm">
+
+<button
+(click)="editAddress(a); $event.stopPropagation()"
+class="text-blue-600 hover:underline">
+Edit
+</button>
+
+<button
+(click)="deleteAddress(a.id); $event.stopPropagation()"
+class="text-red-500 hover:underline">
+Delete
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- EDIT PROFILE -->
+
+<div *ngIf="edit" class="space-y-6">
+
+<h3 class="text-xl font-semibold text-gray-800">
+Edit Profile
+</h3>
+
+<input
+[(ngModel)]="profile.name"
+placeholder="Name"
+class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+<input
+[(ngModel)]="profile.email"
+disabled
+class="w-full border rounded-lg p-3 bg-gray-100">
+
+<div class="flex gap-4">
+
+<button
+(click)="updateProfile()"
+class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg">
+Save
+</button>
+
+<button
+(click)="edit = false"
+class="border px-6 py-2 rounded-lg hover:bg-gray-100">
+Cancel
+</button>
+
+</div>
+
+</div>
+
+</div>
+<div *ngIf="showAddressForm"
+class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center p-4">
+
+<div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md space-y-4">
+
+<h3 class="text-xl font-semibold text-gray-800">
+Add Address
+</h3>
+
+<input [(ngModel)]="newAddress.fullName" placeholder="Full Name"
+class="w-full border p-3 rounded-lg">
+
+<input [(ngModel)]="newAddress.phone" placeholder="Phone"
+class="w-full border p-3 rounded-lg">
+
+<input [(ngModel)]="newAddress.street" placeholder="Street"
+class="w-full border p-3 rounded-lg">
+
+<input [(ngModel)]="newAddress.city" placeholder="City"
+class="w-full border p-3 rounded-lg">
+
+<input [(ngModel)]="newAddress.state" placeholder="State"
+class="w-full border p-3 rounded-lg">
+
+<input [(ngModel)]="newAddress.zipCode" placeholder="Zip Code"
+class="w-full border p-3 rounded-lg">
+
+<div class="flex gap-3 pt-2">
+
+<button
+(click)="saveAddress()"
+class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
+Save
+</button>
+
+<button
+(click)="showAddressForm = false"
+class="border px-5 py-2 rounded-lg hover:bg-gray-100">
+Cancel
+</button>
+
+</div>
+
+</div>
+
+</div>

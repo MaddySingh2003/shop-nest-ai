@@ -1,0 +1,246 @@
+<app-navbar></app-navbar>
+
+<div class="bg-gray-50 min-h-screen py-12">
+
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- PRODUCT SECTION -->
+    <div *ngIf="product as p"
+         class="grid md:grid-cols-2 gap-12 bg-white p-10 rounded-3xl shadow-xl">
+
+      <!-- LEFT IMAGE -->
+      <div class="bg-gray-100 rounded-2xl flex items-center justify-center p-6">
+        <img *ngIf="p.imageUrl"
+             [src]="p.imageUrl"
+             class="max-h-[400px] object-contain hover:scale-105 transition duration-300">
+      </div>
+
+      <!-- RIGHT DETAILS -->
+      <div>
+
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">
+          {{ p.name }}
+        </h2>
+
+        <p class="text-gray-600 mb-6 leading-relaxed">
+          {{ p.description }}
+        </p>
+
+<div class="bg-gray-100 p-6 rounded-2xl mb-6">
+
+  <!-- CASE 1: AI gives DISCOUNT -->
+  <div *ngIf="p.predictedPrice < p.price">
+
+    <p class="text-gray-400 line-through text-lg">
+      ₹{{ p.price }}
+    </p>
+
+    <p class="text-3xl font-bold text-green-600">
+      ₹{{ p.predictedPrice }}
+    </p>
+
+    <p class="text-sm text-green-500 font-medium">
+      AI Optimized Price
+    </p>
+
+    <p class="text-red-500 font-semibold mt-1">
+      {{ ((p.price - p.predictedPrice) / p.price * 100) | number:'1.0-0' }}% OFF
+    </p>
+
+  </div>
+
+
+  <!-- CASE 2: AI suggests HIGHER market price -->
+  <div *ngIf="p.predictedPrice > p.price">
+
+    <p class="text-3xl font-bold text-gray-900">
+      ₹{{ p.price }}
+    </p>
+
+    <p class="text-sm text-indigo-500 mt-1">
+      AI Market Value ₹{{ p.predictedPrice }}
+    </p>
+
+  </div>
+
+
+  <!-- CASE 3: Same price -->
+  <div *ngIf="p.predictedPrice === p.price">
+
+    <p class="text-3xl font-bold text-gray-900">
+      ₹{{ p.price }}
+    </p>
+
+  </div>
+
+</div>
+
+        <button
+          (click)="addToCart(p.id)"
+          class="bg-black text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-gray-800 transition shadow-md">
+          🛒 Add to Cart
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- ================= REVIEWS SECTION ================= -->
+    <div class="mt-20 bg-white rounded-3xl shadow-xl p-10">
+
+      <!-- HEADER -->
+      <div class="flex justify-between items-center mb-10">
+
+        <div>
+          <h3 class="text-3xl font-bold text-gray-800">
+            Customer Reviews
+          </h3>
+
+          <p class="text-gray-500 mt-2">
+            {{ reviews.length }} Reviews
+          </p>
+        </div>
+
+      </div>
+
+      <!-- ADD REVIEW CARD -->
+      <div class="bg-gray-50 p-8 rounded-2xl mb-12 shadow-inner">
+
+        <h4 class="text-lg font-semibold mb-4">
+          Write a Review
+        </h4>
+
+        <!-- STAR RATING -->
+        <div class="flex items-center gap-2 mb-4">
+
+          <span *ngFor="let star of [1,2,3,4,5]"
+                (click)="newReview.rating = star"
+                class="text-2xl cursor-pointer transition"
+                [ngClass]="{
+                  'text-yellow-500': star <= newReview.rating,
+                  'text-gray-300': star > newReview.rating
+                }">
+            ★
+          </span>
+
+        </div>
+
+        <!-- COMMENT -->
+        <textarea
+          [(ngModel)]="newReview.comment"
+          rows="4"
+          placeholder="Share your experience about this product..."
+          class="w-full p-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-black focus:outline-none resize-none transition">
+        </textarea>
+
+        <!-- BUTTON -->
+        <button
+          (click)="submitReview(product.id)"
+          class="mt-5 bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-800 transition shadow-md">
+          Submit Review
+        </button>
+
+      </div>
+
+      <!-- REVIEW LIST -->
+      <div *ngIf="reviews.length === 0"
+           class="text-center text-gray-400 py-10">
+        No reviews yet. Be the first to review this product!
+      </div>
+
+      <div *ngFor="let r of reviews"
+           class="border-b border-gray-200 pb-8 mb-8">
+
+        <div class="flex items-start gap-4">
+
+          <!-- Avatar -->
+          <div class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center font-semibold">
+            {{ r.user?.name?.charAt(0) || 'U' }}
+          </div>
+
+          <div class="flex-1">
+
+            <div class="flex justify-between items-center">
+
+              <div>
+                <p class="font-semibold text-gray-800">
+                  {{ r.user?.name }}
+                </p>
+
+                <!-- Stars -->
+                <div class="flex mt-1">
+                  <span *ngFor="let s of [1,2,3,4,5]"
+                        class="text-sm"
+                        [ngClass]="{
+                          'text-yellow-500': s <= r.rating,
+                          'text-gray-300': s > r.rating
+                        }">
+                    ★
+                  </span>
+                </div>
+              </div>
+
+              <!-- DELETE -->
+              <button
+                *ngIf="isOwner(r) || isAdmin"
+                (click)="deleteReview(r.id)"
+                class="text-red-500 text-sm hover:underline">
+                Delete
+              </button>
+
+            </div>
+
+            <p class="text-gray-600 mt-4 leading-relaxed">
+              {{ r.comment }}
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RECOMMENDATIONS -->
+    <div class="mt-20" *ngIf="recommendations.length > 0">
+
+      <h3 class="text-3xl font-bold mb-8">
+        You May Also Like
+      </h3>
+
+      <div class="grid md:grid-cols-3 gap-8">
+
+        <div *ngFor="let r of recommendations"
+             class="bg-white p-6 rounded-2xl shadow hover:shadow-xl transition hover:-translate-y-1">
+
+<img
+            [src]="r.imageUrl"
+            class="h-48 w-full object-cover"
+          />
+
+          <h4 class="font-semibold text-lg">
+            {{ r.name }}
+          </h4>
+
+          <p class="text-indigo-600 font-bold mt-2">
+            ₹ {{ r.price }}
+          </p>
+        <a 
+          [routerLink]="['/product', r.id]"
+             class="text-black text-sm font-medium hover:underline mt-2 inline-block">
+            View Product →
+          </a>
+         
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+<app-footer></app-footer>

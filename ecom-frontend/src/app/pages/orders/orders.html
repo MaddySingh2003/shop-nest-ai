@@ -1,0 +1,95 @@
+<div class="bg-gray-100 min-h-screen py-10 px-6">
+
+<div class="max-w-6xl mx-auto">
+
+<h2 class="text-3xl font-bold mb-8">
+📦 My Orders
+</h2>
+
+<!-- Filters -->
+
+<div class="flex gap-3 mb-6 flex-wrap">
+
+<button
+(click)="filter='ALL'; applyFilter()"
+class="px-4 py-2 border rounded hover:bg-gray-100">
+All
+</button>
+
+<button
+(click)="filter='PENDING'; applyFilter()"
+class="px-4 py-2 border rounded hover:bg-gray-100">
+Pending
+</button>
+
+<button
+(click)="filter='CONFIRMED'; applyFilter()"
+class="px-4 py-2 border rounded hover:bg-gray-100">
+Confirmed
+</button>
+
+<button
+(click)="filter='DELIVERED'; applyFilter()"
+class="px-4 py-2 border rounded hover:bg-gray-100">
+Delivered
+</button>
+
+</div>
+
+<div *ngIf="filteredOrders.length === 0"
+class="bg-white rounded-xl shadow p-12 text-center">
+
+<p class="text-gray-500 mb-4">
+No orders yet.
+</p>
+
+<a routerLink="/home"
+class="bg-indigo-600 text-white px-6 py-2 rounded-lg">
+Start Shopping
+</a>
+
+</div>
+
+<div *ngFor="let o of filteredOrders"
+class="bg-white rounded-xl shadow-sm hover:shadow-lg transition p-6 mb-5 flex flex-col md:flex-row justify-between items-center">
+
+<div>
+
+<p class="font-semibold text-lg">
+{{ o.items[0]?.productName }}
+
+<span *ngIf="o.items.length > 1"
+class="text-gray-500">
++ {{ o.items.length - 1 }} more
+</span>
+
+</p>
+
+<p class="text-sm text-gray-600 mt-1">
+Total: ₹{{o.totalAmount}}
+</p>
+
+</div>
+
+<div class="flex gap-3 mt-4 md:mt-0">
+
+<a
+[routerLink]="['/order-details', o.id]"
+class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+View Details
+</a>
+
+<button
+*ngIf="o.status === 'PENDING' || o.status === 'CONFIRMED'"
+(click)="cancelOrder(o.id)"
+class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm">
+Cancel
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>

@@ -1,0 +1,63 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { Observable, tap } from 'rxjs';
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+
+  private API = 'http://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/auth';
+
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
+
+  // LOGIN
+  login(email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.API}/login`, {
+      email,
+      password
+    });
+  }
+
+  // REGISTER
+  register(name: string, email: string, password: string) {
+    return this.http.post(`${this.API}/register`, {
+      name,
+      email,
+      password
+    });
+  }
+
+  // SAVE TOKEN
+  loginSuccess(token: string,role:string) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('role',role);
+    this.router.navigate(['/home']);
+  }
+
+  logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('role'); // ✅ important
+  this.router.navigate(['/login']);
+}
+
+  isLoggedIn(): boolean {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+    return !!localStorage.getItem('token');
+  }
+  getRole():string |null{
+    return localStorage.getItem('role');
+  }
+  isAdmin(): boolean{
+    return this.getRole()==='ADMIN'
+
+  }
+  isUser():boolean{
+    return this.getRole()==='USER'
+  }
+}
