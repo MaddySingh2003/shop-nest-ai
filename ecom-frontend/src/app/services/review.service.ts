@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 
 @Injectable({providedIn:'root'})
 export class ReviewService{
-    private API='http://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/reviews';
+    private API='https://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/reviews';
 
     constructor(private http: HttpClient){}
 

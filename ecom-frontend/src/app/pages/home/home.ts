@@ -30,22 +30,22 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.loadProducts();
   }
-
-  loadProducts() {
-
-    this.productService.getProducts(this.page).subscribe(res => {
-
-      this.products = res.content;
-      this.totalPages = res.totalPages;
-
+loadProducts() {
+  this.productService.getProducts(this.page).subscribe({
+    next: (res) => {
+      this.products = res.content || [];
+      this.totalPages = res.totalPages || 0;
       this.generatePages();
-
       this.cdr.detectChanges();
-
-    });
-
-  }
-
+    },
+    error: (err) => {
+      console.error('API ERROR:', err);
+      this.message = 'Failed to load products';
+      this.products = []; // ensures UI updates
+      this.cdr.detectChanges();
+    }
+  });
+}
   generatePages() {
 
     const start = Math.max(0, this.page - 1);
