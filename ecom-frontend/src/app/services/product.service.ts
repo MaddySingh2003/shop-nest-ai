@@ -6,7 +6,7 @@ import { Product } from "../core/guards/models/product.model";
 @Injectable({ providedIn: 'root' })
 export class ProductService {
 
-  private API = 'http://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/products';
+  private API = 'https://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/products';
 
   constructor(private http: HttpClient) {}
 
