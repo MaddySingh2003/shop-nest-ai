@@ -7,7 +7,7 @@ import { Observable, tap } from 'rxjs';
 })
 export class AuthService {
 
-  private API = 'https://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/auth';
+  private API = 'https://shonest-backend-production.up.railway.app/auth';
 
   constructor(
     private http: HttpClient,

@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 
 @Injectable({providedIn:'root'})
 export class CouponService{
-    private API='https://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/admin/coupon';
+    private API='https://shonest-backend-production.up.railway.app/admin/coupon';
 
     constructor(private http:HttpClient){}
 

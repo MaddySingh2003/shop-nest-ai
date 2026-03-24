@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 
 @Injectable({providedIn:'root'})
 export class CartService{
-    private API='https://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com//cart';
+    private API='https://shonest-backend-production.up.railway.app/cart';
     
     constructor(private http:HttpClient){}
 
