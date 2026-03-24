@@ -45,7 +45,7 @@ public class SecurityConfig {
     // PRODUCTS (PUBLIC + ADMIN)
     .requestMatchers(
         "/products",
-        "/products/id/{id}",
+        "/products/**",
         "/products/search",
         "/products/filter",
         "/products/{id}/recommendations"
