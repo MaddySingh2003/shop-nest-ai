@@ -19,7 +19,7 @@ public class MlService {
     private final String BASE_URL =
             System.getenv().getOrDefault(
                     "ML_SERVICE_URL",
-                    "http://localhost:8000"
+                    "https://shop-nest-ai.onrender.com"
             );
 
     private final String PRICE_URL = BASE_URL + "/predict-price";
