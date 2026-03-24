@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 
 @Injectable({providedIn:'root'})
 export class CouponService{
-    private API='https://shonest-backend-production.up.railway.app/admin/coupon';
+    private API='https://shop-nest-ai-1.onrender.com/admin/coupon';
 
     constructor(private http:HttpClient){}
 

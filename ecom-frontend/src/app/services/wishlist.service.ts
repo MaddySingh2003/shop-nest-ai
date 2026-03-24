@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 
 @Injectable({providedIn:'root'})
 export class WishlistService{
-    private API='https://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/wishlist';
+    private API='https://shop-nest-ai-1.onrender.com/wishlist';
     
     constructor(private http:HttpClient){}
 

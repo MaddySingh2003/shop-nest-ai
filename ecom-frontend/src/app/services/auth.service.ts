@@ -7,7 +7,7 @@ import { Observable, tap } from 'rxjs';
 })
 export class AuthService {
 
-  private API = 'https://shonest-backend-production.up.railway.app/auth';
+  private API = 'https://shop-nest-ai-1.onrender.com/auth';
 
   constructor(
     private http: HttpClient,

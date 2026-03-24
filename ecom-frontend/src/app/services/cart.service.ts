@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 
 @Injectable({providedIn:'root'})
 export class CartService{
-    private API='https://shonest-backend-production.up.railway.app/cart';
+    private API='https://shop-nest-ai-1.onrender.com/cart';
     
     constructor(private http:HttpClient){}
 

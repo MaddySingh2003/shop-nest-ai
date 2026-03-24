@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 
 @Injectable({providedIn:'root'})
 export class AddressService{
-    private API='https://shonest-backend-production.up.railway.app/address';
+    private API='https://shop-nest-ai-1.onrender.com/address';
 
     constructor(private http:HttpClient){}
 

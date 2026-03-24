@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
 @Injectable({ providedIn: 'root' })
 export class OrderService {
 
-  private API = 'https://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/orders';
+  private API = 'https://shop-nest-ai-1.onrender.com/orders';
 
   constructor(private http: HttpClient) {}
 
@@ -17,7 +17,7 @@ export class OrderService {
   }
 placeOrder(addressId:number, couponCode?:string){
   return this.http.post(
-    `https://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/orders/place/${addressId}?coupon=${couponCode || ''}`,
+    `https://shop-nest-ai-1.onrender.com/orders/place/${addressId}?coupon=${couponCode || ''}`,
     {}
   );
 }
@@ -54,15 +54,15 @@ deleteAdminOrder(id:number){
 
 
 getStats(){
-  return this.http.get('https://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.comadmin/stats');
+  return this.http.get('https://shop-nest-ai-1.onrender.com/stats');
 }
 validateCoupon(code:string){
-  return this.http.get(`https://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/coupon/validate/${code}`);
+  return this.http.get(`https://shop-nest-ai-1.onrender.com/coupon/validate/${code}`);
 }
 
 tryGiftCoupon(){
-  return this.http.get(`https://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/coupon/gift`);
+  return this.http.get(`https://shop-nest-ai-1.onrender.com/coupon/gift`);
 }getMyCoupons(){
-  return this.http.get('https://shopnest-env.eba-rnmmxa3z.eu-north-1.elasticbeanstalk.com/coupon/my');
+  return this.http.get('https://shop-nest-ai-1.onrender.com/coupon/my');
 }
 }
