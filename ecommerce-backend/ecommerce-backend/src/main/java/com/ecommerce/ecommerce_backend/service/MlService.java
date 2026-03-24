@@ -55,7 +55,7 @@ public class MlService {
 System.out.println("ML PRICE = " + 
     (response.getBody() != null ? response.getBody().getPredictedPrice() : "NULL"));
 
-            if(response.getBody() == null){
+            if(response.getBody() == null ||response==null){
                 return request.getBasePrice();
             }
 
