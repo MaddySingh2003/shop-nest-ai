@@ -49,7 +49,7 @@ df["text"] = (
     df["category"].fillna("")
 )
 
-vectorizer = TfidfVectorizer(stop_words="english")
+vectorizer = TfidfVectorizer()
 
 tfidf_matrix = vectorizer.fit_transform(df["text"])
 

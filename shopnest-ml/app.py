@@ -88,29 +88,19 @@ def recommend_by_id(product_id: int):
 class RecommendationRequest(BaseModel):
     description: str
 
-
 @app.post("/recommend")
 def recommend(data: RecommendationRequest):
 
     try:
         description = (data.description or "").lower().strip()
 
-        print("INPUT:", description)
-
         if not description:
             return {"recommendations": []}
 
-        # vectorize input
         input_vector = vectorizer.transform([description])
-
         cosine_sim = cosine_similarity(input_vector, tfidf_matrix)
 
-        # 🔥 FIX: DO NOT SKIP FIRST RESULT
         similar_indices = cosine_sim[0].argsort()[::-1][:5]
-
-        # 🔥 LOW SIMILARITY CHECK
-        if cosine_sim[0][similar_indices[0]] < 0.05:
-            return {"recommendations": []}
 
         recommendations = []
 
@@ -124,12 +114,10 @@ def recommend(data: RecommendationRequest):
                 "imageUrl": product.get("thumbnail", "")
             })
 
-        print("RECOMMENDATIONS:", recommendations)
-
         return {"recommendations": recommendations}
 
     except Exception as e:
-        print("RECOMMENDATION ERROR:", e)
+        print("RECOMMEND ERROR:", e)
         return {"recommendations": []}
 
 

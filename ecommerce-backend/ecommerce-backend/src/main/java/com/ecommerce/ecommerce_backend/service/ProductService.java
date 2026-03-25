@@ -130,8 +130,12 @@ public List<Product> getRecommendedProducts(Long productId){
     Product product = getById(productId);
 
     List<Map<String,String>> mlResults =
-            mlService.getRecommendations(product.getDescription());
-
+            mlService.getRecommendations(
+    product.getName() + " " +
+    product.getCategory() + " " +
+    product.getBrand() + " " +
+    product.getDescription()
+);
     if(mlResults == null || mlResults.isEmpty()){
         return List.of();
     }
