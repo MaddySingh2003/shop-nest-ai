@@ -23,7 +23,7 @@ public class MlService {
             );
 
     private final String PRICE_URL = BASE_URL + "/predict-price";
-    private final String RECOMMEND_URL = BASE_URL + "/recommend";
+    private final String RECOMMEND_URL = BASE_URL + "/recommend/{product_id}";   
 
     // ✅ TIMEOUT CONFIG (IMPORTANT FOR RENDER)
     private RestTemplate createRestTemplate() {
