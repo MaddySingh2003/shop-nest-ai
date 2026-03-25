@@ -127,26 +127,24 @@ public class ProductService {
     }
 public List<Product> getRecommendedProducts(Long productId){
 
-    Product product = getById(productId);
+    List<Map<String,Object>> mlResults =
+            mlService.getRecommendationsById(productId);
 
-    List<Map<String,String>> mlResults =
-            mlService.getRecommendations(
-    product.getName() + " " +
-    product.getCategory() + " " +
-    product.getBrand() + " " +
-    product.getDescription()
-);
     if(mlResults == null || mlResults.isEmpty()){
         return List.of();
     }
 
     List<Product> results = new ArrayList<>();
 
-    for(Map<String,String> rec : mlResults){
+    for(Map<String,Object> rec : mlResults){
 
-        String name = rec.get("name");
+        Object idObj = rec.get("id");
 
-        productRepository.findByNameIgnoreCase(name)
+        if(idObj == null) continue;
+
+        Long id = Long.valueOf(idObj.toString());
+
+        productRepository.findById(id)
                 .ifPresent(results::add);
     }
 
@@ -155,6 +153,5 @@ public List<Product> getRecommendedProducts(Long productId){
             .distinct()
             .limit(5)
             .toList();
-}
-    
+}    
 }

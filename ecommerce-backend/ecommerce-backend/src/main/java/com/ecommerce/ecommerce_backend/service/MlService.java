@@ -7,7 +7,6 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
 import com.ecommerce.ecommerce_backend.dto.PricePredictionRequest;
 import com.ecommerce.ecommerce_backend.dto.PricePredictionResponse;
-import com.ecommerce.ecommerce_backend.dto.RecommendationRequest;
 import com.ecommerce.ecommerce_backend.dto.RecommendationResponse;
 
 import java.util.*;
@@ -15,7 +14,6 @@ import java.util.*;
 @Service
 public class MlService {
 
-    // ✅ USE ENV VARIABLE (PRODUCTION SAFE)
     private final String BASE_URL =
             System.getenv().getOrDefault(
                     "ML_SERVICE_URL",
@@ -23,39 +21,28 @@ public class MlService {
             );
 
     private final String PRICE_URL = BASE_URL + "/predict-price";
-    private final String RECOMMEND_URL = BASE_URL + "/recommend/{product_id}";   
 
-    // ✅ TIMEOUT CONFIG (IMPORTANT FOR RENDER)
     private RestTemplate createRestTemplate() {
-
-        SimpleClientHttpRequestFactory factory =
-                new SimpleClientHttpRequestFactory();
-
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(10000);
         factory.setReadTimeout(60000);
-
         return new RestTemplate(factory);
     }
 
     private final RestTemplate restTemplate = createRestTemplate();
 
-    // ===============================
-    // 🔥 PRICE PREDICTION
-    // ===============================
+    // ================= PRICE =================
     public Double getPredictedPrice(PricePredictionRequest request){
 
         try {
-
             ResponseEntity<PricePredictionResponse> response =
                     restTemplate.postForEntity(
                             PRICE_URL,
                             request,
                             PricePredictionResponse.class
                     );
-System.out.println("ML PRICE = " + 
-    (response.getBody() != null ? response.getBody().getPredictedPrice() : "NULL"));
 
-            if(response.getBody() == null ||response==null){
+            if(response == null || response.getBody() == null){
                 return request.getBasePrice();
             }
 
@@ -68,27 +55,20 @@ System.out.println("ML PRICE = " +
             return predicted;
 
         } catch(Exception e){
-
-            System.out.println("ML ERROR: " + e.getMessage());
-
+            System.out.println("ML PRICE ERROR: " + e.getMessage());
             return request.getBasePrice();
         }
     }
 
-    // ===============================
-    // 🔥 RECOMMENDATION
-    // ===============================
-    public List<Map<String,String>> getRecommendations(String description){
+    // ================= RECOMMEND BY ID =================
+    public List<Map<String,Object>> getRecommendationsById(Long productId){
 
-        try{
-
-            RecommendationRequest req = new RecommendationRequest();
-            req.setDescription(description);
+        try {
+            String url = BASE_URL + "/recommend/" + productId;
 
             ResponseEntity<RecommendationResponse> response =
-                    restTemplate.postForEntity(
-                            RECOMMEND_URL,
-                            req,
+                    restTemplate.getForEntity(
+                            url,
                             RecommendationResponse.class
                     );
 
@@ -98,11 +78,8 @@ System.out.println("ML PRICE = " +
 
             return response.getBody().getRecommendations();
 
-        }
-        catch(Exception e){
-
-            System.out.println("Recommendation error: " + e.getMessage());
-
+        } catch(Exception e){
+            System.out.println("ML RECOMMEND ERROR: " + e.getMessage());
             return List.of();
         }
     }

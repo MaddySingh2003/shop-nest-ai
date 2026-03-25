@@ -7,5 +7,5 @@ import lombok.Data;
 
 @Data
 public class RecommendationResponse {
-    private List <Map<String,String>>recommendations;
+    private List<Map<String, Object>> recommendations;
 }
