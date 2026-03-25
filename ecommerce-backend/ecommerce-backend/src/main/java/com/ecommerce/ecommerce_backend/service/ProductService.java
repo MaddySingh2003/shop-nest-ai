@@ -73,12 +73,35 @@ public class ProductService {
         return productRepository.findByActiveTrue(pageable);
     }
 
-    public Product getById(Long id){
+   public Product getById(Long id){
 
-        return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+    Product product = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Product not found"));
+
+    try {
+        PricePredictionRequest mlRequest = new PricePredictionRequest();
+
+        mlRequest.setCategory(product.getCategory());
+        mlRequest.setBrand(product.getBrand());
+        mlRequest.setBasePrice(product.getPrice());
+        mlRequest.setDemandScore(0.7);
+        mlRequest.setRating(4.0);
+
+        Double predicted = mlService.getPredictedPrice(mlRequest);
+
+        if(predicted == null || predicted <= 0 || predicted.isNaN()){
+            predicted = product.getPrice();
+        }
+
+        product.setPredictedPrice(predicted);
+
+    } catch(Exception e){
+        System.out.println("ML FETCH ERROR: " + e.getMessage());
+        product.setPredictedPrice(product.getPrice());
     }
 
+    return product;
+}
     public Page<Product> search(String keyword, Pageable pageable){
 
         return productRepository.findByNameContainingIgnoreCase(keyword,pageable);
