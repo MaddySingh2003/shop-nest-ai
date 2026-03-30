@@ -5,7 +5,7 @@ An AI-powered full-stack eCommerce platform with **dynamic pricing** and **produ
 ---
 
 ## Live Link
-# https://shop-nest-ai.vercel.app/
+ https://shop-nest-ai.vercel.app/
 
 ## 🚀 Features
 
